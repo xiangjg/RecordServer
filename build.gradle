@@ -1,0 +1,40 @@
+plugins {
+    id 'org.springframework.boot' version '2.2.0.RELEASE'
+    id 'io.spring.dependency-management' version '1.0.8.RELEASE'
+    id 'java'
+}
+
+group = 'com.jone'
+version = '1.0'
+sourceCompatibility = '1.8'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    runtimeOnly 'org.postgresql:postgresql'
+    testImplementation('org.springframework.boot:spring-boot-starter-test') {
+        exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+jar {
+    String classpath = ''
+    configurations.runtime.each {
+        classpath = classpath +" lib/"+ it.name
+    }
+    manifest {
+        attributes 'Main-Class': 'com.zhsl.EurekaClientApplication'
+        attributes 'Class-Path': classpath
+    }
+}
+task exportJar(type:Copy){
+    from configurations.runtime
+    into ('build/libs/lib')
+}
