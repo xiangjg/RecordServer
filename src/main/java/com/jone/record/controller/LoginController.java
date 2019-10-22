@@ -9,6 +9,7 @@ import com.jone.record.entity.vo.ImageCode;
 import com.jone.record.entity.vo.UserInfo;
 import com.jone.record.service.UserService;
 import com.jone.record.util.Md5PasswordEncoder;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
@@ -16,6 +17,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +26,9 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.util.*;
 
+@RestController
+@RequestMapping("/login")
+@Api(tags = "登录相关接口")
 public class LoginController extends BaseController{
 
     @Autowired

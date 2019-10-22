@@ -22,18 +22,14 @@ public class Swaggar2 {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
                 .select()
-                //.apis(RequestHandlerSelectors.basePackage("com.zhsl.controller"))
                 .apis(RequestHandlerSelectors.withClassAnnotation(RestController.class))
-                //.apis(RequestHandlerSelectors.basePackage("com.zhsl.controller.warnController"))
                 .paths(PathSelectors.any())
                 .build();
     }
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("吊洞水库项目数据接口服务")
-                .description("内部调用接口,外网访问需要通过spring-cloud-zuul服务接口调用")
-                //.termsOfServiceUrl("http://blog.didispace.com/")
-                .contact("bao")
+                .title("数据接口服务")
+                .description("内部调用接口")
                 .version("1.0")
                 .build();
     }
