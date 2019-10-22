@@ -18,6 +18,7 @@ dependencies {
     //redis
     compile 'org.springframework.boot:spring-boot-starter-data-redis'
     runtimeOnly 'org.postgresql:postgresql'
+    compile("com.alibaba:druid:1.1.12")
     //在线API
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.7.0'
     compile group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.7.0'

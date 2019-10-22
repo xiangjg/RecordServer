@@ -1,9 +1,6 @@
 package com.jone.record.entity;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Objects;
@@ -19,6 +16,8 @@ public class TQztSubjectsEntity implements Serializable {
     private byte[] img;
     private Short order;
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Basic
     @Column(name = "id")
     public Integer getId() {

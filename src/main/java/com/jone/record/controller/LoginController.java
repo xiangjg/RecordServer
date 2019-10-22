@@ -2,11 +2,17 @@ package com.jone.record.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.jone.record.dao.RedisDao;
+import com.jone.record.entity.system.UserEntity;
+import com.jone.record.entity.vo.BaseData;
 import com.jone.record.entity.vo.ImageCode;
+import com.jone.record.entity.vo.UserInfo;
+import com.jone.record.service.UserService;
 import com.jone.record.util.Md5PasswordEncoder;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -16,20 +22,21 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.*;
 import java.awt.image.BufferedImage;
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 
 public class LoginController extends BaseController{
+
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private RedisDao redisDao;
+
     @RequestMapping(value = "/findByLoginName", method = RequestMethod.POST)
     @ApiOperation(value = "登录验证", notes = "传入登录用户名以及密码,返回{session:session标识,userName:真实姓名,role:角色ID,proId:所属工程Id}")
-    @ApiImplicitParam(name = "object", value = "{loginName:loginName,psw:psw,thirdId:第三方平台用户ID}")
+    @ApiImplicitParam(name = "object", value = "{loginName:loginName,password:password}")
     public void findByLoginName(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject object) {
         BaseData bd = new BaseData();
-        SUserEntity user = null;
+        UserEntity user = null;
         String imageCode = request.getSession().getAttribute("imageCode").toString();
         try {
             if (StringUtils.isEmpty(object.getString("loginName"))) {
@@ -47,16 +54,9 @@ public class LoginController extends BaseController{
                     bd.setMessage("用户不存在");
                     bd.setCode(-1);
                 } else {
-                    String pwd = Md5PasswordEncoder.encrypt(object.getString("psw"), user.getLoginName());
+                    String pwd = Md5PasswordEncoder.encrypt(object.getString("password"), user.getLoginName());
                     if (pwd.equals(user.getPassword())) {
                         pushToken(user,bd,response);
-                        //判断是否是第三方平台登录
-                        if(null!=object.get("thirdId")){
-                            SThirdUserEntity thirdUserEntity = new SThirdUserEntity();
-                            thirdUserEntity.setThirdId(object.getString("thirdId"));
-                            thirdUserEntity.setUserId(user.getId());
-                            thirdUserDao.save(thirdUserEntity);
-                        }
                     } else {
                         bd.setMessage("密码错误");
                         bd.setCode(-1);
@@ -142,44 +142,24 @@ public class LoginController extends BaseController{
     }
 
     //用户验证成功后颁发token
-    private void pushToken(SUserEntity user,BaseData bd,HttpServletResponse response){
+    private void pushToken(UserEntity user,BaseData bd,HttpServletResponse response){
         //2.颁发token
-        String session = StringUtil.GetGUID();
+        String session = UUID.randomUUID().toString().replace("-", "");
         UserInfo userInfo = new UserInfo();
         userInfo.setDt(new Date());
         userInfo.setSession(session);
         userInfo.setLoginName(user.getLoginName());
         userInfo.setRoleId(user.getRoleId());
-        userInfo.setProId(user.getProId());
         userInfo.setUserId(user.getId() + "");
-        userInfo.setUserName(user.getUserName());
-        String sql = "SELECT job_group_id FROM  b_system.user_group  where user_id=" + user.getId() + "";
-        java.util.List<Map<String, Object>> list = dao.findBySqlToMap(sql);
-        java.util.List<Integer> listGroup = new ArrayList<>();
-        for (Map map1 : list) {
-            listGroup.add(Integer.valueOf(map1.get("job_group_id").toString()));
-        }
-        userInfo.setJobGroups(listGroup);
-        //获取角色权限
-        String sqlRole = "SELECT * FROM b_system.s_role where id=" + user.getRoleId() + "";
-        List<Map<String, Object>> listRole = dao.findBySqlToMap(sqlRole);
-        String roleName = "";
-        if (listRole.size() == 1) {
-            Map mapRole = listRole.get(0);
-            userInfo.setRights(BigInteger.valueOf(Long.valueOf(mapRole.get("rights").toString())));
-            roleName = mapRole.get("name").toString();
-        }
+        userInfo.setUserName(user.getName());
         ////token 是 loginName
         redisDao.setKey(user.getLoginName(), JSON.toJSONString(userInfo));
         JSONObject object1 = new JSONObject();
         //object1.put("session", session);
-        object1.put("userName", user.getUserName());
+        object1.put("userName", user.getName());
         object1.put("role", user.getRoleId());
-        object1.put("proId", user.getProId());
         object1.put("token", user.getLoginName());
         object1.put("userId", user.getId());
-        object1.put("jobGroup", listGroup);
-        object1.put("roleName", roleName);
         response.setHeader("session", session);
         bd.setCode(1);
         bd.setData(object1);

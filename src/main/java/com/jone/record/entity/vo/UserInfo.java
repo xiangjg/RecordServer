@@ -9,27 +9,9 @@ public class UserInfo {
     private String session;
     private Date dt;
     private Integer roleId;
-    private String proId;
     private String userId;
     private String userName;
-    private BigInteger rights;
-    private List<Integer> jobGroups;
 
-    public BigInteger getRights() {
-        return rights;
-    }
-
-    public void setRights(BigInteger rights) {
-        this.rights = rights;
-    }
-
-    public List<Integer> getJobGroups() {
-        return jobGroups;
-    }
-
-    public void setJobGroups(List<Integer> jobGroups) {
-        this.jobGroups = jobGroups;
-    }
 
     public String getUserName() {
         return userName;
@@ -45,14 +27,6 @@ public class UserInfo {
 
     public void setUserId(String userId) {
         this.userId = userId;
-    }
-
-    public String getProId() {
-        return proId;
-    }
-
-    public void setProId(String proId) {
-        this.proId = proId;
     }
 
     public String getLoginName() {
