@@ -1,5 +1,7 @@
 package com.jone.record.entity.vo;
 
+import com.jone.record.entity.system.RoleEntity;
+
 import java.math.BigInteger;
 import java.util.Date;
 import java.util.List;
@@ -8,7 +10,7 @@ public class UserInfo {
     private String loginName;
     private String session;
     private Date dt;
-    private Integer roleId;
+    private RoleEntity role;
     private String userId;
     private String userName;
 
@@ -53,11 +55,11 @@ public class UserInfo {
         this.dt = dt;
     }
 
-    public Integer getRoleId() {
-        return roleId;
+    public RoleEntity getRole() {
+        return role;
     }
 
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
+    public void setRole(RoleEntity role) {
+        this.role = role;
     }
 }

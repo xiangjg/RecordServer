@@ -36,8 +36,15 @@ public class LoginController extends BaseController{
     @Autowired
     private RedisDao redisDao;
 
-    @RequestMapping(value = "/findByLoginName", method = RequestMethod.POST)
-    @ApiOperation(value = "登录验证", notes = "传入登录用户名以及密码,返回{session:session标识,userName:真实姓名,role:角色ID,proId:所属工程Id}")
+//    @RequestMapping(value = "/register", method = RequestMethod.POST)
+//    @ApiOperation(value = "登录验证", notes = "传入登录用户名以及密码,返回{session:session标识,userName:真实姓名,role:角色ID,proId:所属工程Id}")
+//    @ApiImplicitParam(name = "object", value = "{loginName:loginName,password:password}")
+//    public void register(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject object) {
+//
+//    }
+
+    @RequestMapping(value = "/login", method = RequestMethod.POST)
+    @ApiOperation(value = "登录验证", notes = "传入登录用户名以及密码,返回{session:session标识,userName:真实姓名,role:角色ID}")
     @ApiImplicitParam(name = "object", value = "{loginName:loginName,password:password}")
     public void findByLoginName(HttpServletRequest request, HttpServletResponse response, @RequestBody JSONObject object) {
         BaseData bd = new BaseData();
@@ -154,7 +161,7 @@ public class LoginController extends BaseController{
         userInfo.setDt(new Date());
         userInfo.setSession(session);
         userInfo.setLoginName(user.getLoginName());
-        userInfo.setRoleId(user.getRoleId());
+        userInfo.setRole(user.getRole());
         userInfo.setUserId(user.getId() + "");
         userInfo.setUserName(user.getName());
         ////token 是 loginName
@@ -162,7 +169,7 @@ public class LoginController extends BaseController{
         JSONObject object1 = new JSONObject();
         //object1.put("session", session);
         object1.put("userName", user.getName());
-        object1.put("role", user.getRoleId());
+        object1.put("role", user.getRole());
         object1.put("token", user.getLoginName());
         object1.put("userId", user.getId());
         response.setHeader("session", session);

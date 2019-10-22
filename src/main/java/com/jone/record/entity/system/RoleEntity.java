@@ -3,6 +3,7 @@ package com.jone.record.entity.system;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.math.BigInteger;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,6 +16,7 @@ public class RoleEntity implements Serializable {
     private BigInteger del;
     private BigInteger change;
     private BigInteger query;
+    private List<MenuEntity> menus;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -85,6 +87,14 @@ public class RoleEntity implements Serializable {
 
     public void setQuery(BigInteger query) {
         this.query = query;
+    }
+    @Transient
+    public List<MenuEntity> getMenus() {
+        return menus;
+    }
+
+    public void setMenus(List<MenuEntity> menus) {
+        this.menus = menus;
     }
 
     @Override

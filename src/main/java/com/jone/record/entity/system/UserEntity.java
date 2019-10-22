@@ -12,7 +12,7 @@ public class UserEntity implements Serializable {
     private String name;
     private Integer departId;
     private String duty;
-    private Integer roleId;
+    private RoleEntity role;
     private String tel;
     private String email;
     private String remark;
@@ -64,12 +64,13 @@ public class UserEntity implements Serializable {
 
     @Basic
     @Column(name = "role_id")
-    public Integer getRoleId() {
-        return roleId;
+    @ManyToOne(fetch = FetchType.EAGER)
+    public RoleEntity getRole() {
+        return role;
     }
 
-    public void setRoleId(Integer roleId) {
-        this.roleId = roleId;
+    public void setRole(RoleEntity role) {
+        this.role = role;
     }
 
     @Basic
@@ -148,7 +149,6 @@ public class UserEntity implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         UserEntity that = (UserEntity) o;
         return id == that.id &&
-                roleId == that.roleId &&
                 state == that.state &&
                 Objects.equals(name, that.name) &&
                 Objects.equals(departId, that.departId) &&
@@ -163,6 +163,6 @@ public class UserEntity implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, departId, duty, roleId, tel, email, remark, regDt, state, loginName, password);
+        return Objects.hash(id, name, departId, duty,  tel, email, remark, regDt, state, loginName, password);
     }
 }

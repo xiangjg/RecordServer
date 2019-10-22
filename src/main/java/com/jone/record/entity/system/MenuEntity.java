@@ -2,6 +2,7 @@ package com.jone.record.entity.system;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -14,6 +15,8 @@ public class MenuEntity implements Serializable {
     private String icon;
     private String url;
     private Integer level;
+    private Boolean have;
+    private List<MenuEntity> child;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -84,6 +87,22 @@ public class MenuEntity implements Serializable {
 
     public void setLevel(Integer level) {
         this.level = level;
+    }
+    @Transient
+    public Boolean getHave() {
+        return have;
+    }
+
+    public void setHave(Boolean have) {
+        this.have = have;
+    }
+    @Transient
+    public List<MenuEntity> getChild() {
+        return child;
+    }
+
+    public void setChild(List<MenuEntity> child) {
+        this.child = child;
     }
 
     @Override
