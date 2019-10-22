@@ -1,0 +1,1 @@
+ps -ef | grep record-1.0 | grep -v grep | awk '{print $2}' | xargs kill -9

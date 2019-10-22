@@ -1,0 +1,1 @@
+nohup java -Xmx2048m -Dquill.binds.log=true -Dfile.encoding=UTF-8 -jar -Dspring.profiles.active=prod record-1.0.jar > log/start.log 2>&1 &

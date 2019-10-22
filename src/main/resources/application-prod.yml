@@ -1,8 +1,8 @@
 server:
-  port: 8089
+  port: 8088
 spring:
   datasource:
-    url: jdbc:postgresql://118.126.110.87:5432/fangzyDB
+    url: jdbc:postgresql://127.0.0.1:5432/fangzyDB
     password: jonespost
     username: postgres
     driver-class-name: org.postgresql.Driver

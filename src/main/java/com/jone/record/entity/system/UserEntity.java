@@ -63,7 +63,7 @@ public class UserEntity implements Serializable {
     }
 
     @Basic
-    @Column(name = "role_id")
+    @JoinColumn(name = "role_id")
     @ManyToOne(fetch = FetchType.EAGER)
     public RoleEntity getRole() {
         return role;
