@@ -16,4 +16,6 @@ public interface UserDao extends JpaSpecificationExecutor<UserEntity>,JpaReposit
     @Modifying
     @Query("update UserEntity u set u.password = ?1 where u.loginName = ?2")
     int modifyPasswordByLoginName(String password, String loginName);
+
+    UserEntity findByLoginNameAndPassword(String loginName, String password);
 }

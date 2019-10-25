@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "t_zhgl_menu", schema = "public", catalog = "fangzyDB")
+@Table(name = "t_zhgl_menu", schema = "public")
 public class MenuEntity implements Serializable {
     private Integer id;
     private String name;

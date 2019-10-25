@@ -28,7 +28,7 @@ public class Swaggar2 {
     }
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-                .title("数据接口服务")
+                .title("方志云数据接口服务")
                 .description("内部调用接口")
                 .version("1.0")
                 .build();

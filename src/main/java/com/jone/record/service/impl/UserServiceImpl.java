@@ -3,6 +3,7 @@ package com.jone.record.service.impl;
 import com.alibaba.druid.util.StringUtils;
 import com.jone.record.dao.system.UserDao;
 import com.jone.record.entity.system.UserEntity;
+import com.jone.record.entity.vo.PageParamVo;
 import com.jone.record.service.UserService;
 import com.jone.record.util.Md5PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,19 +61,28 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserEntity> listUser(int page, int size, String keyword) throws Exception {
+    public Page<UserEntity> listUser(PageParamVo pageParamVo) throws Exception {
         Specification specification = new Specification<UserEntity>() {
             @Override
             public Predicate toPredicate(Root<UserEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
-                if (!StringUtils.isEmpty(keyword))
-                    predicates.add(criteriaBuilder.like(root.get("name"), keyword));
+                if (!StringUtils.isEmpty(pageParamVo.getKeyword()))
+                    predicates.add(criteriaBuilder.like(root.get("name"), pageParamVo.getKeyword()));
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
         Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, "id"));
-        PageRequest pageRequest = PageRequest.of(page - 1, size, sort);
+        PageRequest pageRequest = PageRequest.of(pageParamVo.getPage() - 1, pageParamVo.getSize(), sort);
         Page<UserEntity> pageList = userDao.findAll(specification, pageRequest);
+        for (UserEntity u:pageList.getContent()
+             ) {
+            u.setPassword("");
+        }
         return pageList;
+    }
+
+    @Override
+    public UserEntity findUserByLoginNameAndPwd(String loginName, String password) throws Exception {
+        return userDao.findByLoginNameAndPassword(loginName, Md5PasswordEncoder.encrypt(password, loginName));
     }
 }

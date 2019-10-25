@@ -6,7 +6,7 @@ import java.sql.Timestamp;
 import java.util.Objects;
 
 @Entity
-@Table(name = "t_zhgl_users", schema = "public", catalog = "fangzyDB")
+@Table(name = "t_zhgl_users", schema = "public")
 public class UserEntity implements Serializable {
     private Integer id;
     private String name;

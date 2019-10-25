@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "t_zhgl_role", schema = "public", catalog = "fangzyDB")
+@Table(name = "t_zhgl_role", schema = "public")
 public class RoleEntity implements Serializable {
     private Integer id;
     private String name;

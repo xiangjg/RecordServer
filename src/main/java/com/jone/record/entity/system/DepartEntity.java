@@ -5,7 +5,7 @@ import java.io.Serializable;
 import java.util.Objects;
 
 @Entity
-@Table(name = "t_zhgl_departs", schema = "public", catalog = "fangzyDB")
+@Table(name = "t_zhgl_departs", schema = "public")
 public class DepartEntity implements Serializable {
     private Integer id;
     private String name;
