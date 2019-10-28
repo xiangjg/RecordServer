@@ -27,4 +27,4 @@ spring:
       max-active: 8
       max-wait: -1
       max-idle: 500
-filePath: /home/xiangjg/dam/file
+filePath: /home/ubuntu/recordFile
