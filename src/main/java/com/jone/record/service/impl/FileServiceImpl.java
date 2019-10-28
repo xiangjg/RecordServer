@@ -37,16 +37,16 @@ public class FileServiceImpl implements FileService {
         if (files == null || files.size() == 0)
             throw new Exception("没有上传文件");
         Date now = new Date();
+        int index = 1;
         for (MultipartFile file : files
         ) {
             byte[] data = file.getBytes();
             if (data.length > 0) {
                 FileEntity fileEntity = new FileEntity();
                 String name = file.getOriginalFilename();
-                String fileName = filePath + File.separator + fileEntity.getFileType() + File.separator + System.currentTimeMillis();
+                String fileName = System.currentTimeMillis() + "_" + index;
 
                 fileEntity.setContentType(file.getContentType());
-                fileEntity.setData(data);
                 fileEntity.setFileName(fileName);
                 fileEntity.setName(name);
                 fileEntity.setFileType(type);
@@ -55,9 +55,11 @@ public class FileServiceImpl implements FileService {
                 fileEntity.setUserId(userInfo.getUserId());
                 fileEntity.setUserName(userInfo.getUserName());
 
-                File file1 = new File(fileName);
+                File file1 = new File(filePath + File.separator + type + File.separator + fileName);
                 FileUtils.writeByteArrayToFile(file1, data);
                 list.add(fileEntity);
+
+                index++;
             }
         }
         fileDao.saveAll(list);
@@ -67,9 +69,9 @@ public class FileServiceImpl implements FileService {
     @Override
     public FileEntity getFile(Integer id) throws Exception {
         FileEntity file = fileDao.findById(id).orElse(null);
-        if(file !=null){
+        if (file != null) {
             File f = new File(filePath + File.separator + file.getFileType() + File.separator + file.getFileName());
-            if(f.exists())
+            if (f.exists())
                 file.setData(FileUtils.readFileToByteArray(f));
         }
         return file;

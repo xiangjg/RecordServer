@@ -17,12 +17,12 @@ spring:
   servlet:
     multipart:
       max-file-size: 500MB
-      location: /home/xiangjg/tmp/
+      location: /home/ubuntu/tmp/
       max-request-size: 500MB
   redis:
     host: 127.0.0.1
     port: 6379
-    timeout: 3
+    timeout: 5000
     pool:
       max-active: 8
       max-wait: -1
