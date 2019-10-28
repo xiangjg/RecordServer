@@ -164,7 +164,7 @@ public class LoginController extends BaseController {
         userInfo.setSession(session);
         userInfo.setLoginName(user.getLoginName());
         userInfo.setRole(user.getRole());
-        userInfo.setUserId(user.getId() + "");
+        userInfo.setUserId(user.getId());
         userInfo.setUserName(user.getName());
         ////token 是 loginName
         redisDao.setKey(user.getLoginName(), JSON.toJSONString(userInfo));

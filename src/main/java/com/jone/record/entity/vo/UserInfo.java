@@ -11,7 +11,7 @@ public class UserInfo {
     private String session;
     private Date dt;
     private RoleEntity role;
-    private String userId;
+    private Integer userId;
     private String userName;
 
 
@@ -23,11 +23,11 @@ public class UserInfo {
         this.userName = userName;
     }
 
-    public String getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(String userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
