@@ -4,6 +4,7 @@ import com.jone.record.controller.BaseController;
 import com.jone.record.dao.RedisDao;
 import com.jone.record.entity.system.UserEntity;
 import com.jone.record.entity.vo.PageParamVo;
+import com.jone.record.entity.vo.PageVo;
 import com.jone.record.entity.vo.UserInfo;
 import com.jone.record.service.RoleService;
 import com.jone.record.service.UserService;
@@ -42,7 +43,7 @@ public class UserController extends BaseController {
     @ApiOperation(value = "用户信息列表", notes = "可用关键字keyword进去模糊查询，返回分页列表数据")
     public void list(@RequestBody PageParamVo pageParamVo, HttpServletResponse response) {
         try {
-            Page<UserEntity> userList = userService.listUser(pageParamVo);
+            PageVo<UserEntity> userList = userService.listUser(pageParamVo);
             printJson(ResultUtil.success(userList), response);
         } catch (Exception e) {
             logger.error("{}", e);

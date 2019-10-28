@@ -4,6 +4,7 @@ import com.alibaba.druid.util.StringUtils;
 import com.jone.record.dao.system.UserDao;
 import com.jone.record.entity.system.UserEntity;
 import com.jone.record.entity.vo.PageParamVo;
+import com.jone.record.entity.vo.PageVo;
 import com.jone.record.service.UserService;
 import com.jone.record.util.Md5PasswordEncoder;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -61,7 +62,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public Page<UserEntity> listUser(PageParamVo pageParamVo) throws Exception {
+    public PageVo<UserEntity> listUser(PageParamVo pageParamVo) throws Exception {
         Specification specification = new Specification<UserEntity>() {
             @Override
             public Predicate toPredicate(Root<UserEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
@@ -74,11 +75,17 @@ public class UserServiceImpl implements UserService {
         Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, "id"));
         PageRequest pageRequest = PageRequest.of(pageParamVo.getPage() - 1, pageParamVo.getSize(), sort);
         Page<UserEntity> pageList = userDao.findAll(specification, pageRequest);
+        PageVo<UserEntity> page = new PageVo<>();
         for (UserEntity u:pageList.getContent()
              ) {
             u.setPassword("");
         }
-        return pageList;
+        page.setPage(pageParamVo.getPage());
+        page.setSize(pageParamVo.getSize());
+        page.setTotal(pageList.getTotalElements());
+        page.setTotalPages(pageList.getTotalPages());
+        page.setData(pageList.getContent());
+        return page;
     }
 
     @Override

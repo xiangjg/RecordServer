@@ -42,7 +42,7 @@ public class TypeDescController extends BaseController {
     }
 
     @RequestMapping(value = "/listAll", method = RequestMethod.POST)
-    public void listAll(@RequestBody TypeEntity typeEntity, HttpServletResponse response) {
+    public void listAll(HttpServletResponse response) {
         try {
             printJson(ResultUtil.success(typeService.listAll()), response);
         } catch (Exception e) {
