@@ -8,6 +8,7 @@ import com.jone.record.entity.vo.UserInfo;
 import com.jone.record.service.FileService;
 import com.jone.record.util.ResultUtil;
 import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -33,6 +34,7 @@ public class FileController extends BaseController {
     private RedisDao redisDao;
 
     @RequestMapping(value = "/saveFile",method = RequestMethod.POST)
+    @ApiOperation(value="上传文件", notes="传入文件类型type和文件数据列表file")
     public void saveFile(@RequestParam Integer type,  HttpServletRequest request, HttpServletResponse response){
         BaseData baseData = new BaseData();
         try{
@@ -56,6 +58,7 @@ public class FileController extends BaseController {
     }
 
     @RequestMapping(value = "/getFile",method = RequestMethod.GET)
+    @ApiOperation(value="下载文件", notes="传入文件ID值fileId")
     public void getFile(@RequestParam Integer fileId,  HttpServletRequest request, HttpServletResponse response){
         ServletOutputStream out = null;
         try{
@@ -77,6 +80,18 @@ public class FileController extends BaseController {
             } catch (IOException e) {
                 e.printStackTrace();
             }
+        }
+    }
+
+    @RequestMapping(value = "/deleteFile",method = RequestMethod.GET)
+    @ApiOperation(value="删除文件", notes="传入文件ID值fileId")
+    public void deleteFile(@RequestParam Integer fileId,  HttpServletResponse response){
+        try{
+            fileService.deleteFile(fileId);
+            printJson(ResultUtil.success(), response);
+        }catch (Exception e){
+            e.printStackTrace();
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
 }
