@@ -28,7 +28,7 @@ public class SpecialBaseController extends BaseController {
     @Autowired
     private RedisDao redisDao;
 
-    @RequestMapping(value = "/list", method = RequestMethod.GET)
+    @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ApiOperation(value = "基础信息列表", notes = "输入state")
     public void list(@RequestParam Short state, HttpServletResponse response) {
         try {
@@ -59,7 +59,7 @@ public class SpecialBaseController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/delete", method = RequestMethod.GET)
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ApiOperation(value = "删除基础信息", notes = "")
     public void delete(@RequestParam Integer id, HttpServletResponse response) {
         try {
@@ -71,7 +71,7 @@ public class SpecialBaseController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/listNodes", method = RequestMethod.GET)
+    @RequestMapping(value = "/listNodes", method = RequestMethod.POST)
     @ApiOperation(value = "栏目信息列表", notes = "输入state,sid")
     public void listNodes(@RequestParam Integer state,@RequestParam Integer sid, HttpServletResponse response) {
         try {
@@ -95,7 +95,7 @@ public class SpecialBaseController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/deleteNode", method = RequestMethod.GET)
+    @RequestMapping(value = "/deleteNode", method = RequestMethod.POST)
     @ApiOperation(value = "删除栏目信息", notes = "")
     public void deleteNode(@RequestParam Integer id, HttpServletResponse response) {
         try {
