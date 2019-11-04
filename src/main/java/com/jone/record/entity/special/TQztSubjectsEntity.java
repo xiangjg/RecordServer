@@ -1,4 +1,4 @@
-package com.jone.record.entity;
+package com.jone.record.entity.special;
 
 import javax.persistence.*;
 import java.io.Serializable;
