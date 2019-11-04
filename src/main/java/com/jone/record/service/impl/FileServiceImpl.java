@@ -88,4 +88,9 @@ public class FileServiceImpl implements FileService {
             fileDao.delete(fileEntity);
         }
     }
+
+    @Override
+    public List<FileEntity> listBuRefId(Integer id) throws Exception {
+        return fileDao.findByRefId(id);
+    }
 }

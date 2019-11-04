@@ -1,12 +1,16 @@
 package com.jone.record.service.impl;
 
+import com.jone.record.config.Definition;
 import com.jone.record.dao.special.SubjectsNodesDao;
 import com.jone.record.dao.special.TQztSubjectsDao;
 import com.jone.record.entity.special.SubjectsNodes;
 import com.jone.record.entity.special.TQztSubjectsEntity;
+import com.jone.record.entity.vo.UserInfo;
+import com.jone.record.service.FileService;
 import com.jone.record.service.SpecialBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -17,15 +21,26 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
     private TQztSubjectsDao tQztSubjectsDao;
     @Autowired
     private SubjectsNodesDao subjectsNodesDao;
+    @Autowired
+    private FileService fileService;
 
     @Override
     public List<TQztSubjectsEntity> listByState(Short state) throws Exception {
-        return tQztSubjectsDao.findByStateOrderbyOrderAsc(state);
+        List<TQztSubjectsEntity> subjectsEntityList = tQztSubjectsDao.findByStateOrderByNumAsc(state);
+        for (TQztSubjectsEntity s:subjectsEntityList
+             ) {
+            s.setFiles(fileService.listBuRefId(s.getId()));
+        }
+        return subjectsEntityList;
     }
 
     @Override
-    public TQztSubjectsEntity save(TQztSubjectsEntity subjectsEntity) throws Exception {
-        return tQztSubjectsDao.save(subjectsEntity);
+    public TQztSubjectsEntity save(TQztSubjectsEntity subjectsEntity, List<MultipartFile> files, UserInfo user) throws Exception {
+        subjectsEntity = tQztSubjectsDao.save(subjectsEntity);
+        if(files!=null&&files.size()>0){
+            fileService.upload(files, Definition.TYPE_FILE_SPECIAL, user);
+        }
+        return subjectsEntity;
     }
 
     @Override

@@ -1,5 +1,8 @@
 package com.jone.record.config;
 
 public class Definition {
-    public static final int TEMP_TYPE_GATE = 1;
+    /**
+     * 专题基础信息图片
+     */
+    public static final int TYPE_FILE_SPECIAL = 1;
 }

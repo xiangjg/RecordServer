@@ -1,8 +1,11 @@
 package com.jone.record.entity.special;
 
+import com.jone.record.entity.file.FileEntity;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -14,7 +17,8 @@ public class TQztSubjectsEntity implements Serializable {
     private String creator;
     private Integer state;
     private byte[] img;
-    private Short order;
+    private Short num;
+    private List<FileEntity> files;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -80,12 +84,20 @@ public class TQztSubjectsEntity implements Serializable {
 
     @Basic
     @Column(name = "order")
-    public Short getOrder() {
-        return order;
+    public Short getNum() {
+        return num;
     }
 
-    public void setOrder(Short order) {
-        this.order = order;
+    public void setNum(Short order) {
+        this.num = num;
+    }
+    @Transient
+    public List<FileEntity> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileEntity> files) {
+        this.files = files;
     }
 
     @Override
@@ -99,12 +111,12 @@ public class TQztSubjectsEntity implements Serializable {
                 Objects.equals(desc, that.desc) &&
                 Objects.equals(creator, that.creator) &&
                 Arrays.equals(img, that.img) &&
-                Objects.equals(order, that.order);
+                Objects.equals(num, that.num);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, name, desc, creator, state, order);
+        int result = Objects.hash(id, name, desc, creator, state, num);
         result = 31 * result + Arrays.hashCode(img);
         return result;
     }

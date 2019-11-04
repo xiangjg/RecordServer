@@ -19,6 +19,7 @@ public class FileEntity implements Serializable {
     private Integer userId;
     private String userName;
     private Date createTime;
+    private Integer refId;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -121,6 +122,14 @@ public class FileEntity implements Serializable {
 
     public void setCreateTime(Date createTime) {
         this.createTime = createTime;
+    }
+    @Column(name = "ref_id")
+    public Integer getRefId() {
+        return refId;
+    }
+
+    public void setRefId(Integer refId) {
+        this.refId = refId;
     }
 
     @Override

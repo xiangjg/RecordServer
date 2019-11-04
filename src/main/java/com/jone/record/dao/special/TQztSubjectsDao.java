@@ -7,5 +7,5 @@ import java.util.List;
 
 public interface TQztSubjectsDao extends JpaRepository<TQztSubjectsEntity, Integer> {
 
-    List<TQztSubjectsEntity> findByStateOrderbyOrderAsc(Short state);
+    List<TQztSubjectsEntity> findByStateOrderByNumAsc(Short state);
 }

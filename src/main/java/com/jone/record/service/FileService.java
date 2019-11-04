@@ -13,4 +13,6 @@ public interface FileService {
     FileEntity getFile(Integer id) throws Exception;
 
     void deleteFile(Integer id) throws Exception;
+
+    List<FileEntity> listBuRefId(Integer id) throws Exception;
 }

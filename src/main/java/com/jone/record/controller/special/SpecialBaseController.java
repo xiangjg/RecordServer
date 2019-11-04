@@ -1,25 +1,32 @@
 package com.jone.record.controller.special;
 
 import com.jone.record.controller.BaseController;
+import com.jone.record.dao.RedisDao;
 import com.jone.record.entity.special.SubjectsNodes;
 import com.jone.record.entity.special.TQztSubjectsEntity;
+import com.jone.record.entity.vo.UserInfo;
 import com.jone.record.service.SpecialBaseService;
 import com.jone.record.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping("/type")
+@RequestMapping("/specialBase")
 @Api(tags = "专题基础信息")
 public class SpecialBaseController extends BaseController {
 
     @Autowired
     private SpecialBaseService specialBaseService;
+    @Autowired
+    private RedisDao redisDao;
 
     @RequestMapping(value = "/list", method = RequestMethod.GET)
     @ApiOperation(value = "基础信息列表", notes = "输入state")
@@ -34,11 +41,18 @@ public class SpecialBaseController extends BaseController {
     }
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
-    @ApiOperation(value = "保存基础信息", notes = "")
-    public void save(@RequestParam TQztSubjectsEntity tQztSubjectsEntity, HttpServletResponse response) {
+    @ApiOperation(value = "保存基础信息", notes = "输入基础信息tQztSubjectsEntity及图片文件file")
+    public void save(@RequestParam TQztSubjectsEntity tQztSubjectsEntity, HttpServletRequest request, HttpServletResponse response) {
         try {
-            TQztSubjectsEntity subjectsEntity = specialBaseService.save(tQztSubjectsEntity);
+            UserInfo userInfo = getRedisUser(request,redisDao);
+            if(null==userInfo){
+                printJson(ResultUtil.error(-2, "用户登录没有登录,或session过期"), response);
+            }else {
+            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+            List<MultipartFile> files = multiRequest.getFiles("file");
+            TQztSubjectsEntity subjectsEntity = specialBaseService.save(tQztSubjectsEntity, files, userInfo);
             printJson(ResultUtil.success(subjectsEntity), response);
+            }
         } catch (Exception e) {
             logger.error("{}", e);
             printJson(ResultUtil.error(-1, e.getMessage()), response);
