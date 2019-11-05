@@ -90,7 +90,7 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
-    public List<FileEntity> listBuRefId(Integer id) throws Exception {
-        return fileDao.findByRefId(id);
+    public List<FileEntity> listByRefIdAndType(Integer id, Integer type) throws Exception {
+        return fileDao.findByRefIdAndFileType(id, type);
     }
 }

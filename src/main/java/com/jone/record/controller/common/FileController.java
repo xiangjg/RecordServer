@@ -83,11 +83,23 @@ public class FileController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/deleteFile",method = RequestMethod.GET)
+    @RequestMapping(value = "/deleteFile",method = RequestMethod.POST)
     @ApiOperation(value="删除文件", notes="传入文件ID值fileId")
     public void deleteFile(@RequestParam Integer fileId,  HttpServletResponse response){
         try{
             fileService.deleteFile(fileId);
+            printJson(ResultUtil.success(), response);
+        }catch (Exception e){
+            e.printStackTrace();
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    @RequestMapping(value = "/findFile",method = RequestMethod.POST)
+    @ApiOperation(value="查找附件", notes="传入关联编码refId及文件类型type")
+    public void deleteFile(@RequestParam Integer refId,@RequestParam Integer type,  HttpServletResponse response){
+        try{
+            List<FileEntity> fileEntityList = fileService.listByRefIdAndType(refId, type);
             printJson(ResultUtil.success(), response);
         }catch (Exception e){
             e.printStackTrace();

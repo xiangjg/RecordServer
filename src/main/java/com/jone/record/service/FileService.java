@@ -14,5 +14,5 @@ public interface FileService {
 
     void deleteFile(Integer id) throws Exception;
 
-    List<FileEntity> listBuRefId(Integer id) throws Exception;
+    List<FileEntity> listByRefIdAndType(Integer id, Integer type) throws Exception;
 }
