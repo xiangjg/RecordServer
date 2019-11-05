@@ -21,6 +21,7 @@ public class ShareEntity implements Serializable {
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Basic
+    @Id
     @Column(name = "id")
     public Integer getId() {
         return id;

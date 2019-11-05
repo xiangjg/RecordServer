@@ -12,6 +12,7 @@ public class CourseCategory implements Serializable {
     private String desc;
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Id
     @Basic
     @Column(name = "id")
     public Integer getId() {
