@@ -1,9 +1,6 @@
 package com.jone.record.entity.special;
 
-import javax.persistence.Basic;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
@@ -19,7 +16,9 @@ public class NodeContent implements Serializable {
     private String content;
     private Integer  order;
 
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Basic
+    @Id
     @Column(name = "id")
     public Integer  getId() {
         return id;
