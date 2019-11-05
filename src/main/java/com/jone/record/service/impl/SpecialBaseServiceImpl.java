@@ -1,8 +1,10 @@
 package com.jone.record.service.impl;
 
 import com.jone.record.config.Definition;
+import com.jone.record.dao.special.NodeContentDao;
 import com.jone.record.dao.special.SubjectsNodesDao;
 import com.jone.record.dao.special.TQztSubjectsDao;
+import com.jone.record.entity.special.NodeContent;
 import com.jone.record.entity.special.SubjectsNodes;
 import com.jone.record.entity.special.TQztSubjectsEntity;
 import com.jone.record.entity.vo.UserInfo;
@@ -23,6 +25,8 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
     private SubjectsNodesDao subjectsNodesDao;
     @Autowired
     private FileService fileService;
+    @Autowired
+    private NodeContentDao nodeContentDao;
 
     @Override
     public List<TQztSubjectsEntity> listByState(Short state) throws Exception {
@@ -61,5 +65,20 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
     @Override
     public void deleteSubjectsNodes(Integer id) throws Exception {
         subjectsNodesDao.deleteById(id);
+    }
+
+    @Override
+    public List<NodeContent> listByStateAndNid(Integer state, Integer nid) throws Exception {
+        return nodeContentDao.findByStateAndNid(state, nid);
+    }
+
+    @Override
+    public NodeContent save(NodeContent nodeContent) throws Exception {
+        return nodeContentDao.save(nodeContent);
+    }
+
+    @Override
+    public void deleteNodeContent(Integer id) throws Exception {
+        nodeContentDao.deleteById(id);
     }
 }

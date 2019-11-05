@@ -2,6 +2,7 @@ package com.jone.record.controller.special;
 
 import com.jone.record.controller.BaseController;
 import com.jone.record.dao.RedisDao;
+import com.jone.record.entity.special.NodeContent;
 import com.jone.record.entity.special.SubjectsNodes;
 import com.jone.record.entity.special.TQztSubjectsEntity;
 import com.jone.record.entity.vo.UserInfo;
@@ -100,6 +101,42 @@ public class SpecialBaseController extends BaseController {
     public void deleteNode(@RequestParam Integer id, HttpServletResponse response) {
         try {
             specialBaseService.deleteSubjectsNodes(id);
+            printJson(ResultUtil.success(), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    @RequestMapping(value = "/listNodeContent", method = RequestMethod.POST)
+    @ApiOperation(value = "栏目内容列表", notes = "输入state,sid")
+    public void listNodeContent(@RequestParam Integer state,@RequestParam Integer nid, HttpServletResponse response) {
+        try {
+            List<NodeContent> nodeContentList = specialBaseService.listByStateAndNid(state, nid);
+            printJson(ResultUtil.success(nodeContentList), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    @RequestMapping(value = "/saveNodeContent", method = RequestMethod.POST)
+    @ApiOperation(value = "保存栏目内容", notes = "")
+    public void saveNodeContent(@RequestParam NodeContent nodeContent, HttpServletResponse response) {
+        try {
+            nodeContent = specialBaseService.save(nodeContent);
+            printJson(ResultUtil.success(nodeContent), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    @RequestMapping(value = "/deleteNodeContent", method = RequestMethod.POST)
+    @ApiOperation(value = "删除栏目内容", notes = "")
+    public void deleteNodeContent(@RequestParam Integer id, HttpServletResponse response) {
+        try {
+            specialBaseService.deleteNodeContent(id);
             printJson(ResultUtil.success(), response);
         } catch (Exception e) {
             logger.error("{}", e);

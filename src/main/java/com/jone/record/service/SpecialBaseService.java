@@ -1,5 +1,6 @@
 package com.jone.record.service;
 
+import com.jone.record.entity.special.NodeContent;
 import com.jone.record.entity.special.SubjectsNodes;
 import com.jone.record.entity.special.TQztSubjectsEntity;
 import com.jone.record.entity.vo.UserInfo;
@@ -20,4 +21,10 @@ public interface SpecialBaseService {
     SubjectsNodes save(SubjectsNodes subjectsNodes) throws Exception;
 
     void deleteSubjectsNodes(Integer id) throws Exception;
+
+    List<NodeContent> listByStateAndNid(Integer state, Integer nid) throws Exception;
+
+    NodeContent save(NodeContent nodeContent) throws Exception;
+
+    void deleteNodeContent(Integer id) throws Exception;
 }
