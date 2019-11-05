@@ -33,7 +33,7 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
         List<TQztSubjectsEntity> subjectsEntityList = tQztSubjectsDao.findByStateOrderByNumAsc(state);
         for (TQztSubjectsEntity s:subjectsEntityList
              ) {
-            s.setFiles(fileService.listBuRefId(s.getId()));
+            s.setFiles(fileService.listByRefIdAndType(s.getId(),Definition.TYPE_FILE_SPECIAL));
         }
         return subjectsEntityList;
     }
