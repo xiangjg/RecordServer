@@ -1,5 +1,7 @@
 package com.jone.record.entity.map;
 
+import com.vividsolutions.jts.geom.Geometry;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
