@@ -20,7 +20,7 @@ public class PoisEntity implements Serializable {
     private String mediaUrl;
     private Date insertDt;
     private Integer state;
-    private Object shape;
+    private Geometry shape;
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
@@ -135,11 +135,11 @@ public class PoisEntity implements Serializable {
 
     @Basic
     @Column(name = "shape")
-    public Object getShape() {
+    public Geometry getShape() {
         return shape;
     }
 
-    public void setShape(Object shape) {
+    public void setShape(Geometry shape) {
         this.shape = shape;
     }
 
