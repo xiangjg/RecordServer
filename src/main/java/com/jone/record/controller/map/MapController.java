@@ -1,9 +1,11 @@
 package com.jone.record.controller.map;
 
 import com.jone.record.controller.BaseController;
+import com.jone.record.dao.RedisDao;
 import com.jone.record.entity.map.PoisEntity;
 import com.jone.record.entity.map.ShareEntity;
 import com.jone.record.entity.special.NodeContent;
+import com.jone.record.entity.vo.UserInfo;
 import com.jone.record.service.MapService;
 import com.jone.record.util.ResultUtil;
 import io.swagger.annotations.Api;
@@ -13,7 +15,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.multipart.MultipartHttpServletRequest;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
@@ -24,6 +29,8 @@ public class MapController extends BaseController {
 
     @Autowired
     private MapService mapService;
+    @Autowired
+    private RedisDao redisDao;
 
     @RequestMapping(value = "/listPois", method = RequestMethod.POST)
     @ApiOperation(value = "兴趣点列表", notes = "输入state,sid")
@@ -39,10 +46,17 @@ public class MapController extends BaseController {
 
     @RequestMapping(value = "/savePois", method = RequestMethod.POST)
     @ApiOperation(value = "保存兴趣点", notes = "")
-    public void savePois(@RequestParam PoisEntity poisEntities, HttpServletResponse response) {
+    public void savePois(@RequestParam PoisEntity poisEntities, HttpServletRequest request, HttpServletResponse response) {
         try {
-            poisEntities = mapService.save(poisEntities);
-            printJson(ResultUtil.success(poisEntities), response);
+            UserInfo userInfo = getRedisUser(request, redisDao);
+            if (null == userInfo) {
+                printJson(ResultUtil.error(-2, "用户登录没有登录,或session过期"), response);
+            } else {
+                MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+                List<MultipartFile> files = multiRequest.getFiles("file");
+                poisEntities = mapService.save(poisEntities, files);
+                printJson(ResultUtil.success(poisEntities), response);
+            }
         } catch (Exception e) {
             logger.error("{}", e);
             printJson(ResultUtil.error(-1, e.getMessage()), response);

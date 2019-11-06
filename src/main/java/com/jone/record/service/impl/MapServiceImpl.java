@@ -6,9 +6,12 @@ import com.jone.record.dao.map.ShareEntityDao;
 import com.jone.record.entity.map.PoisEntity;
 import com.jone.record.entity.map.ShareEntity;
 import com.jone.record.service.MapService;
+import org.geotools.data.shapefile.files.ShpFiles;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.util.List;
 
 @Service(value = "mapService")
@@ -25,8 +28,13 @@ public class MapServiceImpl implements MapService {
     }
 
     @Override
-    public PoisEntity save(PoisEntity poisEntity) throws Exception {
-        return poisEntityDao.save(poisEntity);
+    public PoisEntity save(PoisEntity poisEntity, List<MultipartFile> files) throws Exception {
+        if(files!=null&&files.size()>0){
+            MultipartFile file = files.get(0);
+            //TODO 保存shp文件
+        }
+        poisEntity = poisEntityDao.save(poisEntity);
+        return poisEntity;
     }
 
     @Override

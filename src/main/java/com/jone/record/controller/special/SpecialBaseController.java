@@ -45,14 +45,14 @@ public class SpecialBaseController extends BaseController {
     @ApiOperation(value = "保存基础信息", notes = "输入基础信息tQztSubjectsEntity及图片文件file")
     public void save(@RequestParam TQztSubjectsEntity tQztSubjectsEntity, HttpServletRequest request, HttpServletResponse response) {
         try {
-            UserInfo userInfo = getRedisUser(request,redisDao);
-            if(null==userInfo){
+            UserInfo userInfo = getRedisUser(request, redisDao);
+            if (null == userInfo) {
                 printJson(ResultUtil.error(-2, "用户登录没有登录,或session过期"), response);
-            }else {
-            MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-            List<MultipartFile> files = multiRequest.getFiles("file");
-            TQztSubjectsEntity subjectsEntity = specialBaseService.save(tQztSubjectsEntity, files, userInfo);
-            printJson(ResultUtil.success(subjectsEntity), response);
+            } else {
+                MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+                List<MultipartFile> files = multiRequest.getFiles("file");
+                TQztSubjectsEntity subjectsEntity = specialBaseService.save(tQztSubjectsEntity, files, userInfo);
+                printJson(ResultUtil.success(subjectsEntity), response);
             }
         } catch (Exception e) {
             logger.error("{}", e);
@@ -74,7 +74,7 @@ public class SpecialBaseController extends BaseController {
 
     @RequestMapping(value = "/listNodes", method = RequestMethod.POST)
     @ApiOperation(value = "栏目信息列表", notes = "输入state,sid")
-    public void listNodes(@RequestParam Integer state,@RequestParam Integer sid, HttpServletResponse response) {
+    public void listNodes(@RequestParam Integer state, @RequestParam Integer sid, HttpServletResponse response) {
         try {
             List<SubjectsNodes> subjectsEntityList = specialBaseService.listByStateAndSid(state, sid);
             printJson(ResultUtil.success(subjectsEntityList), response);
@@ -110,7 +110,7 @@ public class SpecialBaseController extends BaseController {
 
     @RequestMapping(value = "/listNodeContent", method = RequestMethod.POST)
     @ApiOperation(value = "栏目内容列表", notes = "输入state,sid")
-    public void listNodeContent(@RequestParam Integer state,@RequestParam Integer nid, HttpServletResponse response) {
+    public void listNodeContent(@RequestParam Integer state, @RequestParam Integer nid, HttpServletResponse response) {
         try {
             List<NodeContent> nodeContentList = specialBaseService.listByStateAndNid(state, nid);
             printJson(ResultUtil.success(nodeContentList), response);
