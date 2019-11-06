@@ -25,4 +25,5 @@ public interface ForumService {
 
     void deleteEpisodesEntity(Integer id) throws Exception;
 
+    void updatePlayCount(Integer id, Integer courseId) throws Exception;
 }

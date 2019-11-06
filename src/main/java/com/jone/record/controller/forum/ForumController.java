@@ -133,4 +133,16 @@ public class ForumController extends BaseController {
             printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
+
+    @RequestMapping(value = "/updatePlayCount", method = RequestMethod.POST)
+    @ApiOperation(value = "更新章节读取次数", notes = "输入章节编码id和课程编码courseId")
+    public void updatePlayCount(@RequestParam Integer id,@RequestParam Integer courseId, HttpServletResponse response) {
+        try {
+            forumService.updatePlayCount(id, courseId);
+            printJson(ResultUtil.success(), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
 }

@@ -68,4 +68,9 @@ public class ForumServiceImpl implements ForumService {
     public void deleteEpisodesEntity(Integer id) throws Exception {
         episodesEntityDao.deleteById(id);
     }
+
+    @Override
+    public void updatePlayCount(Integer id, Integer courseId) throws Exception {
+        episodesEntityDao.updatePlay(id, courseId);
+    }
 }
