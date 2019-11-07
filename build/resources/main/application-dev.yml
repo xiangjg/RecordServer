@@ -1,0 +1,30 @@
+server:
+  port: 8089
+spring:
+  datasource:
+    url: jdbc:postgresql://118.126.110.87:5432/fangzyDB
+    password: jonespost
+    username: postgres
+    driver-class-name: org.postgresql.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        temp:
+          use_jdbc_metadata_defaults: false
+  servlet:
+    multipart:
+      max-file-size: 500MB
+      location: /home/xiangjg/tmp/
+      max-request-size: 500MB
+  redis:
+    host: 127.0.0.1
+    port: 6379
+    timeout: 3
+    pool:
+      max-active: 8
+      max-wait: -1
+      max-idle: 500
+filePath: /home/xiangjg/dam/file
