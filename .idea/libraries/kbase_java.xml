@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="kbase-java">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/src/main/resources/lib/kbase-java.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
