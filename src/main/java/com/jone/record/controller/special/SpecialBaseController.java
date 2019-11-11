@@ -1,6 +1,7 @@
 package com.jone.record.controller.special;
 
 import com.jone.record.controller.BaseController;
+import com.jone.record.controller.common.SystemControllerLog;
 import com.jone.record.dao.RedisDao;
 import com.jone.record.entity.special.NodeContent;
 import com.jone.record.entity.special.SubjectsNodes;
@@ -31,6 +32,7 @@ public class SpecialBaseController extends BaseController {
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ApiOperation(value = "基础信息列表", notes = "输入state")
+    @SystemControllerLog(description = "查看基础信息列表")
     public void list(@RequestParam Short state, HttpServletResponse response) {
         try {
             List<TQztSubjectsEntity> subjectsEntityList = specialBaseService.listByState(state);
@@ -43,6 +45,7 @@ public class SpecialBaseController extends BaseController {
 
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ApiOperation(value = "保存基础信息", notes = "输入基础信息tQztSubjectsEntity及图片文件file")
+    @SystemControllerLog(description = "保存基础信息")
     public void save(@RequestParam TQztSubjectsEntity tQztSubjectsEntity, HttpServletRequest request, HttpServletResponse response) {
         try {
             UserInfo userInfo = getRedisUser(request, redisDao);
@@ -62,6 +65,7 @@ public class SpecialBaseController extends BaseController {
 
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     @ApiOperation(value = "删除基础信息", notes = "")
+    @SystemControllerLog(description = "删除基础信息")
     public void delete(@RequestParam Integer id, HttpServletResponse response) {
         try {
             specialBaseService.delete(id);
@@ -74,6 +78,7 @@ public class SpecialBaseController extends BaseController {
 
     @RequestMapping(value = "/listNodes", method = RequestMethod.POST)
     @ApiOperation(value = "栏目信息列表", notes = "输入state,sid")
+    @SystemControllerLog(description = "栏目信息列表")
     public void listNodes(@RequestParam Integer state, @RequestParam Integer sid, HttpServletResponse response) {
         try {
             List<SubjectsNodes> subjectsEntityList = specialBaseService.listByStateAndSid(state, sid);
@@ -86,6 +91,7 @@ public class SpecialBaseController extends BaseController {
 
     @RequestMapping(value = "/saveNode", method = RequestMethod.POST)
     @ApiOperation(value = "保存栏目信息", notes = "")
+    @SystemControllerLog(description = "保存栏目信息")
     public void saveNode(@RequestParam SubjectsNodes subjectsNodes, HttpServletResponse response) {
         try {
             SubjectsNodes subjectsEntity = specialBaseService.save(subjectsNodes);
@@ -98,6 +104,7 @@ public class SpecialBaseController extends BaseController {
 
     @RequestMapping(value = "/deleteNode", method = RequestMethod.POST)
     @ApiOperation(value = "删除栏目信息", notes = "")
+    @SystemControllerLog(description = "删除栏目信息")
     public void deleteNode(@RequestParam Integer id, HttpServletResponse response) {
         try {
             specialBaseService.deleteSubjectsNodes(id);
@@ -110,6 +117,7 @@ public class SpecialBaseController extends BaseController {
 
     @RequestMapping(value = "/listNodeContent", method = RequestMethod.POST)
     @ApiOperation(value = "栏目内容列表", notes = "输入state,sid")
+    @SystemControllerLog(description = "栏目内容列表")
     public void listNodeContent(@RequestParam Integer state, @RequestParam Integer nid, HttpServletResponse response) {
         try {
             List<NodeContent> nodeContentList = specialBaseService.listByStateAndNid(state, nid);
@@ -122,6 +130,7 @@ public class SpecialBaseController extends BaseController {
 
     @RequestMapping(value = "/saveNodeContent", method = RequestMethod.POST)
     @ApiOperation(value = "保存栏目内容", notes = "")
+    @SystemControllerLog(description = "保存栏目内容")
     public void saveNodeContent(@RequestParam NodeContent nodeContent, HttpServletResponse response) {
         try {
             nodeContent = specialBaseService.save(nodeContent);
@@ -134,6 +143,7 @@ public class SpecialBaseController extends BaseController {
 
     @RequestMapping(value = "/deleteNodeContent", method = RequestMethod.POST)
     @ApiOperation(value = "删除栏目内容", notes = "")
+    @SystemControllerLog(description = "删除栏目内容")
     public void deleteNodeContent(@RequestParam Integer id, HttpServletResponse response) {
         try {
             specialBaseService.deleteNodeContent(id);

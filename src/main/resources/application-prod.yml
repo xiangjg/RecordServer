@@ -27,4 +27,12 @@ spring:
       max-active: 8
       max-wait: -1
       max-idle: 500
+    aop:
+      proxy-target-class: true
+      auto: true
+kbase:
+  driverclass: com.kbase.jdbc.Driver
+  url: jdbc:kbase://127.0.0.1:4567
+  username: dbown
+  password:
 filePath: /home/ubuntu/recordFile
