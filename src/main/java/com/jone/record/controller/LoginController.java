@@ -2,6 +2,7 @@ package com.jone.record.controller;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.jone.record.controller.common.SystemControllerLog;
 import com.jone.record.dao.RedisDao;
 import com.jone.record.entity.system.UserEntity;
 import com.jone.record.entity.vo.BaseData;
@@ -46,6 +47,7 @@ public class LoginController extends BaseController {
 
     @RequestMapping(value = "/login", method = RequestMethod.POST)
     @ApiOperation(value = "登录验证", notes = "传入登录用户名、密码、验证码,返回{session:session标识,userName:真实姓名,role:角色ID}")
+    @SystemControllerLog(description = "登录验证")
     public void findByLoginName(HttpServletRequest request, HttpServletResponse response, @RequestBody LoginVo object) {
         BaseData bd = new BaseData();
         UserEntity user = null;
@@ -88,6 +90,7 @@ public class LoginController extends BaseController {
 
     @RequestMapping(value = "/codeImage", method = RequestMethod.GET)
     @ApiOperation(value = "登录验证码")
+    @SystemControllerLog(description = "登录验证码")
     public void codeImage(HttpServletRequest request, HttpServletResponse response) throws Exception {
         //生成imageCode对象
         ImageCode imageCode = createImageCode();
