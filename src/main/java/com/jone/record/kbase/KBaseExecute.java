@@ -6,13 +6,15 @@ package com.jone.record.kbase;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jone.record.util.ResultUtil;
+import com.jone.record.kbase.entity.Catalog;
+import com.jone.record.kbase.util.Common;
+import com.jone.record.kbase.util.SQLBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.http.HttpServletResponse;
 import java.sql.*;
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 public class KBaseExecute {
 
@@ -40,6 +42,11 @@ public class KBaseExecute {
 
     public JSONArray GetHistoryBook(JSONObject jsonObject) {
         String strSQL = SQLBuilder.GenerateHistoryQuerySQL (jsonObject);
+        if (strSQL.isEmpty ())
+        {
+            return  null;
+        }
+
         JSONArray jsonArray = new JSONArray ();
         try {
             Statement state = _con.createStatement ();
@@ -49,6 +56,23 @@ public class KBaseExecute {
             loger.error ("{}", e);
         }
         return jsonArray;
+    }
+
+    public List<Catalog> GetReadCatalog(JSONObject jsonObject){
+        String strSQL = SQLBuilder.GenerateReadCatalogQuerySQL (jsonObject);
+        if (strSQL.isEmpty ())
+        {
+            return  null;
+        }
+        List<Catalog> catalogList = new ArrayList<Catalog> ();
+        try{
+            Statement state = _con.createStatement ();
+            ResultSet rst = state.executeQuery (strSQL);
+            catalogList = Common.AnalysisCatalog(rst);
+        }catch (Exception e){
+            loger.error ("{}", e);
+        }
+        return catalogList;
     }
 
 
