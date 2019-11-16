@@ -1,7 +1,6 @@
 package com.jone.record.kbase.util;
+import com.alibaba.fastjson.JSONObject;
 import com.jone.record.kbase.entity.Catalog;
-import net.sf.json.JSONArray;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,8 +19,8 @@ public class TreeBuilder {
      */
     public String buildJSONTree() {
         List<Catalog> nodeTree = buildTree ();
-        JSONArray jsonArray = JSONArray.fromObject (nodeTree);
-        return jsonArray.toString ();
+        JSONObject jsonObject = (JSONObject) JSONObject.toJSON(nodeTree);
+        return jsonObject.toString ();
     }
 
     /**

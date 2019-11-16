@@ -35,7 +35,9 @@ dependencies {
     //json
     compile ("com.alibaba:fastjson:1.2.4")
     compile group: 'commons-codec', name: 'commons-codec', version: '1.10'
-    compile("net.sf.json-lib:json-lib:2.2.3:jdk15")
+    // compile("net.sf.json-lib:json-lib:2.2.3:jdk15")
+    compile 'org.json:json:20190722'
+    compile group: 'org.json', name: 'json', version: '20190722'
 
     //geotools
     compile group: 'org.geotools', name: 'gt-api', version: '13.0'

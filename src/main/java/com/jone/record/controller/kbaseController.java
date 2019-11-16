@@ -28,7 +28,7 @@ public class kbaseController extends BaseController {
 
     public kbaseController() {
         if (null == kbaseTools) {
-            kbaseTools = new KBaseExecute ();
+            kbaseTools = new KBaseExecute();
         }
     }
 
@@ -46,11 +46,11 @@ public class kbaseController extends BaseController {
     @ApiOperation(value = "获取数据库的记录数", notes = "输入JSONObject参数：资源类型type，分类类型cls。")
     public void GetBooksNums(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
-            JSONObject jsonObject = kbaseTools.GetBooksNums (params);
-            printJson (ResultUtil.success (jsonObject), response);
+            JSONObject jsonObject = kbaseTools.GetBooksNums(params);
+            printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
-            logger.error ("{}", e);
-            printJson (ResultUtil.error (-1, e.getMessage ()), response);
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
 
@@ -71,11 +71,11 @@ public class kbaseController extends BaseController {
     @ApiOperation(value = "获取书籍中列表信息", notes = "输入JSONObject参数：资源类型type，上下架state，显示页码page，每页显示数量pageSize,检索标题title")
     public void GetHistoryBook(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
-            JSONArray jsonArray = kbaseTools.GetHistoryBook (params);
-            printJson (ResultUtil.success (jsonArray), response);
+            JSONArray jsonArray = kbaseTools.GetHistoryBook(params);
+            printJson(ResultUtil.success(jsonArray), response);
         } catch (Exception e) {
-            logger.error ("{}", e);
-            printJson (ResultUtil.error (-1, e.getMessage ()), response);
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
 
@@ -90,37 +90,31 @@ public class kbaseController extends BaseController {
     @RequestMapping(value = "/GetReadCatalog", method = RequestMethod.GET)
     public void GetReadCatalog(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
-            List<Catalog> catalogList = kbaseTools.GetReadCatalog (params);
-            printJson (ResultUtil.success (catalogList), response);
+            List<Catalog> catalogList = kbaseTools.GetReadCatalog(params);
+            printJson(ResultUtil.success(catalogList), response);
         } catch (Exception e) {
-            logger.error ("{}", e);
-            printJson (ResultUtil.error (-1, e.getMessage ()), response);
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
 
 
     /**
-     * 更新数据库相关记录
+     * 获取书籍基本信息时的目录信息
      *
-     @RequestMapping(value = "/Update", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-     public int Update(String params) {
-     return kbaseTools.ExecuteUpdateBySQL (params);
-     }
-
-     /**
-      * 插入数据库记录
-     *
-     @RequestMapping(value = "/Insert", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-     public int InsertRecord(String params) {
-     return kbaseTools.ExecuteInsertBySQL (params);
-     }
-
-     /**
-      * 删除数据库相关记录
-     *
-     @RequestMapping(value = "/Delete", method = RequestMethod.POST, produces = "application/json;charset=UTF-8")
-     public int DeleteRecord(String params) {
-     return kbaseTools.ExecuteDeleteBySQL (params);
-     }
+     * @return 返回JSON格式的字符串
+     * @params 输入JSONObject对象，格式为 {"type": "1","id": "5D5A3DEA-1609-40c6-A6EF-76D069D7A764"}
+     * @type 资源类型：1，志书；2，年鉴；3，地方史；4，地情资料;
+     * @id 书籍的为唯一标识符，为GUID格式
      */
+    @RequestMapping(value = "/GetBookCatalog", method = RequestMethod.GET)
+    public void GetBookCatalog(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject catalogObject = kbaseTools.GetBookCatalog(params);
+            printJson(ResultUtil.success(catalogObject), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
 }

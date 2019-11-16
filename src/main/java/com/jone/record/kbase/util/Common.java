@@ -17,80 +17,76 @@ import java.util.*;
 
 public class Common {
 
-    private static final Logger loger = LoggerFactory.getLogger (Common.class);
+    private static final Logger loger = LoggerFactory.getLogger(Common.class);
 
     public static JSONObject ResultSetToJSONObject(ResultSet rst) {
-        JSONObject jsonObject = new JSONObject ();
-        jsonObject.clear ();
+        JSONObject jsonObject = new JSONObject();
         try {
             String strValue = "";
-            while (rst.next ()) {
-                strValue = rst.getString ("NUM");
-                jsonObject.put ("count", strValue);
+            while (rst.next()) {
+                strValue = rst.getString("NUM");
+                jsonObject.put("count", strValue);
             }
         } catch (Exception e) {
-            loger.error ("数据集转换为JSON出错！");
-            e.printStackTrace ();
+            loger.error("数据集转换为JSON出错！");
+            e.printStackTrace();
         }
         return jsonObject;
     }
 
-    public static List<Catalog> AnalysisCatalog(ResultSet rst){
+    public static List<Catalog> AnalysisCatalog(ResultSet rst) {
         String strContent = "";
         ResultSetMetaData rstMeta = null;
-        List<Catalog> nodeList = new ArrayList<Catalog> ();
+        List<Catalog> nodeList = new ArrayList<Catalog>();
         try {
             String key = "";
             String value = "";
-            rstMeta = rst.getMetaData ();
-            int column = rstMeta.getColumnCount ();
-            while (rst.next ()) {
-                Catalog catalog = new Catalog ();
+            rstMeta = rst.getMetaData();
+            int column = rstMeta.getColumnCount();
+            while (rst.next()) {
+                Catalog catalog = new Catalog();
                 for (int i = 1; i <= column; i++) {
-                    key = rstMeta.getColumnName (i); // ,,,
-                    value = rst.getString (key);
-                    if (key.equals ("SYS_SYSID")) {
-                        catalog.setId (value);
-                    }else if (key.equals ("TITLE")){
-                        catalog.setTitle (value);;
-                    }else if (key.equals ("SYS_FLD_DOI")){
-                        catalog.setGuid (value);;
-                    }else if (key.equals ("SYS_FLD_PARENTDOI")){
-                        catalog.setParentGuid (value);;
+                    key = rstMeta.getColumnName(i);
+                    value = rst.getString(key);
+                    if (key.equals("SYS_SYSID")) {
+                        catalog.setId(value);
+                    } else if (key.equals("TITLE")) {
+                        catalog.setTitle(value);
+                    } else if (key.equals("SYS_FLD_DOI")) {
+                        catalog.setGuid(value);
+                    } else if (key.equals("SYS_FLD_PARENTDOI")) {
+                        catalog.setParentGuid(value);
                     }
                 }
-                nodeList.add (catalog);
+                nodeList.add(catalog);
             }
-
-            TreeBuilder treeBuilder = new TreeBuilder (nodeList);
-            nodeList = treeBuilder.buildTree ();
+            TreeBuilder treeBuilder = new TreeBuilder(nodeList);
+            nodeList = treeBuilder.buildTree();
         } catch (Exception e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         }
         return nodeList;
     }
 
     public static JSONArray ResultSetToJSONArray(ResultSet rst) {
-        JSONArray jsonArray = new JSONArray ();
-        jsonArray.clear ();
+        JSONArray jsonArray = new JSONArray();
         try {
-            ResultSetMetaData rsMetaData = rst.getMetaData ();
-            int column = rsMetaData.getColumnCount ();
+            ResultSetMetaData rsMetaData = rst.getMetaData();
+            int column = rsMetaData.getColumnCount();
             String strKey = "";
             String strValue = "";
-            while (rst.next ()) {
-                JSONObject jsonObject = new JSONObject ();
-                jsonObject.clear ();
+            while (rst.next()) {
+                JSONObject jsonObject = new JSONObject();
                 for (int i = 1; i <= column; i++) {
-                    strKey = rsMetaData.getColumnName (i);
-                    strValue = rst.getString (strKey);
-                    jsonObject.put (strKey, strValue);
+                    strKey = rsMetaData.getColumnName(i);
+                    strValue = rst.getString(strKey);
+                    jsonObject.put(strKey, strValue);
                 }
-                jsonArray.add (jsonObject);
+                jsonArray.add(jsonObject);
             }
         } catch (Exception e) {
-            loger.error ("数据集转换为JSON出错！");
-            e.printStackTrace ();
+            loger.error("数据集转换为JSON出错！");
+            e.printStackTrace();
         }
         return jsonArray;
     }
@@ -100,15 +96,15 @@ public class Common {
         String strContent = "";
         try {
             String strValue = "";
-            JSONObject jsonObject = new JSONObject ();
-            while (rst.next ()) {
-                strValue = rst.getString ("count(*)");
-                jsonObject.put ("count", strValue);
+            JSONObject jsonObject = new JSONObject();
+            while (rst.next()) {
+                strValue = rst.getString("count(*)");
+                jsonObject.put("count", strValue);
             }
-            strContent = jsonObject.toString ();
+            strContent = jsonObject.toString();
         } catch (Exception e) {
-            loger.error ("数据集转换为JSON出错！");
-            e.printStackTrace ();
+            loger.error("数据集转换为JSON出错！");
+            e.printStackTrace();
         }
         return strContent;
     }
@@ -122,25 +118,24 @@ public class Common {
     public static String ResultSetToString(ResultSet rst) {
         String strContent = "";
         try {
-            ResultSetMetaData rsMetaData = rst.getMetaData ();
-            int column = rsMetaData.getColumnCount ();
+            ResultSetMetaData rsMetaData = rst.getMetaData();
+            int column = rsMetaData.getColumnCount();
             String strKey = "";
             String strValue = "";
-            JSONArray jsonArray = new JSONArray ();
-            while (rst.next ()) {
-                JSONObject jsonObject = new JSONObject ();
-                jsonObject.clear ();
+            JSONArray jsonArray = new JSONArray();
+            while (rst.next()) {
+                JSONObject jsonObject = new JSONObject();
                 for (int i = 1; i <= column; i++) {
-                    strKey = rsMetaData.getColumnName (i);
-                    strValue = rst.getString (strKey);
-                    jsonObject.put (strKey, strValue);
+                    strKey = rsMetaData.getColumnName(i);
+                    strValue = rst.getString(strKey);
+                    jsonObject.put(strKey, strValue);
                 }
-                jsonArray.add (jsonObject);
+                jsonArray.add(jsonObject);
             }
-            strContent = jsonArray.toString ();
+            strContent = jsonArray.toString();
         } catch (Exception e) {
-            loger.error ("数据集转换为JSON出错！");
-            e.printStackTrace ();
+            loger.error("数据集转换为JSON出错！");
+            e.printStackTrace();
         }
         return strContent;
     }
@@ -149,23 +144,22 @@ public class Common {
      * 将JSON字符串解析为Map集
      */
     public static Map<String, String> AnalysisParams(String strParams) {
-        Map<String, String> paramMap = new HashMap<> ();
-        paramMap.clear ();
+        Map<String, String> paramMap = new HashMap<>();
         try {
             String key = "";
             String value = "";
-            JSONObject jsonObject = JSONObject.parseObject (strParams);
-            Iterator iter = jsonObject.entrySet ().iterator ();
-            while (iter.hasNext ()) {
-                Map.Entry entry = (Map.Entry) iter.next ();
-                key = entry.getKey ().toString ();
-                value = entry.getValue ().toString ();
-                paramMap.put (key, value);
+            JSONObject jsonObject = JSONObject.parseObject(strParams);
+            Iterator iter = jsonObject.keySet().iterator();
+            while (iter.hasNext()) {
+                Map.Entry entry = (Map.Entry) iter.next();
+                key = entry.getKey().toString();
+                value = entry.getValue().toString();
+                paramMap.put(key, value);
             }
         } catch (Exception e) {
-            String param = String.format ("解析传入参数时出错，参数为：%s", strParams);
-            loger.error (param);
-            e.printStackTrace ();
+            String param = String.format("解析传入参数时出错，参数为：%s", strParams);
+            loger.error(param);
+            e.printStackTrace();
         }
         return paramMap;
     }
