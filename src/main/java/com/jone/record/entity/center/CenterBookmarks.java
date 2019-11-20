@@ -13,8 +13,8 @@ public class CenterBookmarks implements Serializable {
     private String uid;
     private Integer type;
     private String title;
-    private Object bookId;
-    private Object chapterId;
+    private String bookId;
+    private String chapterId;
     private Integer state;
     private Date insertDt;
 
@@ -61,21 +61,21 @@ public class CenterBookmarks implements Serializable {
 
     @Basic
     @Column(name = "book_id")
-    public Object getBookId() {
+    public String getBookId() {
         return bookId;
     }
 
-    public void setBookId(Object bookId) {
+    public void setBookId(String bookId) {
         this.bookId = bookId;
     }
 
     @Basic
     @Column(name = "chapter_id")
-    public Object getChapterId() {
+    public String getChapterId() {
         return chapterId;
     }
 
-    public void setChapterId(Object chapterId) {
+    public void setChapterId(String chapterId) {
         this.chapterId = chapterId;
     }
 
