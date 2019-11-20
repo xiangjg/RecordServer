@@ -1,10 +1,10 @@
 package com.jone.record.service.impl;
 
+import com.jone.record.config.Definition;
 import com.jone.record.dao.center.CenterMsgDao;
 import com.jone.record.entity.center.CenterMsg;
 import com.jone.record.entity.vo.UserInfo;
 import com.jone.record.service.UserCenterService;
-import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -45,7 +45,7 @@ public class UserCenterServiceImpl implements UserCenterService {
     @Transactional
     @Override
     public CenterMsg saveCenterMsg(CenterMsg centerMsg) throws Exception {
-        centerMsg.setState(0);
+        centerMsg.setState(Definition.TYPE_MSG_NO_READ);
         centerMsg.setInsertDt(new Date());
         return centerMsgDao.save(centerMsg);
     }
@@ -58,7 +58,7 @@ public class UserCenterServiceImpl implements UserCenterService {
         if(!userInfo.getUserId().equals(centerMsg.getToId()))
             throw new Exception("不能阅读给别人的信息");
         centerMsg.setReadDt(new Date());
-        centerMsg.setState(1);
+        centerMsg.setState(Definition.TYPE_MSG_READ);
         centerMsgDao.save(centerMsg);
     }
     @Transactional
@@ -69,7 +69,7 @@ public class UserCenterServiceImpl implements UserCenterService {
             throw new Exception("不存在此消息ID");
         if(!userInfo.getUserId().equals(centerMsg.getToId()))
             throw new Exception("不能删除给别人的信息");
-        centerMsg.setState(-1);
+        centerMsg.setState(Definition.TYPE_MSG_DELETE);
         centerMsgDao.save(centerMsg);
     }
 }
