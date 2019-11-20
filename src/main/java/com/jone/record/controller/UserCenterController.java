@@ -29,7 +29,7 @@ public class UserCenterController extends BaseController {
     @Autowired
     private RedisDao redisDao;
 
-    @RequestMapping(value = "/list", method = RequestMethod.POST)
+    @RequestMapping(value = "/msg/list", method = RequestMethod.POST)
     @ApiOperation(value = "获取消息列表", notes = "输入userId,state,type")
     @SystemControllerLog(description = "获取消息列表")
     public void list(@RequestBody UserCenterParamVo param, HttpServletResponse response) {
@@ -42,7 +42,7 @@ public class UserCenterController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    @RequestMapping(value = "/msg/save", method = RequestMethod.POST)
     @ApiOperation(value = "保存消息", notes = "输入toId,type,title,body")
     @SystemControllerLog(description = "保存消息")
     public void save(@RequestBody CenterMsg centerMsg, HttpServletRequest request, HttpServletResponse response) {
@@ -61,7 +61,7 @@ public class UserCenterController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/read", method = RequestMethod.POST)
+    @RequestMapping(value = "/msg/read", method = RequestMethod.POST)
     @ApiOperation(value = "阅读消息", notes = "输入msgId")
     @SystemControllerLog(description = "阅读消息")
     public void readMsg(@RequestParam Integer msgId, HttpServletRequest request, HttpServletResponse response) {
@@ -79,7 +79,7 @@ public class UserCenterController extends BaseController {
         }
     }
 
-    @RequestMapping(value = "/del", method = RequestMethod.POST)
+    @RequestMapping(value = "/msg/del", method = RequestMethod.POST)
     @ApiOperation(value = "删除消息", notes = "输入msgId")
     @SystemControllerLog(description = "删除消息")
     public void delete(@RequestParam Integer msgId, HttpServletRequest request, HttpServletResponse response) {
