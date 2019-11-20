@@ -1,6 +1,7 @@
 package com.jone.record.dao;
 
 import org.hibernate.SQLQuery;
+import org.hibernate.query.internal.NativeQueryImpl;
 import org.hibernate.transform.ResultTransformer;
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
@@ -78,7 +79,7 @@ public class IDaoSupport<T, ID extends Serializable> implements IDao<T, ID> {
         List<T> list = null;
         try {
             Query query = entityManager.createNativeQuery(sql);
-            list = query.unwrap(SQLQuery.class)
+            list = query.unwrap(NativeQueryImpl.class)
                     .setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP)
                     .list();
         } catch (Exception e) {
@@ -97,7 +98,7 @@ public class IDaoSupport<T, ID extends Serializable> implements IDao<T, ID> {
         try {
             Query query = entityManager.createNativeQuery(sql);
             ResultTransformer rt = Transformers.aliasToBean(clazz);
-            query.unwrap(SQLQuery.class)
+            query.unwrap(NativeQueryImpl.class)
                     .setResultTransformer(
                             rt
                     );
