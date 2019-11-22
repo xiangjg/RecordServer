@@ -9,10 +9,10 @@ import com.alibaba.fastjson.JSONObject;
 
 public enum ECatalogTableInfo {
 
-    kbase_History_Books ("1", "DPM_CHAPTER"),                  // 志书
-    kbase_Year_Books ("2", "DPM_YEARBOOKARTICLE"),             // 年鉴
-    kbase_Local_History_Books ("3", "DPM_CHAPTER"),       // 地方史
-    kbase_Situation_Books ("4", "DPM_CHAPTER"),              // 地情资料
+    kbase_History_Books("1", "DPM_CHAPTER"),                  // 志书
+    kbase_Year_Books("2", "DPM_YEARBOOKARTICLE"),             // 年鉴
+    kbase_Local_History_Books("3", "DPM_CHAPTER"),            // 地方史
+    kbase_Situation_Books("4", "DPM_CHAPTER"),                // 地情资料
     ;
 
     private String code;
@@ -35,14 +35,14 @@ public enum ECatalogTableInfo {
     @Override
     public String toString() {
         String strContent = "";
-        JSONObject jsonObject = new JSONObject ();
-        jsonObject.clear ();
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.clear();
         try {
-            jsonObject.put ("code", code);
-            jsonObject.put ("tableName", tableName);
-            strContent = jsonObject.toString ();
+            jsonObject.put("code", code);
+            jsonObject.put("tableName", tableName);
+            strContent = jsonObject.toString();
         } catch (Exception e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         }
         return strContent;
     }
@@ -56,9 +56,9 @@ public enum ECatalogTableInfo {
     public static String GetTableNameByCode(String code) {
         String tableInfo = null;
         //通过enum.values()获取所有的枚举值
-        for (ECatalogTableInfo eCatalogTableInfo : ECatalogTableInfo.values ()) {
+        for (ECatalogTableInfo eCatalogTableInfo : ECatalogTableInfo.values()) {
             //通过enum.get获取字段值
-            if (eCatalogTableInfo.getCode ().equals (code)) {
+            if (eCatalogTableInfo.getCode().equals(code)) {
                 tableInfo = eCatalogTableInfo.tableName;
             }
         }
@@ -73,8 +73,8 @@ public enum ECatalogTableInfo {
      */
     public static ECatalogTableInfo GetTableNameInfoByCode(String code) {
         ECatalogTableInfo tableInfo = null;
-        for (ECatalogTableInfo eCatalogTableInfo : ECatalogTableInfo.values ()) {
-            if (eCatalogTableInfo.getCode ().equals (code)) {
+        for (ECatalogTableInfo eCatalogTableInfo : ECatalogTableInfo.values()) {
+            if (eCatalogTableInfo.getCode().equals(code)) {
                 tableInfo = eCatalogTableInfo;
             }
         }

@@ -8,10 +8,10 @@ package com.jone.record.kbase;
 import com.alibaba.fastjson.JSONObject;
 
 public enum EBookTableInfo {
-    kbase_History_Books ("1", "DPM_BOOK"),                     // 志书
-    kbase_Year_Books ("2", "DPM_YEARBOOKYEARINFO"),            // 年鉴
-    kbase_Local_History_Books ("3", "DPM_LOCALHISTORY"),       // 地方史
-    kbase_Situation_Books ("4", "DPM_SITUATION"),              // 地情资料
+    kbase_History_Books("1", "DPM_BOOK"),                     // 志书
+    kbase_Year_Books("2", "DPM_YEARBOOKYEARINFO"),            // 年鉴
+    kbase_Local_History_Books("3", "DPM_LOCALHISTORY"),       // 地方史
+    kbase_Situation_Books("4", "DPM_SITUATION"),              // 地情资料
     ;
 
     private String code;
@@ -32,15 +32,15 @@ public enum EBookTableInfo {
 
     @Override
     public String toString() {
-        String strContent = "";
-        JSONObject jsonObject = new JSONObject ();
-        jsonObject.hashCode ();
+        String strContent = null;
+        JSONObject jsonObject = new JSONObject();
+        jsonObject.hashCode();
         try {
-            jsonObject.put ("code", code);
-            jsonObject.put ("tableName", tableName);
-            strContent = jsonObject.toString ();
+            jsonObject.put("code", code);
+            jsonObject.put("tableName", tableName);
+            strContent = jsonObject.toString();
         } catch (Exception e) {
-            e.printStackTrace ();
+            e.printStackTrace();
         }
         return strContent;
     }
@@ -52,11 +52,11 @@ public enum EBookTableInfo {
      * @return
      */
     public static String GetTableNameByCode(String code) {
-        String strTableName = "";
+        String strTableName = null;
         //通过enum.values()获取所有的枚举值
-        for (EBookTableInfo Info : EBookTableInfo.values ()) {
+        for (EBookTableInfo Info : EBookTableInfo.values()) {
             //通过enum.get获取字段值
-            if (Info.getCode ().equals (code)) {
+            if (Info.getCode().equals(code)) {
                 strTableName = Info.tableName;
                 break;
             }
@@ -72,8 +72,8 @@ public enum EBookTableInfo {
      */
     public static EBookTableInfo GetTableNameInfoByCode(String code) {
         EBookTableInfo ETableInfo = null;
-        for (EBookTableInfo info : EBookTableInfo.values ()) {
-            if (info.getCode ().equals (code)) {
+        for (EBookTableInfo info : EBookTableInfo.values()) {
+            if (info.getCode().equals(code)) {
                 ETableInfo = info;
                 break;
             }
