@@ -2,17 +2,10 @@ package com.jone.record.entity.vo;
 
 public class UserCenterParamVo {
 
-    private Integer userId;
     private Integer state;
     private Integer type;
-
-    public Integer getUserId() {
-        return userId;
-    }
-
-    public void setUserId(Integer userId) {
-        this.userId = userId;
-    }
+    private Integer page = 1;
+    private Integer size = 10;
 
     public Integer getState() {
         return state;
@@ -28,5 +21,21 @@ public class UserCenterParamVo {
 
     public void setType(Integer type) {
         this.type = type;
+    }
+
+    public Integer getPage() {
+        return page;
+    }
+
+    public void setPage(Integer page) {
+        this.page = page;
+    }
+
+    public Integer getSize() {
+        return size;
+    }
+
+    public void setSize(Integer size) {
+        this.size = size;
     }
 }
