@@ -74,7 +74,6 @@ public class KBaseCon {
             loger.info ("读取数据库配置参数成功！");
         } catch (IOException e) {
             loger.error ("读取配置文件登录信息失败！");
-            e.printStackTrace ();
         }
     }
 
@@ -87,7 +86,6 @@ public class KBaseCon {
                 loger.info (strLog);
             } catch (SQLException e) {
                 loger.error ("数据库连接失败！");
-                e.printStackTrace ();
             }
         }
         return _con;

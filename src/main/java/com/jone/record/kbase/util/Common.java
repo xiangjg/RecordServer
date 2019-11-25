@@ -8,6 +8,7 @@ package com.jone.record.kbase.util;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jone.record.kbase.entity.Catalog;
+import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -28,8 +29,8 @@ public class Common {
                 jsonObject.put("count", strValue);
             }
         } catch (Exception e) {
-            loger.error("数据集转换为JSON出错！");
-            e.printStackTrace();
+            // loger.error("数据集转换为JSON出错！");
+            loger.error("{}", e);
         }
         return jsonObject;
     }
@@ -63,20 +64,20 @@ public class Common {
             TreeBuilder treeBuilder = new TreeBuilder(nodeList);
             nodeList = treeBuilder.buildTree();
         } catch (Exception e) {
-            e.printStackTrace();
+            loger.error("{}", e);
         }
         return nodeList;
     }
 
     public static JSONArray ResultSetToJSONArray(ResultSet rst) {
-        JSONArray jsonArray = new JSONArray();
+        JSONArray jsonArray = new JSONArray(new LinkedList<>());
         try {
             ResultSetMetaData rsMetaData = rst.getMetaData();
             int column = rsMetaData.getColumnCount();
             String strKey = "";
             String strValue = "";
             while (rst.next()) {
-                JSONObject jsonObject = new JSONObject();
+                JSONObject jsonObject = new JSONObject(new LinkedHashMap());
                 for (int i = 1; i <= column; i++) {
                     strKey = rsMetaData.getColumnName(i);
                     strValue = rst.getString(strKey);
@@ -85,8 +86,8 @@ public class Common {
                 jsonArray.add(jsonObject);
             }
         } catch (Exception e) {
-            loger.error("数据集转换为JSON出错！");
-            e.printStackTrace();
+            // loger.error("数据集转换为JSON出错！");
+            loger.error("{}", e);
         }
         return jsonArray;
     }
@@ -103,8 +104,8 @@ public class Common {
             }
             strContent = jsonObject.toString();
         } catch (Exception e) {
-            loger.error("数据集转换为JSON出错！");
-            e.printStackTrace();
+            // loger.error("数据集转换为JSON出错！");
+            loger.error("{}", e);
         }
         return strContent;
     }
@@ -134,8 +135,8 @@ public class Common {
             }
             strContent = jsonArray.toString();
         } catch (Exception e) {
-            loger.error("数据集转换为JSON出错！");
-            e.printStackTrace();
+            // loger.error("数据集转换为JSON出错！");
+            loger.error("{}", e);
         }
         return strContent;
     }
@@ -158,9 +159,23 @@ public class Common {
             }
         } catch (Exception e) {
             String param = String.format("解析传入参数时出错，参数为：%s", strParams);
-            loger.error(param);
-            e.printStackTrace();
+            loger.error("{}", param);
         }
         return paramMap;
+    }
+
+    public static String DealImageFile(String param) {
+        String strContent = XML.toJSONObject(param).toString();
+        JSONObject jsonObject = JSONObject.parseObject(strContent);
+        String key = null;
+        String value = null;
+        for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
+            key = entry.getKey();
+            Object object  = jsonObject.getString(key);
+        }
+
+
+
+        return strContent;
     }
 }

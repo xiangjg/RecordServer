@@ -40,7 +40,7 @@ public enum EFieldInfo {
     }
 
     /**
-     * 根据查询的code获取获取字段信息
+     * 根据查询的code获取字段信息
      *
      * @param code
      * @return

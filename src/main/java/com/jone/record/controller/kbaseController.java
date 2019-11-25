@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import com.jone.record.kbase.KBaseExecute;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.LinkedHashMap;
 import java.util.List;
 
 
@@ -117,4 +118,49 @@ public class kbaseController extends BaseController {
             printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
+
+
+    /**
+     * 黔专题部分的内容查询
+     *
+     * @return 返回JSON格式字符串
+     * @type 资源类型，1 志书；2 年鉴；3 地方志；4 地情资料
+     * @keyword 传入的检索关键词
+     * @page 显示页码，当前显示第几页，默认显示第一页
+     * @pageSize 显示条数，当前页的显示条数，默认为是10条
+     * @params 输入JSONObject对象，格式为 {"type":"0","keyword":"地质构造","page":"1","pageSize":"10"}
+     */
+    @RequestMapping(value = "/GetTitleInfo", method = RequestMethod.GET)
+    // @ApiOperation(value = "获取书籍中列表信息", notes = "输入JSONObject参数：资源类型type，上下架state，显示页码page，每页显示数量pageSize,检索标题title")
+    public void GetTitleInfo(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject jsonArray = kbaseTools.GetTitleInfo(params);
+            printJson(ResultUtil.success(jsonArray), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+
+    /**
+     * 查询专题库的全文内容信息
+     *
+     * @return 返回JSON格式字符串，
+     * @params 输入JSONObject，JSON格式字符串，如； {"type": "1","id": "5D5A3DEA-1609-40c6-A6EF-76D069D7A764"}
+     * @type 资源类型
+     * @id 资源的GUID
+     */
+    @RequestMapping(value = "/GetTopicContentInfo", method = RequestMethod.GET)
+    public void GetTopicContentInfo(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+            jsonObject = kbaseTools.GetTopicContent(params);
+            printJson(ResultUtil.success(jsonObject), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+        }
+    }
+
+
 }
