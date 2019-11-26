@@ -12,6 +12,8 @@ import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.util.*;
@@ -81,12 +83,15 @@ public class Common {
                 for (int i = 1; i <= column; i++) {
                     strKey = rsMetaData.getColumnName(i);
                     strValue = rst.getString(strKey);
+                    if (strKey.equals("SYS_FLD_FILEPATH") || strKey.equals("SYS_FLD_COVERPATH")) {
+                        strValue = strValue.replace('\\','/');
+                        strValue = Common.GetFilePath() + strValue;
+                    }
                     jsonObject.put(strKey, strValue);
                 }
                 jsonArray.add(jsonObject);
             }
         } catch (Exception e) {
-            // loger.error("数据集转换为JSON出错！");
             loger.error("{}", e);
         }
         return jsonArray;
@@ -104,7 +109,6 @@ public class Common {
             }
             strContent = jsonObject.toString();
         } catch (Exception e) {
-            // loger.error("数据集转换为JSON出错！");
             loger.error("{}", e);
         }
         return strContent;
@@ -171,11 +175,21 @@ public class Common {
         String value = null;
         for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
             key = entry.getKey();
-            Object object  = jsonObject.getString(key);
+            Object object = jsonObject.getString(key);
         }
-
-
-
         return strContent;
+    }
+
+    public static String GetFilePath() {
+        String strIpAddress = "";
+        InetAddress addr = null;
+        try {
+            addr = InetAddress.getLocalHost();
+            String hostname = addr.getHostAddress();
+            strIpAddress = String.format("http://%s/gzsfzy",hostname);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return strIpAddress;
     }
 }

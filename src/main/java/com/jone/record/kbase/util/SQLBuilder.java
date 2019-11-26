@@ -1,7 +1,7 @@
 package com.jone.record.kbase.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.jone.record.kbase.EBookTableInfo;
+import com.jone.record.kbase.tool.EBookTableInfo;
 import com.jone.record.kbase.tool.ECatalogTableInfo;
 import com.jone.record.kbase.tool.EClsInfo;
 import com.jone.record.kbase.tool.EFieldInfo;
@@ -161,4 +161,51 @@ public class SQLBuilder {
         }
         return strBuilder.toString().toUpperCase();
     }
+
+
+    public static String GenerateBookListQuerySQL(JSONObject params){
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select ");
+        strBuilder.append(EFieldInfo.GetFieldsByCode(params.getString("type")));
+        strBuilder.append(" from ");
+        strBuilder.append(EBookTableInfo.GetTableNameByCode(params.getString("type")));
+        strBuilder.append(" where ");
+        // 取上架上架状态的志书
+        strBuilder.append("ISONLINE=");
+        strBuilder.append(params.getString("state"));
+        // 根据分类号查询
+        if (params.containsKey("cls")){
+            strBuilder.append(" and SYS_FLD_CLASSFICATION='");
+            strBuilder.append(EClsInfo.GetClsCodeByCode(params.getString("cls")));
+            strBuilder.append("'");
+        }
+        // 分页查询显示 默认 第1页，每页10条
+        strBuilder.append(" limit ");
+        if (params.getString("page").isEmpty()) {
+            if (params.getString("pageSize").isEmpty()) {
+                strBuilder.append("0,10");
+            } else {
+                strBuilder.append("0,");
+                strBuilder.append(params.getString("pageSize"));
+            }
+        } else {
+            int page = Integer.parseInt(params.getString("page"));
+            int pageSize = Integer.parseInt(params.getString("pageSize"));
+            if (pageSize == 0) {
+                strBuilder.append("0,10");
+                strBuilder.append(",10");
+            } else {
+                String strPage = "";
+                if (page > 0) strPage = String.format("%d", (page - 1) * pageSize);
+                else {
+                    strPage = "0";
+                }
+                strBuilder.append(strPage);
+                strBuilder.append(",");
+                strBuilder.append(pageSize);
+            }
+        }
+        return strBuilder.toString().toUpperCase();
+    }
+
 }

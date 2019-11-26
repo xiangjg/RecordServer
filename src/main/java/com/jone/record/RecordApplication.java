@@ -1,5 +1,7 @@
 package com.jone.record;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.Banner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -8,6 +10,8 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 @EnableSwagger2
 @SpringBootApplication
 public class RecordApplication {
+    private static final Logger loger = LoggerFactory.getLogger(RecordApplication.class);
+
     public static void main(String[] args) {
         SpringApplication app = new SpringApplication(RecordApplication.class);
         app.setBannerMode (Banner.Mode.OFF);

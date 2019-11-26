@@ -1,7 +1,7 @@
 package com.jone.record.kbase.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.jone.record.kbase.EResourceType;
+import com.jone.record.kbase.tool.EResourceType;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;

@@ -1,4 +1,4 @@
-package com.jone.record.kbase;
+package com.jone.record.kbase.tool;
 
 import com.alibaba.fastjson.JSONObject;
 

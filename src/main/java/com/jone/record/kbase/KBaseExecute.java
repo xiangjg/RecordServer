@@ -205,27 +205,21 @@ public class KBaseExecute {
     }
 
 
-    private String ResultSetToString(ResultSet rst) {
-        String strContent = null;
+    public JSONArray GetBookListByCls(JSONObject params) {
+        String strSQL = SQLBuilder.GenerateBookListQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            return null;
+        }
+        JSONArray jsonArray = new JSONArray(new LinkedList<>());
         try {
-            ResultSetMetaData rsMetaData = rst.getMetaData();
-            int column = rsMetaData.getColumnCount();
-            String strKey = "";
-            String strValue = "";
-            JSONArray jsonArray = new JSONArray();
-            while (rst.next()) {
-                JSONObject jsonObject = new JSONObject();
-                for (int i = 1; i <= column; i++) {
-                    strKey = rsMetaData.getColumnName(i);
-                    strValue = rst.getString(strKey);
-                    jsonObject.put(strKey, strValue);
-                }
-                jsonArray.add(jsonObject);
-            }
-            strContent = jsonArray.toString();
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            jsonArray = Common.ResultSetToJSONArray(rst);
         } catch (Exception e) {
             loger.error("{}", e);
         }
-        return strContent;
+        return jsonArray;
     }
+
+
 }
