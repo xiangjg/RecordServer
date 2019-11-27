@@ -26,8 +26,6 @@ public class LoadConfig {
         }
     }
 
-
-
     public String getStrServerFilePath() {
         return strServerFilePath;
     }

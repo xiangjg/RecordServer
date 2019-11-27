@@ -14,6 +14,7 @@ import com.jone.record.util.Md5PasswordEncoder;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.map.LinkedMap;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -171,7 +172,7 @@ public class LoginController extends BaseController {
         userInfo.setUserName(user.getName());
         ////token 是 loginName
         redisDao.setKey(user.getLoginName(), JSON.toJSONString(userInfo));
-        JSONObject object1 = new JSONObject();
+        JSONObject object1 = new JSONObject(new LinkedMap());
         //object1.put("session", session);
         object1.put("userName", user.getName());
         object1.put("role", user.getRole());

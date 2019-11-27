@@ -30,9 +30,11 @@ spring:
   aop:
     proxy-target-class: true
     auto: true
+# KBase
 kbase:
   driverclass: com.kbase.jdbc.Driver
   url: jdbc:kbase://127.0.0.1:4567
   username: dbown
   password:
+#  file
 filePath: /home/xiangjg/dam/file

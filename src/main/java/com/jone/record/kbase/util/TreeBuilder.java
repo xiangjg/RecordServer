@@ -4,11 +4,12 @@ import com.alibaba.fastjson.JSONObject;
 import com.jone.record.kbase.entity.Catalog;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class TreeBuilder {
 
-    List<Catalog> nodes = new ArrayList<Catalog>();
+    List<Catalog> nodes = new LinkedList<Catalog>();
 
     public TreeBuilder(List<Catalog> nodes) {
         super();
@@ -30,7 +31,7 @@ public class TreeBuilder {
      *  @return        
      */
     public List<Catalog> buildTree() {
-        List<Catalog> treeNodes = new ArrayList<Catalog>();
+        List<Catalog> treeNodes = new LinkedList<Catalog>();
         List<Catalog> rootNodes = getRootNodes();
         for (Catalog rootNode : rootNodes) {
             buildChildNodes(rootNode);
@@ -61,7 +62,7 @@ public class TreeBuilder {
      *  @return
      */
     public List<Catalog> getChildNodes(Catalog pNode) {
-        List<Catalog> childNodes = new ArrayList<Catalog>();
+        List<Catalog> childNodes = new LinkedList<Catalog>();
         for (Catalog node : nodes) {
             if (pNode.getGuid().equals(node.getParentGuid())) {
                 childNodes.add(node);
@@ -93,7 +94,7 @@ public class TreeBuilder {
      * @return          
      */
     public List<Catalog> getRootNodes() {
-        List<Catalog> rootNodes = new ArrayList<Catalog>();
+        List<Catalog> rootNodes = new LinkedList<Catalog>();
         for (Catalog catalogNode : nodes) {
             if (rootNode(catalogNode)) {
                 rootNodes.add(catalogNode);

@@ -80,11 +80,13 @@ public class SQLBuilder {
     public static String GenerateTopicContentQuerySQL(JSONObject params) {
         String strSQL = null;
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select SYS_FLD_PARAXML,PARENTDOI from ");
+        strBuilder.append("select TITLE,SYS_FLD_PARAXML,PARENTDOI,SYS_FLD_ORDERNUM from ");
+        // 根据传入的ID判断返回内容
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
-        strBuilder.append(" where SYS_FLD_DOI='");
+        strBuilder.append(" where PARENTDOI='");
+        strBuilder.append(params.getString("guid"));
+        strBuilder.append("' and SYS_FLD_ORDERNUM=");
         strBuilder.append(params.getString("id"));
-        strBuilder.append("'");
         strSQL = strBuilder.toString().toUpperCase();
         return strSQL;
     }
@@ -104,7 +106,7 @@ public class SQLBuilder {
     }
 
     public static String GenerateReadCatalogQuerySQL(JSONObject params) {
-        String strFields = "SYS_SYSID,TITLE,SYS_FLD_DOI,SYS_FLD_PARENTDOI";
+        String strFields = "SYS_FLD_ORDERNUM,TITLE,SYS_FLD_DOI,SYS_FLD_PARENTDOI";
         String strTableName = ECatalogTableInfo.GetTableNameByCode(params.getString("type"));
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("select ");
@@ -163,7 +165,7 @@ public class SQLBuilder {
     }
 
 
-    public static String GenerateBookListQuerySQL(JSONObject params){
+    public static String GenerateBookListQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("select ");
         strBuilder.append(EFieldInfo.GetFieldsByCode(params.getString("type")));
@@ -174,7 +176,7 @@ public class SQLBuilder {
         strBuilder.append("ISONLINE=");
         strBuilder.append(params.getString("state"));
         // 根据分类号查询
-        if (params.containsKey("cls")){
+        if (params.containsKey("cls")) {
             strBuilder.append(" and SYS_FLD_CLASSFICATION='");
             strBuilder.append(EClsInfo.GetClsCodeByCode(params.getString("cls")));
             strBuilder.append("'");

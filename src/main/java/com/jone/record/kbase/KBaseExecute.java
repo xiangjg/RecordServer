@@ -11,6 +11,7 @@ import com.jone.record.kbase.util.Common;
 import com.jone.record.kbase.util.DealFiles;
 import com.jone.record.kbase.util.SQLBuilder;
 
+import org.apache.commons.collections.map.LinkedMap;
 import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -49,7 +50,7 @@ public class KBaseExecute {
         if (strSQL.isEmpty()) {
             return null;
         }
-        JSONArray jsonArray = new JSONArray();
+        JSONArray jsonArray = new JSONArray(new LinkedList<>());
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
@@ -61,7 +62,7 @@ public class KBaseExecute {
     }
 
     private JSONObject GetPagedQueryObjectInfo(String strSQL, int pageSize) {
-        JSONObject titleObject = new JSONObject();
+        JSONObject titleObject = new JSONObject(new LinkedMap());
         Statement state = null;
         ResultSet rst = null;
         try {
@@ -107,8 +108,8 @@ public class KBaseExecute {
     }
 
     public JSONObject GetTitleInfo(JSONObject jsonObject) {
-        JSONArray jsonArray = new JSONArray();
-        JSONObject titleObject = new JSONObject();
+        JSONArray jsonArray = new JSONArray(new LinkedList<>());
+        JSONObject titleObject = new JSONObject(new LinkedMap());
 
         // 获取数据库记录数SQL
         String strSQL = SQLBuilder.GeneratePagedQuerySQL(jsonObject);
@@ -142,23 +143,24 @@ public class KBaseExecute {
             return null;
         }
         JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
-        String strContent = null;
         List<String> list = new LinkedList<String>();
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             String strResult = "";
             String strBookGuid = "";
+            String strOrderId = "";
             while (rst.next()) {
                 strResult = rst.getString("SYS_FLD_PARAXML");
                 strBookGuid = rst.getString("PARENTDOI");
+                strOrderId = rst.getString("SYS_FLD_ORDERNUM");
             }
-
             DealFiles dealFiles = new DealFiles();
             dealFiles.setStrServerFilePath(strBookGuid);
             dealFiles.setType(params.getIntValue("type"));
             jsonObject = dealFiles.AnalysisXmlFileInfo(strResult);
-
+            jsonObject.put("guid", strBookGuid);
+            jsonObject.put("id", strOrderId);
         } catch (Exception e) {
             loger.error("{}", e);
         }
@@ -171,7 +173,7 @@ public class KBaseExecute {
         if (strSQL.isEmpty()) {
             return null;
         }
-        JSONObject catalogObject = new JSONObject();
+        JSONObject catalogObject = new JSONObject(new LinkedMap());
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
@@ -193,7 +195,7 @@ public class KBaseExecute {
         if (strSQL.isEmpty()) {
             return null;
         }
-        List<Catalog> catalogList = new ArrayList<Catalog>();
+        List<Catalog> catalogList = new LinkedList<Catalog>();
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);

@@ -12,6 +12,7 @@ import com.jone.record.kbase.entity.Catalog;
 import com.jone.record.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.map.LinkedMap;
 import org.springframework.web.bind.annotation.*;
 import com.jone.record.kbase.KBaseExecute;
 
@@ -48,7 +49,8 @@ public class kbaseController extends BaseController {
     @ApiOperation(value = "获取数据表记录数", notes = "输入JSONObject参数：资源类型type，分类类型cls。")
     public void GetBooksNums(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
-            JSONObject jsonObject = kbaseTools.GetBooksNums(params);
+            JSONObject jsonObject = new JSONObject(new LinkedMap());
+            jsonObject = kbaseTools.GetBooksNums(params);
             printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
             logger.error("{}", e);
@@ -72,7 +74,8 @@ public class kbaseController extends BaseController {
     @ApiOperation(value = "根据标题获取书籍列表信息", notes = "输入JSONObject参数：资源类型type，上下架state，显示页码page，每页显示数量pageSize,检索标题title")
     public void GetHistoryBook(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
-            JSONArray jsonArray = kbaseTools.GetHistoryBook(params);
+            JSONArray jsonArray = new JSONArray(new LinkedList<>());
+            jsonArray = kbaseTools.GetHistoryBook(params);
             printJson(ResultUtil.success(jsonArray), response);
         } catch (Exception e) {
             logger.error("{}", e);
@@ -92,7 +95,8 @@ public class kbaseController extends BaseController {
     @ApiOperation(value = "获取碎片化阅读目录", notes = "输入JSONObject参数：资源类型type，书籍的ID-id")
     public void GetReadCatalog(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
-            List<Catalog> catalogList = kbaseTools.GetReadCatalog(params);
+            List<Catalog> catalogList = new LinkedList<Catalog>();
+            catalogList = kbaseTools.GetReadCatalog(params);
             printJson(ResultUtil.success(catalogList), response);
         } catch (Exception e) {
             logger.error("{}", e);
@@ -112,8 +116,9 @@ public class kbaseController extends BaseController {
     @ApiOperation(value = "获取书籍基本目录信息", notes = "输入JSONObject参数：资源类型-type，书籍的ID-id")
     public void GetBookCatalog(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
-            JSONObject catalogObject = kbaseTools.GetBookCatalog(params);
-            printJson(ResultUtil.success(catalogObject), response);
+            JSONObject jsonObject = new JSONObject(new LinkedMap());
+            jsonObject = kbaseTools.GetBookCatalog(params);
+            printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
             logger.error("{}", e);
             printJson(ResultUtil.error(-1, e.getMessage()), response);
@@ -135,8 +140,9 @@ public class kbaseController extends BaseController {
     @ApiOperation(value = "获取专题标题信息", notes = "输入JSONObject参数：资源类型-type，检索词-keyword，显示页码-page，每页显示数量-pageSize")
     public void GetTitleInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
-            JSONObject jsonArray = kbaseTools.GetTitleInfo(params);
-            printJson(ResultUtil.success(jsonArray), response);
+            JSONObject jsonObject = new JSONObject(new LinkedMap());
+            jsonObject = kbaseTools.GetTitleInfo(params);
+            printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
             logger.error("{}", e);
             printJson(ResultUtil.error(-1, e.getMessage()), response);
@@ -148,12 +154,13 @@ public class kbaseController extends BaseController {
      * 查询全文内容信息
      *
      * @return 返回JSON格式字符串，
-     * @params 输入JSONObject，JSON格式字符串，如； {"type": "1","id": "5D5A3DEA-1609-40c6-A6EF-76D069D7A764"}
+     * @params 输入JSONObject，JSON格式字符串，如； {"type": "1","guid": "5D5A3DEA-1609-40c6-A6EF-76D069D7A764","id":"4"}
      * @type 资源类型
-     * @id 资源的GUID
+     * @guid 书籍的GUID
+     * @id 章节的排序ID
      */
     @RequestMapping(value = "/GetFullTextInfo", method = RequestMethod.POST)
-    @ApiOperation(value = "查询全文内容", notes = "输入JSONObject参数：资源类型-type，书籍的ID-id")
+    @ApiOperation(value = "查询全文内容", notes = "输入JSONObject参数：资源类型-type，书籍ID-guid，章节排序ID-id")
     public void GetFullTextInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
             JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());

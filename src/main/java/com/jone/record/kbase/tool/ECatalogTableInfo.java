@@ -6,6 +6,7 @@
 package com.jone.record.kbase.tool;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.map.LinkedMap;
 
 public enum ECatalogTableInfo {
 
@@ -35,7 +36,7 @@ public enum ECatalogTableInfo {
     @Override
     public String toString() {
         String strContent = "";
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
         jsonObject.clear();
         try {
             jsonObject.put("code", code);
