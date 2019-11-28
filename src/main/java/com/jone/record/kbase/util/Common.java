@@ -37,7 +37,8 @@ public class Common {
         return jsonObject;
     }
 
-    public static List<Catalog> AnalysisCatalog(ResultSet rst) {
+    public static JSONObject AnalysisCatalog(ResultSet rst) {
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
         ResultSetMetaData rstMeta = null;
         List<Catalog> nodeList = new LinkedList<Catalog>();
         try {
@@ -62,12 +63,14 @@ public class Common {
                 }
                 nodeList.add(catalog);
             }
+            jsonObject.put("max",nodeList.size()-1);
             TreeBuilder treeBuilder = new TreeBuilder(nodeList);
             nodeList = treeBuilder.buildTree();
+            jsonObject.put("catalog",nodeList);
         } catch (Exception e) {
             loger.error("{}", e);
         }
-        return nodeList;
+        return jsonObject;
     }
 
     public static JSONArray ResultSetToJSONArray(ResultSet rst) {

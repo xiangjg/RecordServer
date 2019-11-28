@@ -8,7 +8,6 @@ package com.jone.record.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
-import com.jone.record.kbase.entity.Catalog;
 import com.jone.record.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
@@ -95,9 +94,9 @@ public class kbaseController extends BaseController {
     @ApiOperation(value = "获取碎片化阅读目录", notes = "输入JSONObject参数：资源类型type，书籍的ID-id")
     public void GetReadCatalog(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
-            List<Catalog> catalogList = new LinkedList<Catalog>();
-            catalogList = kbaseTools.GetReadCatalog(params);
-            printJson(ResultUtil.success(catalogList), response);
+            JSONObject jsonObject = new JSONObject(new LinkedMap());
+            jsonObject = kbaseTools.GetReadCatalog(params);
+            printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
             logger.error("{}", e);
             printJson(ResultUtil.error(-1, e.getMessage()), response);
@@ -127,17 +126,18 @@ public class kbaseController extends BaseController {
 
 
     /**
-     * 黔专题部分的内容查询
+     * 黔专题标题内容检索
      *
      * @return 返回JSON格式字符串
      * @type 资源类型，1 志书；2 年鉴；3 地方志；4 地情资料
+     * @id id，传入书籍的GUID值，如果为空，则在整个章节表中查找相关数据
      * @keyword 传入的检索关键词
      * @page 显示页码，当前显示第几页，默认显示第一页
      * @pageSize 显示条数，当前页的显示条数，默认为是10条
-     * @params 输入JSONObject对象，格式为 {"type":"0","keyword":"地质构造","page":"1","pageSize":"10"}
+     * @params 输入JSONObject对象，格式为 {"type":"0", "id":"5D5A3DEA-1609-40c6-A6EF-76D069D7A764","keyword":"地质构造","page":"1","pageSize":"10"}
      */
     @RequestMapping(value = "/GetTitleInfo", method = RequestMethod.POST)
-    @ApiOperation(value = "获取专题标题信息", notes = "输入JSONObject参数：资源类型-type，检索词-keyword，显示页码-page，每页显示数量-pageSize")
+    @ApiOperation(value = "获取专题标题目录信息", notes = "输入JSONObject参数：资源类型-type，书籍ID-id，检索词-keyword，显示页码-page，每页显示数量-pageSize")
     public void GetTitleInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
             JSONObject jsonObject = new JSONObject(new LinkedMap());

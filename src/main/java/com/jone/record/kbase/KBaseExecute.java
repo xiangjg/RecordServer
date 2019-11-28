@@ -190,20 +190,20 @@ public class KBaseExecute {
         return catalogObject;
     }
 
-    public List<Catalog> GetReadCatalog(JSONObject jsonObject) {
+    public JSONObject GetReadCatalog(JSONObject jsonObject) {
         String strSQL = SQLBuilder.GenerateReadCatalogQuerySQL(jsonObject);
         if (strSQL.isEmpty()) {
             return null;
         }
-        List<Catalog> catalogList = new LinkedList<Catalog>();
+       JSONObject jsonObj = new JSONObject(new LinkedMap());
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
-            catalogList = Common.AnalysisCatalog(rst);
+            jsonObj = Common.AnalysisCatalog(rst);
         } catch (Exception e) {
             loger.error("{}", e);
         }
-        return catalogList;
+        return jsonObj;
     }
 
 

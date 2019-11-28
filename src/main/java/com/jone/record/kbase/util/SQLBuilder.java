@@ -22,11 +22,29 @@ public class SQLBuilder {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("select count(*) from ");
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
-        // 添加查询条件
-        if (!params.getString("keyword").isEmpty()) {
+
+        // 添加查询条件 关键词
+        String strKeyword = params.getString("keyword");
+        if (!strKeyword.isEmpty()) {
             strBuilder.append(" where title % '");
-            strBuilder.append(params.getString("keyword"));
+            strBuilder.append(strKeyword);
             strBuilder.append("'");
+        }
+
+        // 添加查询条件 书籍ID
+        String strId = params.getString("id");
+        if (!strId.isEmpty()) {
+            if (!strKeyword.isEmpty()){
+                strBuilder.append(" and PARENTDOI='");
+                strBuilder.append(strId);
+                strBuilder.append("'");
+            }else {
+                strBuilder.append(" where PARENTDOI='");
+                strBuilder.append(strId);
+                strBuilder.append("'");
+            }
+
+
         }
         strSQL = strBuilder.toString().toUpperCase();
         return strSQL;
@@ -85,8 +103,10 @@ public class SQLBuilder {
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
         strBuilder.append(" where PARENTDOI='");
         strBuilder.append(params.getString("guid"));
-        strBuilder.append("' and SYS_FLD_ORDERNUM=");
+        strBuilder.append("' and (CONTENT = * not CONTENT is null)");
+        strBuilder.append(" and SYS_FLD_ORDERNUM>=");
         strBuilder.append(params.getString("id"));
+        strBuilder.append(" order by SYS_FLD_ORDERNUM limit 1");
         strSQL = strBuilder.toString().toUpperCase();
         return strSQL;
     }
