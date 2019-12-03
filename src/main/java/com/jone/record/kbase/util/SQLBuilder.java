@@ -13,6 +13,7 @@ public class SQLBuilder {
     private static final Logger loger = LoggerFactory.getLogger(SQLBuilder.class);
     private static String strLog = "";
     private static ECatalogTableInfo tableInfo;
+    private static final String _tableName = "TEXTDATA";
 
     /**
      * 生成查询数据库记录总数，根据查询条件
@@ -34,11 +35,11 @@ public class SQLBuilder {
         // 添加查询条件 书籍ID
         String strId = params.getString("id");
         if (!strId.isEmpty()) {
-            if (!strKeyword.isEmpty()){
+            if (!strKeyword.isEmpty()) {
                 strBuilder.append(" and PARENTDOI='");
                 strBuilder.append(strId);
                 strBuilder.append("'");
-            }else {
+            } else {
                 strBuilder.append(" where PARENTDOI='");
                 strBuilder.append(strId);
                 strBuilder.append("'");
@@ -92,6 +93,9 @@ public class SQLBuilder {
         strBuilder.append(" where SYS_FLD_CLASSFICATION='");
         strBuilder.append(EClsInfo.GetClsCodeByCode(params.getString("cls")));
         strBuilder.append("'");
+        strBuilder.append(" and ISONLINE='");
+        strBuilder.append(params.getString("state"));
+        strBuilder.append("'");
         return strBuilder.toString().toUpperCase();
     }
 
@@ -103,7 +107,11 @@ public class SQLBuilder {
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
         strBuilder.append(" where PARENTDOI='");
         strBuilder.append(params.getString("guid"));
-        strBuilder.append("' and (CONTENT = * not CONTENT is null)");
+        if (params.getString("type").equals("2")) {
+            strBuilder.append("' and (FULLTEXT = * not FULLTEXT is null)");
+        } else {
+            strBuilder.append("' and (CONTENT = * not CONTENT is null)");
+        }
         strBuilder.append(" and SYS_FLD_ORDERNUM>=");
         strBuilder.append(params.getString("id"));
         strBuilder.append(" order by SYS_FLD_ORDERNUM limit 1");
@@ -228,6 +236,68 @@ public class SQLBuilder {
             }
         }
         return strBuilder.toString().toUpperCase();
+    }
+
+
+    /**
+     * 生成方志动态首页查询内容SQL语句
+     */
+    public static String GenerateDynamicHomeInfoQuerySQL(JSONObject params) {
+        StringBuilder strBuilder = new StringBuilder();
+        String nums = params.getString("num");
+        strBuilder.append("select ID,TITLE,SOURCE,PUBDATE,DIGEST,ACCESSORIES from ");
+        strBuilder.append(_tableName);
+        strBuilder.append(" where (ACCESSORIES = *  not  ACCESSORIES is null)  order by PUBDATE desc limit ");
+        strBuilder.append(nums);
+        String strSQL = strBuilder.toString().toUpperCase();
+        return strSQL;
+    }
+
+    /**
+     * 查询方志动态列表记录信息总数
+     */
+    public static String GenerateGetDynamicCountQuery(JSONObject params) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select count(*) as total from ");
+        strBuilder.append(_tableName);
+        strBuilder.append(" where status='");
+        strBuilder.append(params.getString("state"));
+        strBuilder.append("' and PUBDATE>'");
+        strBuilder.append(Common.GetSearchDate(params.getString("day")));
+        strBuilder.append("'");
+        String strSQL = strBuilder.toString().toUpperCase();
+        return strSQL;
+    }
+
+    /**
+     * 构造查询方志动态列表内容信息语句
+     */
+    public static String GenerateGetDynamicListQuery(JSONObject params) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select ID,TITLE,SOURCE,PUBDATE,DIGEST,ACCESSORIES from ");
+        strBuilder.append(_tableName);
+        strBuilder.append(" where status='");
+        strBuilder.append(params.getString("state"));
+        strBuilder.append("' and PUBDATE>'");
+        strBuilder.append(Common.GetSearchDate(params.getString("day")));
+        strBuilder.append("'");
+        String strSQL = strBuilder.toString().toUpperCase();
+        return strSQL;
+    }
+
+
+    /**
+     * 构造查询方志动态详细内容 SQL语句
+     */
+    public static String GenerateGetDynamicContentQuerySQL(JSONObject params) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select id,title,source,pubdate,url,content from ");
+        strBuilder.append(_tableName);
+        strBuilder.append(" where id='");
+        strBuilder.append(params.getString("id"));
+        strBuilder.append("'");
+        String strSQL = strBuilder.toString().toUpperCase();
+        return strSQL;
     }
 
 }

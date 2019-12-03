@@ -17,19 +17,42 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Common {
 
     private static final Logger loger = LoggerFactory.getLogger(Common.class);
 
-    public static JSONObject ResultSetToJSONObject(ResultSet rst) {
+    public static JSONObject RSetToString(ResultSet rst) {
         JSONObject jsonObject = new JSONObject(new LinkedMap());
+        String strContent = "";
         try {
             String strValue = "";
             while (rst.next()) {
-                strValue = rst.getString("NUM");
+                strValue = rst.getString("num");
                 jsonObject.put("count", strValue);
+            }
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonObject;
+    }
+
+    public static JSONObject ResultSetToJSONObject(ResultSet rst) {
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
+        ResultSetMetaData rsMetaData = null;
+        try {
+            rsMetaData = rst.getMetaData();
+            int column = rsMetaData.getColumnCount();
+            String strKey = "";
+            String strValue = "";
+            while (rst.next()) {
+                for (int i = 1; i <= column; i++) {
+                    strKey = rsMetaData.getColumnName(i);
+                    strValue = rst.getString(strKey);
+                    jsonObject.put(strKey, strValue);
+                }
             }
         } catch (Exception e) {
             loger.error("{}", e);
@@ -63,10 +86,10 @@ public class Common {
                 }
                 nodeList.add(catalog);
             }
-            jsonObject.put("max",nodeList.size()-1);
+            jsonObject.put("max", nodeList.size() - 1);
             TreeBuilder treeBuilder = new TreeBuilder(nodeList);
             nodeList = treeBuilder.buildTree();
-            jsonObject.put("catalog",nodeList);
+            jsonObject.put("catalog", nodeList);
         } catch (Exception e) {
             loger.error("{}", e);
         }
@@ -86,7 +109,7 @@ public class Common {
                     strKey = rsMetaData.getColumnName(i);
                     strValue = rst.getString(strKey);
                     if (strKey.equals("SYS_FLD_FILEPATH") || strKey.equals("SYS_FLD_COVERPATH")) {
-                        strValue = strValue.replace('\\','/');
+                        strValue = strValue.replace('\\', '/');
                         strValue = Common.GetFilePath() + strValue;
                     }
                     jsonObject.put(strKey, strValue);
@@ -97,23 +120,6 @@ public class Common {
             loger.error("{}", e);
         }
         return jsonArray;
-    }
-
-
-    public static String RSetToString(ResultSet rst) {
-        String strContent = "";
-        try {
-            String strValue = "";
-            JSONObject jsonObject = new JSONObject(new LinkedMap());
-            while (rst.next()) {
-                strValue = rst.getString("count(*)");
-                jsonObject.put("count", strValue);
-            }
-            strContent = jsonObject.toString();
-        } catch (Exception e) {
-            loger.error("{}", e);
-        }
-        return strContent;
     }
 
     /**
@@ -187,10 +193,20 @@ public class Common {
         try {
             addr = InetAddress.getLocalHost();
             String hostname = addr.getHostAddress();
-            strIpAddress = String.format("http://%s/gzsfzy",hostname);
+            strIpAddress = String.format("http://%s/gzsfzy", hostname);
         } catch (UnknownHostException e) {
             e.printStackTrace();
         }
         return strIpAddress;
     }
+
+    public static String GetSearchDate(String days) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - Integer.parseInt(days));
+        Date today = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String strDay = format.format(today);
+        return strDay;
+    }
+
 }

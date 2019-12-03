@@ -78,7 +78,8 @@ public class DealFiles {
         String nodeText = node.getTextTrim();
         if (nodeName.equals("title")) {
             Element parentNode = node.getParent();
-            if (parentNode.getName().equals("section") || parentNode.getName().equals("part") || parentNode.getName().equals("chapter")) {
+            if (parentNode.getName().equals("section") || parentNode.getName().equals("article")
+                    || parentNode.getName().equals("part") || parentNode.getName().equals("chapter")) {
                 list.add(nodeText);
             } else {
                 Attribute attrImage = parentNode.attribute("fileref");

@@ -12,13 +12,14 @@ import com.jone.record.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections.map.LinkedMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.web.bind.annotation.*;
 import com.jone.record.kbase.KBaseExecute;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
-import java.util.List;
 
 
 @CrossOrigin
@@ -28,6 +29,7 @@ import java.util.List;
 public class kbaseController extends BaseController {
 
     private KBaseExecute kbaseTools = null;
+    private static final Logger loger = LoggerFactory.getLogger(KBaseExecute.class);
 
     public kbaseController() {
         if (null == kbaseTools) {
@@ -188,12 +190,75 @@ public class kbaseController extends BaseController {
     @ApiOperation(value = "查询书籍的分类列表", notes = "输入JSONObject参数：资源类型-type，上下架-state，资源分类-cls，显示页码-page，每页显示数量-pageSize")
     public void GetBookList(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
+            JSONObject jsonObject = new JSONObject(new LinkedMap());
+            jsonObject = kbaseTools.GetBookListByCls(params);
+            printJson(ResultUtil.success(jsonObject), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    /**
+     * 获取方志动态首页的展示信息
+     *
+     * @return 返回满足条件的内容
+     * @params JSON字符串，如：{"num":"4"}
+     * @num 需要返回记录的条数
+     */
+    @RequestMapping(value = "/GetDynamicHoneInfo", method = RequestMethod.POST)
+    @ApiOperation(value = "获取方志动态首页显示内容", notes = "输入JSONObject参数：记录数-num")
+    public void GetDynamicHoneInfo(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
             JSONArray jsonArray = new JSONArray(new LinkedList<>());
-            jsonArray = kbaseTools.GetBookListByCls(params);
+            jsonArray = kbaseTools.GetDynamicHomeInfo(params);
             printJson(ResultUtil.success(jsonArray), response);
         } catch (Exception e) {
             logger.error("{}", e);
             printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+
+    /**
+     * 查询方志动态的标题信息
+     *
+     * @params: JSON字符串，如：{"state":"1", "day": "10","page": "1","pageSize": "10"}
+     * @return: 输出记录元数据信息的JSON串
+     * @state 通过审核的记录 （ 1，通过审核的记录；0，未审核的记录）
+     * @num 近 day 天的记录
+     * @page 显示页码，默认显示第 1 页
+     * @pzgeSize 每一页显示记录数，默认显示 10 条
+     */
+    @RequestMapping(value = "/GetDynamicTitleList", method = RequestMethod.POST)
+    @ApiOperation(value = "查询方志动态的标题信息", notes = "输入JSONObject参数：发布状态-state,最近天数-day,显示页数-page,显示条数-pageSize")
+    public void GetDynamicTitleList(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject jsonObject = new JSONObject(new LinkedMap());
+            jsonObject = kbaseTools.GetDynamicTitleList(jsonObject);
+            printJson(ResultUtil.success(jsonObject), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    /**
+     * 查询方志动态详细内容
+     *
+     * @return 返回当前记录的元数据信息
+     * @params JSON字符串，如：{"id":"192"}
+     * @ID 查询记录的ID
+     */
+    @RequestMapping(value = "/getDynamicContent", method = RequestMethod.POST)
+    @ApiOperation(value = "查询方志动态详细内容", notes = "输入JSONObject参数：记录ID-id")
+    public void getDynamicContent(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject jsonObject = new JSONObject(new LinkedMap());
+            jsonObject = kbaseTools.GetDynamicContent(params);
+            printJson(ResultUtil.success(jsonObject), response);
+        } catch (Exception e) {
+            loger.error("{}", e);
         }
     }
 }
