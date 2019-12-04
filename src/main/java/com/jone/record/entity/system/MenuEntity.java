@@ -7,7 +7,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "t_zhgl_menu", schema = "public")
-public class MenuEntity implements Serializable {
+public class MenuEntity implements Serializable, Comparable<MenuEntity> {
     private Integer id;
     private String name;
     private Integer pid;
@@ -122,5 +122,10 @@ public class MenuEntity implements Serializable {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, pid, order, icon, url, level);
+    }
+
+    @Override
+    public int compareTo(MenuEntity o) {
+        return this.order - o.getOrder();
     }
 }

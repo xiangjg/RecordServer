@@ -4,6 +4,7 @@ import com.jone.record.entity.system.MenuEntity;
 import com.jone.record.entity.system.RoleEntity;
 
 import java.util.List;
+import java.util.Map;
 
 public interface RoleService {
 
@@ -19,4 +20,10 @@ public interface RoleService {
      * @throws Exception
      */
     RoleEntity getRoleMenuInfo(RoleEntity role, String type) throws Exception;
+
+    List<RoleEntity> getAllRole()throws Exception;
+
+    RoleEntity getRoleById(Integer roleId);
+
+    Map<String, Object> getMenuList(Integer roleId, String type)throws Exception;
 }

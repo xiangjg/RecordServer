@@ -35,8 +35,6 @@ public class UserController extends BaseController {
     @Autowired
     private UserService userService;
     @Autowired
-    private RoleService roleService;
-    @Autowired
     private RedisDao redisDao;
 
     @RequestMapping(value = "/list", method = RequestMethod.POST)

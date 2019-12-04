@@ -10,8 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Service(value = "roleService")
 public class RoleServiceImpl implements RoleService {
@@ -79,5 +78,53 @@ public class RoleServiceImpl implements RoleService {
                 list.add(mi.getId());
         }
         return BigIntegerUtils.sumRights(list);
+    }
+
+    @Override
+    public List<RoleEntity> getAllRole() throws Exception {
+        return roleDao.findAll();
+    }
+
+    @Override
+    public RoleEntity getRoleById(Integer roleId) {
+        return roleDao.findById(roleId).orElse(null);
+    }
+
+    @Override
+    public Map<String, Object> getMenuList(Integer roleId, String type) throws Exception {
+        Map<String, Object> ret = new HashMap<>();
+        RoleEntity role = getRoleById(roleId);
+        List<MenuEntity> menuEntityList = menuDao.findAll();
+        List<Integer> checkList = new ArrayList<>();
+        Collections.sort(menuEntityList);
+        List<Integer> pidList = menuDao.findPids();
+        for (MenuEntity menu : menuEntityList
+        ) {
+            if (role.getRights().testBit(menu.getId())) {
+                if (!pidList.contains(menu.getId()))
+                    checkList.add(menu.getId());
+                menu.setHave(true);
+            } else
+                menu.setHave(false);
+        }
+
+        ret.put("menu", createMenuNode(menuEntityList, 0));
+        ret.put("check", checkList);
+
+        return ret;
+    }
+
+    private List<MenuEntity> createMenuNode(List<MenuEntity> list, int fid) {
+        List<MenuEntity> resultList = new ArrayList<>();
+        if (list == null || list.size() == 0 || fid < 0) {
+            return null;
+        }
+        for (MenuEntity tree : list) {
+            if (tree.getPid() == fid) {
+                resultList.add(tree);
+                tree.setChild(createMenuNode(list, tree.getId()));
+            }
+        }
+        return resultList;
     }
 }
