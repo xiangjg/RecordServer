@@ -8,37 +8,62 @@ package com.jone.record.kbase.util;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jone.record.kbase.entity.Catalog;
+import org.apache.commons.collections.map.LinkedMap;
 import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 public class Common {
 
     private static final Logger loger = LoggerFactory.getLogger(Common.class);
 
-    public static JSONObject ResultSetToJSONObject(ResultSet rst) {
-        JSONObject jsonObject = new JSONObject();
+    public static JSONObject RSetToString(ResultSet rst) {
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
+        String strContent = "";
         try {
             String strValue = "";
             while (rst.next()) {
-                strValue = rst.getString("NUM");
+                strValue = rst.getString("num");
                 jsonObject.put("count", strValue);
             }
         } catch (Exception e) {
-            // loger.error("数据集转换为JSON出错！");
             loger.error("{}", e);
         }
         return jsonObject;
     }
 
-    public static List<Catalog> AnalysisCatalog(ResultSet rst) {
-        String strContent = "";
+    public static JSONObject ResultSetToJSONObject(ResultSet rst) {
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
+        ResultSetMetaData rsMetaData = null;
+        try {
+            rsMetaData = rst.getMetaData();
+            int column = rsMetaData.getColumnCount();
+            String strKey = "";
+            String strValue = "";
+            while (rst.next()) {
+                for (int i = 1; i <= column; i++) {
+                    strKey = rsMetaData.getColumnName(i);
+                    strValue = rst.getString(strKey);
+                    jsonObject.put(strKey, strValue);
+                }
+            }
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonObject;
+    }
+
+    public static JSONObject AnalysisCatalog(ResultSet rst) {
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
         ResultSetMetaData rstMeta = null;
-        List<Catalog> nodeList = new ArrayList<Catalog>();
+        List<Catalog> nodeList = new LinkedList<Catalog>();
         try {
             String key = "";
             String value = "";
@@ -49,7 +74,7 @@ public class Common {
                 for (int i = 1; i <= column; i++) {
                     key = rstMeta.getColumnName(i);
                     value = rst.getString(key);
-                    if (key.equals("SYS_SYSID")) {
+                    if (key.equals("SYS_FLD_ORDERNUM")) {
                         catalog.setId(value);
                     } else if (key.equals("TITLE")) {
                         catalog.setTitle(value);
@@ -61,12 +86,14 @@ public class Common {
                 }
                 nodeList.add(catalog);
             }
+            jsonObject.put("max", nodeList.size() - 1);
             TreeBuilder treeBuilder = new TreeBuilder(nodeList);
             nodeList = treeBuilder.buildTree();
+            jsonObject.put("catalog", nodeList);
         } catch (Exception e) {
             loger.error("{}", e);
         }
-        return nodeList;
+        return jsonObject;
     }
 
     public static JSONArray ResultSetToJSONArray(ResultSet rst) {
@@ -81,33 +108,18 @@ public class Common {
                 for (int i = 1; i <= column; i++) {
                     strKey = rsMetaData.getColumnName(i);
                     strValue = rst.getString(strKey);
+                    if (strKey.equals("SYS_FLD_FILEPATH") || strKey.equals("SYS_FLD_COVERPATH")) {
+                        strValue = strValue.replace('\\', '/');
+                        strValue = Common.GetFilePath() + strValue;
+                    }
                     jsonObject.put(strKey, strValue);
                 }
                 jsonArray.add(jsonObject);
             }
         } catch (Exception e) {
-            // loger.error("数据集转换为JSON出错！");
             loger.error("{}", e);
         }
         return jsonArray;
-    }
-
-
-    public static String RSetToString(ResultSet rst) {
-        String strContent = "";
-        try {
-            String strValue = "";
-            JSONObject jsonObject = new JSONObject();
-            while (rst.next()) {
-                strValue = rst.getString("count(*)");
-                jsonObject.put("count", strValue);
-            }
-            strContent = jsonObject.toString();
-        } catch (Exception e) {
-            // loger.error("数据集转换为JSON出错！");
-            loger.error("{}", e);
-        }
-        return strContent;
     }
 
     /**
@@ -123,9 +135,9 @@ public class Common {
             int column = rsMetaData.getColumnCount();
             String strKey = "";
             String strValue = "";
-            JSONArray jsonArray = new JSONArray();
+            JSONArray jsonArray = new JSONArray(new LinkedList<>());
             while (rst.next()) {
-                JSONObject jsonObject = new JSONObject();
+                JSONObject jsonObject = new JSONObject(new LinkedMap());
                 for (int i = 1; i <= column; i++) {
                     strKey = rsMetaData.getColumnName(i);
                     strValue = rst.getString(strKey);
@@ -135,7 +147,6 @@ public class Common {
             }
             strContent = jsonArray.toString();
         } catch (Exception e) {
-            // loger.error("数据集转换为JSON出错！");
             loger.error("{}", e);
         }
         return strContent;
@@ -171,11 +182,31 @@ public class Common {
         String value = null;
         for (Map.Entry<String, Object> entry : jsonObject.entrySet()) {
             key = entry.getKey();
-            Object object  = jsonObject.getString(key);
+            Object object = jsonObject.getString(key);
         }
-
-
-
         return strContent;
     }
+
+    public static String GetFilePath() {
+        String strIpAddress = "";
+        InetAddress addr = null;
+        try {
+            addr = InetAddress.getLocalHost();
+            String hostname = addr.getHostAddress();
+            strIpAddress = String.format("http://%s/gzsfzy", hostname);
+        } catch (UnknownHostException e) {
+            e.printStackTrace();
+        }
+        return strIpAddress;
+    }
+
+    public static String GetSearchDate(String days) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(Calendar.DAY_OF_YEAR, calendar.get(Calendar.DAY_OF_YEAR) - Integer.parseInt(days));
+        Date today = calendar.getTime();
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
+        String strDay = format.format(today);
+        return strDay;
+    }
+
 }

@@ -1,6 +1,7 @@
-package com.jone.record.kbase;
+package com.jone.record.kbase.tool;
 
 import com.alibaba.fastjson.JSONObject;
+import org.apache.commons.collections.map.LinkedMap;
 
 public enum EResourceType {
 
@@ -36,7 +37,7 @@ public enum EResourceType {
     @Override
     public String toString() {
 
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
         jsonObject.clear();
         try {
             jsonObject.put("code", code);

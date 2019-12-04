@@ -1,7 +1,5 @@
 package com.jone.record.kbase.util;
 
-import com.alibaba.fastjson.JSONObject;
-import com.jone.record.kbase.Common;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -27,8 +25,6 @@ public class LoadConfig {
             loger.error("读取配置文件登录信息失败！");
         }
     }
-
-
 
     public String getStrServerFilePath() {
         return strServerFilePath;

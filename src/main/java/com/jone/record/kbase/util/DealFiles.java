@@ -1,11 +1,13 @@
 package com.jone.record.kbase.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.jone.record.kbase.EResourceType;
+import com.jone.record.kbase.tool.EResourceType;
+import org.apache.commons.collections.map.LinkedMap;
 import org.dom4j.Attribute;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.Element;
+import org.springframework.boot.CommandLineRunner;
 
 import java.util.LinkedList;
 import java.util.List;
@@ -42,7 +44,7 @@ public class DealFiles {
         List<String> list = new LinkedList<String>();
         Document doc = null;
         Element root = null;
-        JSONObject jsonObject = new JSONObject();
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
         try {
             doc = DocumentHelper.parseText(strXmlInfo);
             root = doc.getRootElement();// 指向根节点  <root>
@@ -76,13 +78,13 @@ public class DealFiles {
         String nodeText = node.getTextTrim();
         if (nodeName.equals("title")) {
             Element parentNode = node.getParent();
-            if (parentNode.getName().equals("section")) {
-                // strContent = String.format("<h1>%s</h1>", nodeText);
+            if (parentNode.getName().equals("section") || parentNode.getName().equals("article")
+                    || parentNode.getName().equals("part") || parentNode.getName().equals("chapter")) {
                 list.add(nodeText);
             } else {
                 Attribute attrImage = parentNode.attribute("fileref");
                 String strFileName = EResourceType.GetFieldsByCode(type);
-                String strImageFile = String.format("%s%s/%s/%s", tool.getStrServerFilePath(), strFileName, strServerFilePath, attrImage.getValue());
+                String strImageFile = String.format("%s/%s/%s/%s", Common.GetFilePath(), strFileName, strServerFilePath, attrImage.getValue());
                 strContent = String.format("<p><span>%s</span><img src=\"%s\"/></p>", nodeText, strImageFile);
                 list.add(strContent);
             }
