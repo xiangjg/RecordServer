@@ -1,12 +1,17 @@
 package com.jone.record.service.impl;
 
 import com.alibaba.druid.util.StringUtils;
+import com.jone.record.dao.system.DepartDao;
+import com.jone.record.dao.system.RoleDao;
 import com.jone.record.dao.system.UserDao;
+import com.jone.record.entity.system.DepartEntity;
+import com.jone.record.entity.system.RoleEntity;
 import com.jone.record.entity.system.UserEntity;
 import com.jone.record.entity.vo.PageParamVo;
 import com.jone.record.entity.vo.PageVo;
 import com.jone.record.service.UserService;
 import com.jone.record.util.Md5PasswordEncoder;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -19,13 +24,20 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service(value = "userService")
 public class UserServiceImpl implements UserService {
 
     @Autowired
     private UserDao userDao;
+    @Autowired
+    private DepartDao departDao;
+    @Autowired
+    private RoleDao roleDao;
+
 
     @Override
     public UserEntity findByLoginNameOrMobile(String loginName) throws Exception {
@@ -36,13 +48,26 @@ public class UserServiceImpl implements UserService {
     public UserEntity addUser(UserEntity user) throws Exception {
         UserEntity userEntity = userDao.findByLoginNameOrTel(user.getLoginName(), user.getTel());
         if (userEntity != null)
-            throw new Exception("用户以存在");
+            throw new Exception("用户已存在");
         user.setPassword(Md5PasswordEncoder.encrypt("123456", user.getLoginName()));
+        user.setState(1);
+        user.setRegDt(new Date());
         return userDao.save(user);
     }
 
     @Override
     public void updateUser(UserEntity user) throws Exception {
+        UserEntity userEntity = userDao.findById(user.getId()).orElse(null);
+        if (userEntity != null) {
+            userEntity.setName(user.getName());
+            userEntity.setDuty(user.getDuty());
+            userEntity.setEmail(user.getEmail());
+            userEntity.setTel(user.getTel());
+            userEntity.setRemark(user.getRemark());
+            userEntity.setRole(user.getRole());
+            userEntity.setDepart(user.getDepart());
+            userDao.save(userEntity);
+        }
 
     }
 
@@ -76,8 +101,8 @@ public class UserServiceImpl implements UserService {
         PageRequest pageRequest = PageRequest.of(pageParamVo.getPage() - 1, pageParamVo.getSize(), sort);
         Page<UserEntity> pageList = userDao.findAll(specification, pageRequest);
         PageVo<UserEntity> page = new PageVo<>();
-        for (UserEntity u:pageList.getContent()
-             ) {
+        for (UserEntity u : pageList.getContent()
+        ) {
             u.setPassword("");
         }
         page.setPage(pageParamVo.getPage());
@@ -91,5 +116,15 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity findUserByLoginNameAndPwd(String loginName, String password) throws Exception {
         return userDao.findByLoginNameAndPassword(loginName, Md5PasswordEncoder.encrypt(password, loginName));
+    }
+
+    @Override
+    public Map<String, Object> listDepartAndRole() throws Exception {
+        Map<String, Object> data = new HashedMap();
+        List<DepartEntity> departList =departDao.findAll();
+        List<RoleEntity> roleList = roleDao.findAll();
+        data.put("roleList", roleList);
+        data.put("departList", departList);
+        return data;
     }
 }

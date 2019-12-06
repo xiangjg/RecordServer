@@ -5,6 +5,8 @@ import com.jone.record.entity.vo.PageParamVo;
 import com.jone.record.entity.vo.PageVo;
 import org.springframework.data.domain.Page;
 
+import java.util.Map;
+
 public interface UserService {
 
     UserEntity findByLoginNameOrMobile(String loginName) throws Exception;
@@ -15,4 +17,6 @@ public interface UserService {
     void updatePassword(String loginName, String password) throws Exception;
     PageVo<UserEntity> listUser(PageParamVo pageParamVo) throws Exception;
     UserEntity findUserByLoginNameAndPwd(String loginName, String password)throws Exception;
+
+    Map<String,Object> listDepartAndRole()throws Exception;
 }

@@ -10,16 +10,7 @@ public interface RoleService {
 
     void save(RoleEntity role) throws Exception;
 
-    void updateRights(Integer roleId, List<MenuEntity> rights) throws Exception;
-
-    /**
-     *
-     * @param role
-     * @param type menu query add change del
-     * @return
-     * @throws Exception
-     */
-    RoleEntity getRoleMenuInfo(RoleEntity role, String type) throws Exception;
+    void updateRights(Integer roleId, String type, List<Integer> rights) throws Exception;
 
     List<RoleEntity> getAllRole()throws Exception;
 

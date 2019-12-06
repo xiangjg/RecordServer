@@ -3,6 +3,7 @@ package com.jone.record.entity.system;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Objects;
 
 @Entity
@@ -10,13 +11,13 @@ import java.util.Objects;
 public class UserEntity implements Serializable {
     private Integer id;
     private String name;
-    private Integer departId;
+    private DepartEntity depart;
     private String duty;
     private RoleEntity role;
     private String tel;
     private String email;
     private String remark;
-    private Timestamp regDt;
+    private Date regDt;
     private Integer state;
     private String loginName;
     private String password;
@@ -41,15 +42,15 @@ public class UserEntity implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
     @Basic
-    @Column(name = "depart_id")
-    public Integer getDepartId() {
-        return departId;
+    @JoinColumn(name = "depart_id")
+    @OneToOne(fetch = FetchType.EAGER)
+    public DepartEntity getDepart() {
+        return depart;
     }
 
-    public void setDepartId(Integer departId) {
-        this.departId = departId;
+    public void setDepart(DepartEntity depart) {
+        this.depart = depart;
     }
 
     @Basic
@@ -105,11 +106,11 @@ public class UserEntity implements Serializable {
 
     @Basic
     @Column(name = "reg_dt")
-    public Timestamp getRegDt() {
+    public Date getRegDt() {
         return regDt;
     }
 
-    public void setRegDt(Timestamp regDt) {
+    public void setRegDt(Date regDt) {
         this.regDt = regDt;
     }
 
@@ -143,26 +144,5 @@ public class UserEntity implements Serializable {
         this.password = password;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        UserEntity that = (UserEntity) o;
-        return id == that.id &&
-                state == that.state &&
-                Objects.equals(name, that.name) &&
-                Objects.equals(departId, that.departId) &&
-                Objects.equals(duty, that.duty) &&
-                Objects.equals(tel, that.tel) &&
-                Objects.equals(email, that.email) &&
-                Objects.equals(remark, that.remark) &&
-                Objects.equals(regDt, that.regDt) &&
-                Objects.equals(loginName, that.loginName) &&
-                Objects.equals(password, that.password);
-    }
 
-    @Override
-    public int hashCode() {
-        return Objects.hash(id, name, departId, duty,  tel, email, remark, regDt, state, loginName, password);
-    }
 }

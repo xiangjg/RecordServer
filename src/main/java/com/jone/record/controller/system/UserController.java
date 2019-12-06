@@ -49,6 +49,17 @@ public class UserController extends BaseController {
         }
     }
 
+    @RequestMapping(value = "/listDepartAndRole", method = RequestMethod.POST)
+    @ApiOperation(value = "获取所有部门列表和角色列表", notes = "")
+    public void listDepartAndRole(HttpServletResponse response) {
+        try {
+            Map<String,Object> data = userService.listDepartAndRole();
+            printJson(ResultUtil.success(data), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public void save(@RequestBody UserEntity user, HttpServletResponse response) {
         try {
@@ -60,9 +71,21 @@ public class UserController extends BaseController {
         }
     }
 
+    @RequestMapping(value = "/update", method = RequestMethod.POST)
+    public void update(@RequestBody UserEntity user, HttpServletResponse response) {
+        try {
+            userService.updateUser(user);
+            printJson(ResultUtil.success(), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public void delete(@RequestParam Integer userId, HttpServletResponse response, HttpServletRequest request) {
         UserInfo cUser = getRedisUser(request, redisDao);
+        System.out.println(cUser.toString());
         if (cUser == null || cUser.getRole().getId() != 1)
             printJson(ResultUtil.error(-1, "该用户无操作权限"), response);
         else {

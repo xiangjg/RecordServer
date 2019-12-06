@@ -26,56 +26,35 @@ public class RoleServiceImpl implements RoleService {
     }
 
     @Override
-    public void updateRights(Integer roleId, List<MenuEntity> rights) throws Exception {
+    public void updateRights(Integer roleId, String type, List<Integer> rights) throws Exception {
         BigInteger newRights = getRights(rights);
-        roleDao.updateRights(roleId, newRights);
-    }
-
-    @Override
-    public RoleEntity getRoleMenuInfo(RoleEntity role, String type) throws Exception {
-        List<MenuEntity> mis = menuDao.findAll();
-        role.setMenus(mis);
-        for (MenuEntity mi : role.getMenus()
-        ) {
-            BigInteger val = null;
-            switch (type) {
-                case "menu":
-                    if(role.getRights()!=null)
-                        val = role.getRights();
-                    break;
-                case "query":
-                    if(role.getQuery()!=null)
-                        val = role.getQuery();
-                    break;
-                case "add":
-                    if(role.getAdd()!=null)
-                        val = role.getAdd();
-                    break;
-                case "change":
-                    if(role.getChange()!=null)
-                        val = role.getChange();
-                    break;
-                case "del":
-                    if(role.getDel()!=null)
-                        val = role.getDel();
-                    break;
-                default:
-                    break;
-            }
-            if (val != null && val.testBit(mi.getId()))
-                mi.setHave(true);
-            else
-                mi.setHave(false);
+        switch (type) {
+            case "menu":
+                roleDao.updateRights(roleId, newRights);
+                break;
+            case "query":
+                roleDao.updateQuery(roleId, newRights);
+                break;
+            case "add":
+                roleDao.updateAdd(roleId, newRights);
+                break;
+            case "change":
+                roleDao.updateChange(roleId, newRights);
+                break;
+            case "del":
+                roleDao.updateDel(roleId, newRights);
+                break;
+            default:
+                break;
         }
-        return role;
+
     }
 
-    private BigInteger getRights(List<MenuEntity> rights) {
+    private BigInteger getRights(List<Integer> rights) {
         List<Integer> list = new ArrayList<>();
-        for (MenuEntity mi : rights
+        for (Integer mi : rights
         ) {
-            if (mi.getHave())
-                list.add(mi.getId());
+            list.add(mi);
         }
         return BigIntegerUtils.sumRights(list);
     }
@@ -98,9 +77,34 @@ public class RoleServiceImpl implements RoleService {
         List<Integer> checkList = new ArrayList<>();
         Collections.sort(menuEntityList);
         List<Integer> pidList = menuDao.findPids();
+        BigInteger val = BigInteger.ZERO;
+        switch (type) {
+            case "menu":
+                if(role.getRights()!=null)
+                    val = role.getRights();
+                break;
+            case "query":
+                if(role.getQuery()!=null)
+                    val = role.getQuery();
+                break;
+            case "add":
+                if(role.getAdd()!=null)
+                    val = role.getAdd();
+                break;
+            case "change":
+                if(role.getChange()!=null)
+                    val = role.getChange();
+                break;
+            case "del":
+                if(role.getDel()!=null)
+                    val = role.getDel();
+                break;
+            default:
+                break;
+        }
         for (MenuEntity menu : menuEntityList
         ) {
-            if (role.getRights().testBit(menu.getId())) {
+            if (val.testBit(menu.getId())) {
                 if (!pidList.contains(menu.getId()))
                     checkList.add(menu.getId());
                 menu.setHave(true);

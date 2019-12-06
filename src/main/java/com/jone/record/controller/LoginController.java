@@ -54,7 +54,7 @@ public class LoginController extends BaseController {
         UserEntity user = null;
         String imageCode = "";
         if (request.getSession().getAttribute("imageCode") != null)
-            request.getSession().getAttribute("imageCode").toString();
+            imageCode = request.getSession().getAttribute("imageCode").toString();
         try {
             if (StringUtils.isEmpty(object.getLoginName())) {
                 bd.setMessage("请填写登录名");
@@ -71,8 +71,7 @@ public class LoginController extends BaseController {
                     bd.setMessage("用户不存在");
                     bd.setCode(-1);
                 } else {
-                    String pwd = Md5PasswordEncoder.encrypt(object.getPassword(), user.getLoginName());
-                    if (pwd.equals(user.getPassword())) {
+                    if (object.getPassword().equals(user.getPassword())) {
                         pushToken(user, bd, response);
                     } else {
                         bd.setMessage("密码错误");

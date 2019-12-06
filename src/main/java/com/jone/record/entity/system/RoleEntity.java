@@ -11,6 +11,7 @@ import java.util.Objects;
 public class RoleEntity implements Serializable {
     private Integer id;
     private String name;
+    private String desc;
     private BigInteger rights;
     private BigInteger add;
     private BigInteger del;
@@ -37,6 +38,15 @@ public class RoleEntity implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    @Column(name = "desc")
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
     }
 
     @Basic
