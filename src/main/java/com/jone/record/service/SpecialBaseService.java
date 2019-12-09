@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface SpecialBaseService {
 
-    List<TQztSubjectsEntity> listByState(Short state) throws Exception;
+    List<TQztSubjectsEntity> listByState(Integer state) throws Exception;
 
     TQztSubjectsEntity save(TQztSubjectsEntity subjectsEntity,List<MultipartFile> files, UserInfo user) throws Exception;
 

@@ -29,7 +29,7 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
     private NodeContentDao nodeContentDao;
 
     @Override
-    public List<TQztSubjectsEntity> listByState(Short state) throws Exception {
+    public List<TQztSubjectsEntity> listByState(Integer state) throws Exception {
         List<TQztSubjectsEntity> subjectsEntityList = tQztSubjectsDao.findByStateOrderByNumAsc(state);
         for (TQztSubjectsEntity s:subjectsEntityList
              ) {

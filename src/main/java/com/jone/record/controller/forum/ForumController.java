@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping("/forum")
+@RequestMapping("/fzjt")
 @Api(tags = "方志讲堂")
 public class ForumController extends BaseController {
 

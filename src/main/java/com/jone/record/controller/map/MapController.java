@@ -23,8 +23,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping("/map")
-@Api(tags = "志慧地图")
+@RequestMapping("/zhdt")
+@Api(tags = "志慧地图、志慧共享接口")
 public class MapController extends BaseController {
 
     @Autowired

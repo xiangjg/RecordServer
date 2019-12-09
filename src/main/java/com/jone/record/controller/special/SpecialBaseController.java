@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 @RestController
-@RequestMapping("/specialBase")
+@RequestMapping("/qzt")
 @Api(tags = "专题基础信息")
 public class SpecialBaseController extends BaseController {
 
@@ -33,7 +33,7 @@ public class SpecialBaseController extends BaseController {
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ApiOperation(value = "基础信息列表", notes = "输入state")
     @SystemControllerLog(description = "查看基础信息列表")
-    public void list(@RequestParam Short state, HttpServletResponse response) {
+    public void list(@RequestParam Integer state, HttpServletResponse response) {
         try {
             List<TQztSubjectsEntity> subjectsEntityList = specialBaseService.listByState(state);
             printJson(ResultUtil.success(subjectsEntityList), response);

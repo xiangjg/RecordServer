@@ -3,7 +3,7 @@ server:
 spring:
   datasource:
     url: jdbc:postgresql://124.193.98.166:8385/fangzydb
-    password: jonespost
+    password: postgres
     username: postgres
     driver-class-name: org.postgresql.Driver
   jpa:
