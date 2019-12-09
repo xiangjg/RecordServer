@@ -44,22 +44,22 @@ public class KBaseCon {
     private static int _index = 0;
     private static String strLog = "";
 
-    static {
-        try {
-            _index = 0;
-            readConfig ();
-            Class.forName (_driverClass);
-            if (null == _con) {
-                _index++;
-                _con = DriverManager.getConnection (_url, _userName, _password);
-                strLog = String.format ("KBase数据库初始化连接成功,连接了%d次！", _index);
-                loger.info (strLog);
-            }
-        } catch (Exception e) {
-            loger.error ("数据库初始化连接失败！");
-            e.printStackTrace ();
-        }
-    }
+//    static {
+//        try {
+//            _index = 0;
+//            readConfig ();
+//            Class.forName (_driverClass);
+//            if (null == _con) {
+//                _index++;
+//                _con = DriverManager.getConnection (_url, _userName, _password);
+//                strLog = String.format ("KBase数据库初始化连接成功,连接了%d次！", _index);
+//                loger.info (strLog);
+//            }
+//        } catch (Exception e) {
+//            loger.error ("数据库初始化连接失败！");
+//            e.printStackTrace ();
+//        }
+//    }
 
     private static void readConfig() {
         try {
@@ -74,6 +74,7 @@ public class KBaseCon {
             loger.info ("读取数据库配置参数成功！");
         } catch (IOException e) {
             loger.error ("读取配置文件登录信息失败！");
+            e.printStackTrace();
         }
     }
 
@@ -86,6 +87,7 @@ public class KBaseCon {
                 loger.info (strLog);
             } catch (SQLException e) {
                 loger.error ("数据库连接失败！");
+                e.printStackTrace();
             }
         }
         return _con;
