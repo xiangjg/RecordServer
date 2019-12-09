@@ -1,8 +1,8 @@
 server:
-  port: 8088
+  port: 8080
 spring:
   datasource:
-    url: jdbc:postgresql://127.0.0.1:5432/fangzyDB
+    url: jdbc:postgresql://127.0.0.1:5432/fangzydb
     password: jonespost
     username: postgres
     driver-class-name: org.postgresql.Driver
@@ -17,7 +17,7 @@ spring:
   servlet:
     multipart:
       max-file-size: 500MB
-      location: /home/ubuntu/tmp/
+      location: /home/fzy/tmp
       max-request-size: 500MB
   redis:
     host: 127.0.0.1
@@ -35,4 +35,4 @@ kbase:
   url: jdbc:kbase://127.0.0.1:4567
   username: dbown
   password:
-filePath: /home/ubuntu/recordFile
+filePath: /home/fzy/recordFile

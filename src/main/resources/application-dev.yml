@@ -1,8 +1,8 @@
 server:
-  port: 8089
+  port: 8080
 spring:
   datasource:
-    url: jdbc:postgresql://118.126.110.87:5432/fangzyDB
+    url: jdbc:postgresql://124.193.98.166:8385/fangzydb
     password: jonespost
     username: postgres
     driver-class-name: org.postgresql.Driver
@@ -37,4 +37,4 @@ kbase:
   username: dbown
   password:
 #  file
-filePath: /home/xiangjg/dam/file
+filePath: /home/xiangjg/file
