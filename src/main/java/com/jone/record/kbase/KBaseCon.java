@@ -82,10 +82,11 @@ public class KBaseCon {
         if (null == _con) {
             try {
                 _index++;
+                Class.forName(KBaseConfig.getDriverClass());
                 _con = DriverManager.getConnection (KBaseConfig.getUrl (), KBaseConfig.getUserName (), KBaseConfig.getPassword ());
                 strLog = String.format ("KBase数据库初始化连接成功,连接了%d次！", _index);
                 loger.info (strLog);
-            } catch (SQLException e) {
+            } catch (Exception e) {
                 loger.error ("数据库连接失败！");
                 e.printStackTrace();
             }
