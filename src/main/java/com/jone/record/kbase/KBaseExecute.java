@@ -24,11 +24,9 @@ import java.util.List;
 public class KBaseExecute {
 
     private static final Logger loger = LoggerFactory.getLogger(KBaseExecute.class);
-    private Connection _con = null;
 
     public KBaseExecute() {
-        if (null == _con)
-            _con = KBaseCon.GetInitConnect();
+        super();
     }
 
     private JSONArray GetResultSetToJsonObject(ResultSet rst) {
@@ -61,6 +59,7 @@ public class KBaseExecute {
     }
 
     private String GetIamgeFiles(String value) {
+        Connection _con = KBaseCon.GetInitConnect();
         String[] strArr = value.split(";");
         String strImagePath = strArr[0];
         String urlId = strImagePath.substring(0, strImagePath.indexOf("."));
@@ -91,37 +90,8 @@ public class KBaseExecute {
         return strImageFile;
     }
 
-    /**************************************************************/
-    public JSONObject GetBooksNums(JSONObject jsonObject) {
-        JSONObject jsonObj = null;
-        String strSQL = SQLBuilder.GenerateRecordNumsQuerySQL(jsonObject);
-        try {
-            Statement state = _con.createStatement();
-            ResultSet rst = state.executeQuery(strSQL);
-            jsonObj = Common.RSetToString(rst);
-        } catch (SQLException e) {
-            loger.error("{}", e);
-        }
-        return jsonObj;
-    }
-
-    public JSONArray GetHistoryBook(JSONObject jsonObject) {
-        String strSQL = SQLBuilder.GenerateHistoryQuerySQL(jsonObject);
-        if (strSQL.isEmpty()) {
-            return null;
-        }
-        JSONArray jsonArray = new JSONArray(new LinkedList<>());
-        try {
-            Statement state = _con.createStatement();
-            ResultSet rst = state.executeQuery(strSQL);
-            jsonArray = Common.ResultSetToJSONArray(rst);
-        } catch (Exception e) {
-            loger.error("{}", e);
-        }
-        return jsonArray;
-    }
-
     private JSONObject GetPagedQueryObjectInfo(String strSQL, int pageSize) {
+        Connection _con = KBaseCon.GetInitConnect();
         JSONObject titleObject = new JSONObject(new LinkedMap());
         Statement state = null;
         ResultSet rst = null;
@@ -167,6 +137,38 @@ public class KBaseExecute {
         return titleObject;
     }
 
+    /**************************************************************/
+    public JSONObject GetBooksNums(JSONObject jsonObject) {
+        Connection _con = KBaseCon.GetInitConnect();
+        JSONObject jsonObj = null;
+        String strSQL = SQLBuilder.GenerateRecordNumsQuerySQL(jsonObject);
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            jsonObj = Common.RSetToString(rst);
+        } catch (SQLException e) {
+            loger.error("{}", e);
+        }
+        return jsonObj;
+    }
+
+    public JSONArray GetHistoryBook(JSONObject jsonObject) {
+        Connection _con = KBaseCon.GetInitConnect();
+        String strSQL = SQLBuilder.GenerateHistoryQuerySQL(jsonObject);
+        if (strSQL.isEmpty()) {
+            return null;
+        }
+        JSONArray jsonArray = new JSONArray(new LinkedList<>());
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            jsonArray = Common.ResultSetToJSONArray(rst);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonArray;
+    }
+
     public JSONObject GetTitleInfo(JSONObject jsonObject) {
         JSONArray jsonArray = new JSONArray(new LinkedList<>());
         JSONObject titleObject = new JSONObject(new LinkedMap());
@@ -186,6 +188,7 @@ public class KBaseExecute {
         Statement state = null;
         ResultSet rst = null;
         // 查询数据记录信息
+        Connection _con = KBaseCon.GetInitConnect();
         try {
             state = _con.createStatement();
             rst = state.executeQuery(strSQL);
@@ -204,6 +207,7 @@ public class KBaseExecute {
         }
         JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
         List<String> list = new LinkedList<String>();
+        Connection _con = KBaseCon.GetInitConnect();
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
@@ -227,13 +231,13 @@ public class KBaseExecute {
         return jsonObject;
     }
 
-
     public JSONObject GetBookCatalog(JSONObject params) {
         String strSQL = SQLBuilder.GenerateBookCatalogQuerySQL(params);
         if (strSQL.isEmpty()) {
             return null;
         }
         JSONObject catalogObject = new JSONObject(new LinkedMap());
+        Connection _con = KBaseCon.GetInitConnect();
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
@@ -256,6 +260,7 @@ public class KBaseExecute {
             return null;
         }
         JSONObject jsonObj = new JSONObject(new LinkedMap());
+        Connection _con = KBaseCon.GetInitConnect();
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
@@ -266,13 +271,13 @@ public class KBaseExecute {
         return jsonObj;
     }
 
-
     public JSONObject GetBookListByCls(JSONObject params) {
         JSONObject jsonObject = new JSONObject(new LinkedMap());
         jsonObject.put("pageIndex", params.getString("page"));
         String strSQL = SQLBuilder.GenerateRecordNumsQuerySQL(params);
         // 查询并添加记录总数
         String strValue = "";
+        Connection _con = KBaseCon.GetInitConnect();
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
@@ -303,11 +308,8 @@ public class KBaseExecute {
         return jsonObject;
     }
 
-
-    /**
-     * 生成方志动态首页显示内容
-     */
     public JSONArray GetDynamicHomeInfo(JSONObject params) {
+        Connection _con = KBaseCon.GetInitConnect();
         String strSQL = SQLBuilder.GenerateDynamicHomeInfoQuerySQL(params);
         if (strSQL.isEmpty()) {
             loger.error("生成SQL查询语句失败！");
@@ -324,8 +326,8 @@ public class KBaseExecute {
         return jsonArray;
     }
 
-
     public JSONObject GetDynamicTitleList(JSONObject params) {
+        Connection _con = KBaseCon.GetInitConnect();
         JSONObject jsonObject = new JSONObject(new LinkedMap());
         jsonObject.put("pageIndex", params.getString("page"));
 
@@ -351,10 +353,8 @@ public class KBaseExecute {
         return jsonObject;
     }
 
-    /**
-     * 查询方志动态的详细内容
-     * */
     public JSONObject GetDynamicContent(JSONObject params) {
+        Connection _con = KBaseCon.GetInitConnect();
         String strSQL = SQLBuilder.GenerateGetDynamicContentQuerySQL(params);
         if (strSQL.isEmpty()) {
             loger.error("构建查询方志动态的详细内容SQL语句失败！");
@@ -362,15 +362,13 @@ public class KBaseExecute {
         }
 
         JSONObject jsonObject = new JSONObject(new LinkedMap());
-        try{
+        try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             jsonObject = Common.ResultSetToJSONObject(rst);
-        }catch (Exception e){
-            loger.error("{}",e);
+        } catch (Exception e) {
+            loger.error("{}", e);
         }
         return jsonObject;
     }
-
-
 }

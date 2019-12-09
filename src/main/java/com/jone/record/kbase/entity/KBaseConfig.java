@@ -1,4 +1,4 @@
-package com.jone.record.entity;
+package com.jone.record.kbase.entity;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
