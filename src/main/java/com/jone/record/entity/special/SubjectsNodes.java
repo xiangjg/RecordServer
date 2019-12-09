@@ -2,6 +2,7 @@ package com.jone.record.entity.special;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,6 +16,7 @@ public class SubjectsNodes implements Serializable {
     private String name;
     private Integer order;
     private String img;
+    private List<NodeContent> listContent;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -96,6 +98,14 @@ public class SubjectsNodes implements Serializable {
 
     public void setImg(String img) {
         this.img = img;
+    }
+    @Transient
+    public List<NodeContent> getListContent() {
+        return listContent;
+    }
+
+    public void setListContent(List<NodeContent> listContent) {
+        this.listContent = listContent;
     }
 
     @Override

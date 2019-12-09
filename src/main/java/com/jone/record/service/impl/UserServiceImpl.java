@@ -9,6 +9,7 @@ import com.jone.record.entity.system.RoleEntity;
 import com.jone.record.entity.system.UserEntity;
 import com.jone.record.entity.vo.PageParamVo;
 import com.jone.record.entity.vo.PageVo;
+import com.jone.record.entity.vo.registerUserVo;
 import com.jone.record.service.UserService;
 import com.jone.record.util.Md5PasswordEncoder;
 import org.apache.commons.collections.map.HashedMap;
@@ -53,6 +54,11 @@ public class UserServiceImpl implements UserService {
         user.setState(1);
         user.setRegDt(new Date());
         return userDao.save(user);
+    }
+
+    @Override
+    public UserEntity addUser(registerUserVo user) throws Exception {
+        return null;
     }
 
     @Override

@@ -46,7 +46,7 @@ public class SpecialBaseController extends BaseController {
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     @ApiOperation(value = "保存基础信息", notes = "输入基础信息tQztSubjectsEntity及图片文件file")
     @SystemControllerLog(description = "保存基础信息")
-    public void save(@RequestParam TQztSubjectsEntity tQztSubjectsEntity, HttpServletRequest request, HttpServletResponse response) {
+    public void save(@RequestBody TQztSubjectsEntity tQztSubjectsEntity, HttpServletRequest request, HttpServletResponse response) {
         try {
             UserInfo userInfo = getRedisUser(request, redisDao);
             if (null == userInfo) {
@@ -92,7 +92,7 @@ public class SpecialBaseController extends BaseController {
     @RequestMapping(value = "/saveNode", method = RequestMethod.POST)
     @ApiOperation(value = "保存栏目信息", notes = "")
     @SystemControllerLog(description = "保存栏目信息")
-    public void saveNode(@RequestParam SubjectsNodes subjectsNodes, HttpServletResponse response) {
+    public void saveNode(@RequestBody SubjectsNodes subjectsNodes, HttpServletResponse response) {
         try {
             SubjectsNodes subjectsEntity = specialBaseService.save(subjectsNodes);
             printJson(ResultUtil.success(subjectsEntity), response);
@@ -131,7 +131,7 @@ public class SpecialBaseController extends BaseController {
     @RequestMapping(value = "/saveNodeContent", method = RequestMethod.POST)
     @ApiOperation(value = "保存栏目内容", notes = "")
     @SystemControllerLog(description = "保存栏目内容")
-    public void saveNodeContent(@RequestParam NodeContent nodeContent, HttpServletResponse response) {
+    public void saveNodeContent(@RequestBody NodeContent nodeContent, HttpServletResponse response) {
         try {
             nodeContent = specialBaseService.save(nodeContent);
             printJson(ResultUtil.success(nodeContent), response);

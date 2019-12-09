@@ -17,4 +17,8 @@ public class Definition {
      * 个人中心消息类型定义：删除
      */
     public static final int TYPE_MSG_DELETE = -1;
+
+    public static final int TYPE_STATE_INVALID = 0;//无效
+    public static final int TYPE_STATE_VALID = 1;//有效
+    public static final int TYPE_STATE_DELETE = 2;//删除
 }

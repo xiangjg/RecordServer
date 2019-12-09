@@ -6,6 +6,7 @@ import com.jone.record.entity.system.UserEntity;
 import com.jone.record.entity.vo.PageParamVo;
 import com.jone.record.entity.vo.PageVo;
 import com.jone.record.entity.vo.UserInfo;
+import com.jone.record.entity.vo.registerUserVo;
 import com.jone.record.service.RoleService;
 import com.jone.record.service.UserService;
 import com.jone.record.util.ResultUtil;
@@ -62,6 +63,17 @@ public class UserController extends BaseController {
     }
     @RequestMapping(value = "/save", method = RequestMethod.POST)
     public void save(@RequestBody UserEntity user, HttpServletResponse response) {
+        try {
+            userService.addUser(user);
+            printJson(ResultUtil.success(), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    @RequestMapping(value = "/register", method = RequestMethod.POST)
+    public void register(@RequestBody registerUserVo user, HttpServletResponse response) {
         try {
             userService.addUser(user);
             printJson(ResultUtil.success(), response);

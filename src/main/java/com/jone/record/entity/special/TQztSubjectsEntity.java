@@ -19,6 +19,7 @@ public class TQztSubjectsEntity implements Serializable {
     private byte[] img;
     private Short num;
     private List<FileEntity> files;
+    private List<SubjectsNodes> listNode;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -98,6 +99,14 @@ public class TQztSubjectsEntity implements Serializable {
 
     public void setFiles(List<FileEntity> files) {
         this.files = files;
+    }
+    @Transient
+    public List<SubjectsNodes> getListNode() {
+        return listNode;
+    }
+
+    public void setListNode(List<SubjectsNodes> listNode) {
+        this.listNode = listNode;
     }
 
     @Override
