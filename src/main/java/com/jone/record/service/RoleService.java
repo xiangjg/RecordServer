@@ -1,6 +1,5 @@
 package com.jone.record.service;
 
-import com.jone.record.entity.system.MenuEntity;
 import com.jone.record.entity.system.RoleEntity;
 
 import java.util.List;
@@ -17,4 +16,6 @@ public interface RoleService {
     RoleEntity getRoleById(Integer roleId);
 
     Map<String, Object> getMenuList(Integer roleId, String type)throws Exception;
+
+    void delete(Integer roleId)throws Exception;
 }

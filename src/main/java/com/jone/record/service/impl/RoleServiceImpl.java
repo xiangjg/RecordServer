@@ -22,41 +22,42 @@ public class RoleServiceImpl implements RoleService {
 
     @Override
     public void save(RoleEntity role) throws Exception {
-        roleDao.save(role);
+        if(role.getId()!=null){
+            RoleEntity r = roleDao.findById(role.getId()).orElse(null);
+            if(r!=null){
+                r.setDesc(role.getDesc());
+                if(role.getId()!=1)
+                    r.setName(role.getName());
+                roleDao.save(r);
+            }
+        }else{
+            roleDao.save(role);
+        }
     }
 
     @Override
     public void updateRights(Integer roleId, String type, List<Integer> rights) throws Exception {
-        BigInteger newRights = getRights(rights);
+        BigInteger newRights = BigIntegerUtils.sumRights(rights);
         switch (type) {
             case "menu":
-                roleDao.updateRights(roleId, newRights);
+                roleDao.updateRights(roleId, newRights.toString());
                 break;
             case "query":
-                roleDao.updateQuery(roleId, newRights);
+                roleDao.updateQuery(roleId, newRights.toString());
                 break;
             case "add":
-                roleDao.updateAdd(roleId, newRights);
+                roleDao.updateAdd(roleId, newRights.toString());
                 break;
             case "change":
-                roleDao.updateChange(roleId, newRights);
+                roleDao.updateChange(roleId, newRights.toString());
                 break;
             case "del":
-                roleDao.updateDel(roleId, newRights);
+                roleDao.updateDel(roleId, newRights.toString());
                 break;
             default:
                 break;
         }
 
-    }
-
-    private BigInteger getRights(List<Integer> rights) {
-        List<Integer> list = new ArrayList<>();
-        for (Integer mi : rights
-        ) {
-            list.add(mi);
-        }
-        return BigIntegerUtils.sumRights(list);
     }
 
     @Override
@@ -81,23 +82,23 @@ public class RoleServiceImpl implements RoleService {
         switch (type) {
             case "menu":
                 if(role.getRights()!=null)
-                    val = role.getRights();
+                    val = new BigInteger(role.getRights());
                 break;
             case "query":
                 if(role.getQuery()!=null)
-                    val = role.getQuery();
+                    val = new BigInteger(role.getQuery());
                 break;
             case "add":
                 if(role.getAdd()!=null)
-                    val = role.getAdd();
+                    val = new BigInteger(role.getAdd());
                 break;
             case "change":
                 if(role.getChange()!=null)
-                    val = role.getChange();
+                    val = new BigInteger(role.getChange());
                 break;
             case "del":
                 if(role.getDel()!=null)
-                    val = role.getDel();
+                    val = new BigInteger(role.getDel());
                 break;
             default:
                 break;
@@ -130,5 +131,10 @@ public class RoleServiceImpl implements RoleService {
             }
         }
         return resultList;
+    }
+
+    @Override
+    public void delete(Integer roleId) throws Exception {
+        roleDao.deleteById(roleId);
     }
 }

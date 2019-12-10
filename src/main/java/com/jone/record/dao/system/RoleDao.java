@@ -13,17 +13,17 @@ public interface RoleDao extends JpaRepository<RoleEntity, Integer> {
     @Transactional
     @Modifying
     @Query("update RoleEntity r set r.rights = :rights where r.id = :id ")
-    Integer updateRights(@Param("id") Integer id, @Param("rights") BigInteger rights);
+    Integer updateRights(@Param("id") Integer id, @Param("rights") String rights);
     @Transactional
     @Modifying @Query("update RoleEntity r set r.add = :add where r.id = :id ")
-    Integer updateAdd(@Param("id") Integer id, @Param("add") BigInteger add);
+    Integer updateAdd(@Param("id") Integer id, @Param("add") String add);
     @Transactional
     @Modifying @Query("update RoleEntity r set r.del = :del where r.id = :id ")
-    Integer updateDel(@Param("id") Integer id, @Param("del") BigInteger del);
+    Integer updateDel(@Param("id") Integer id, @Param("del") String del);
     @Transactional
     @Modifying @Query("update RoleEntity r set r.change = :change where r.id = :id ")
-    Integer updateChange(@Param("id") Integer id, @Param("change") BigInteger change);
+    Integer updateChange(@Param("id") Integer id, @Param("change") String change);
     @Transactional
     @Modifying @Query("update RoleEntity r set r.query = :query where r.id = :id ")
-    Integer updateQuery(@Param("id") Integer id, @Param("query") BigInteger query);
+    Integer updateQuery(@Param("id") Integer id, @Param("query") String query);
 }
