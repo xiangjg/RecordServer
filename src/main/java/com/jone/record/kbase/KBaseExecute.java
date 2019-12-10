@@ -27,8 +27,8 @@ public class KBaseExecute {
     private Connection _con = null;
 
     public KBaseExecute() {
-        if (null == _con)
-            _con = KBaseCon.GetInitConnect();
+//        if (null == _con)
+//            _con = KBaseCon.GetInitConnect();
     }
 
     private JSONArray GetResultSetToJsonObject(ResultSet rst) {
