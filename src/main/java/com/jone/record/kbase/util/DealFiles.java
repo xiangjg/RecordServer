@@ -14,8 +14,6 @@ import java.util.List;
 
 public class DealFiles {
 
-    private LoadConfig tool = null;
-
     private String strServerFilePath = "";
     private int type = 0;
 
@@ -29,7 +27,6 @@ public class DealFiles {
 
     public DealFiles() {
         super();
-        tool = new LoadConfig();
     }
 
     public String getStrServerFilePath() {

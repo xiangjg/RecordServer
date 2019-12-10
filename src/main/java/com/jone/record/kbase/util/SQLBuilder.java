@@ -61,25 +61,34 @@ public class SQLBuilder {
         strBuilder.append(" from ");
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
         // 添加查询条件
-        if (!params.getString("keyword").isEmpty()) {
-            strBuilder.append(" where title % '");
-            strBuilder.append(params.getString("keyword"));
-            strBuilder.append("'");
+        if (params.containsKey("keyword")) {
+            if (!params.getString("keyword").isEmpty()) {
+                strBuilder.append(" where title % '");
+                strBuilder.append(params.getString("keyword"));
+                strBuilder.append("'");
+            }
         }
         // 判断分页
         int pageSize = 0;
-        pageSize = params.getInteger("pageSize");
-        if (count > pageSize) {
-            int page = params.getInteger("page");
-            int startPage = (page - 1) * pageSize;
-            int endPage = page * pageSize;
-            strBuilder.append(" limit ");
-            strBuilder.append(startPage);
-            strBuilder.append(",");
-            strBuilder.append(endPage);
+        if (params.containsKey("pageSize")) {
+            pageSize = params.getInteger("pageSize");
+            if (count > pageSize) {
+                if (params.containsKey("page")) {
+                    int page = params.getInteger("page");
+                    int startPage = (page - 1) * pageSize;
+                    strBuilder.append(" limit ");
+                    strBuilder.append(startPage);
+                    strBuilder.append(",");
+                    strBuilder.append(pageSize);
+                }
+            } else {
+                strBuilder.append(" limit 0,");
+                strBuilder.append(count);
+            }
+        } else {
+            strBuilder.append(" limit 0,10");
         }
-        String strSQL = strBuilder.toString().toUpperCase();
-        return strSQL;
+        return strBuilder.toString().toUpperCase();
     }
 
     /**
@@ -93,9 +102,11 @@ public class SQLBuilder {
         strBuilder.append(" where SYS_FLD_CLASSFICATION='");
         strBuilder.append(EClsInfo.GetClsCodeByCode(params.getString("cls")));
         strBuilder.append("'");
-        strBuilder.append(" and ISONLINE='");
-        strBuilder.append(params.getString("state"));
-        strBuilder.append("'");
+        if (params.containsKey("state")) {
+            strBuilder.append(" and ISONLINE='");
+            strBuilder.append(params.getString("state"));
+            strBuilder.append("'");
+        }
         return strBuilder.toString().toUpperCase();
     }
 
