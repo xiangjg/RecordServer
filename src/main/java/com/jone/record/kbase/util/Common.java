@@ -51,6 +51,10 @@ public class Common {
                 for (int i = 1; i <= column; i++) {
                     strKey = rsMetaData.getColumnName(i);
                     strValue = rst.getString(strKey);
+                    if (strKey.equals("SYS_FLD_FILEPATH") || strKey.equals("SYS_FLD_COVERPATH")) {
+                        strValue = strValue.replace('\\', '/');
+                        strValue = Common.GetFilePath() + strValue;
+                    }
                     jsonObject.put(strKey, strValue);
                 }
             }
@@ -121,6 +125,41 @@ public class Common {
         }
         return jsonArray;
     }
+
+    public static JSONObject YearBookListToJSONObject(ResultSet rst) {
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        try {
+            ResultSetMetaData rsMetaData = rst.getMetaData();
+            int column = rsMetaData.getColumnCount();
+            String strKey = "";
+            String strValue = "";
+            JSONArray jsonArray = new JSONArray(new LinkedList<>());
+            List<String> strYearList = new LinkedList<String>();
+            while (rst.next()) {
+                JSONObject object = new JSONObject(new LinkedHashMap<>());
+                for (int i = 1; i <= column; i++) {
+                    strKey = rsMetaData.getColumnName(i);
+                    strValue = rst.getString(strKey);
+                    if (strKey.equals("SYS_FLD_FILEPATH") || strKey.equals("SYS_FLD_COVERPATH")) {
+                        strValue = strValue.replace('\\', '/');
+                        strValue = Common.GetFilePath() + strValue;
+                    } else if (strKey.equals("ISBN")) {
+                        String strYear = strValue.substring(strValue.length() - 4, strValue.length());
+                        strKey = "YEAR";
+                        strValue = strYear;
+                    }
+                    object.put(strKey, strValue);
+                }
+                jsonArray.add(object);
+            }
+            jsonObject.put("timeAround", strYearList);
+            jsonObject.put("content", jsonArray);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonObject;
+    }
+
 
     /**
      * ResultSet结果集转换为JSON字符串
@@ -194,8 +233,8 @@ public class Common {
             addr = InetAddress.getLocalHost();
             String hostname = addr.getHostAddress();
             strIpAddress = String.format("http://%s/gzsfzy", hostname);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
+        } catch (Exception e) {
+            loger.error("{}", e);
         }
         return strIpAddress;
     }
@@ -207,6 +246,30 @@ public class Common {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
         String strDay = format.format(today);
         return strDay;
+    }
+
+    public static List<String> AnalysisYearAround(ResultSet rst) {
+        List<String> list = new LinkedList<String>();
+        try {
+            ResultSetMetaData rsMetaData = rst.getMetaData();
+            int column = rsMetaData.getColumnCount();
+            String strKey = "";
+            String strValue = "";
+            while (rst.next()) {
+                for (int i = 1; i <= column; i++) {
+                    strKey = rsMetaData.getColumnName(i);
+                    strValue = rst.getString(strKey);
+                    if (strKey.equals("NAME")) {
+                        int len = strValue.length();
+                        String strYear = strValue.substring(len - 4, len);
+                        list.add(strYear);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return list;
     }
 
 }

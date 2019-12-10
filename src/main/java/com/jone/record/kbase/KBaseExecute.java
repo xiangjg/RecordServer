@@ -16,7 +16,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -152,9 +151,26 @@ public class KBaseExecute {
         return jsonObj;
     }
 
-    public JSONArray GetHistoryBook(JSONObject jsonObject) {
+    public JSONObject GetHistoryBook(JSONObject params) {
         Connection _con = KBaseCon.GetInitConnect();
-        String strSQL = SQLBuilder.GenerateHistoryQuerySQL(jsonObject);
+        String strSQL = SQLBuilder.GenerateHistoryNumsQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            return null;
+        }
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            int count = 0;
+            while (rst.next()) {
+                count = rst.getInt("count");
+            }
+            jsonObject.put("count", count);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+
+        strSQL = SQLBuilder.GenerateHistoryQuerySQL(params);
         if (strSQL.isEmpty()) {
             return null;
         }
@@ -163,10 +179,11 @@ public class KBaseExecute {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             jsonArray = Common.ResultSetToJSONArray(rst);
+            jsonObject.put("content", jsonArray);
         } catch (Exception e) {
             loger.error("{}", e);
         }
-        return jsonArray;
+        return jsonObject;
     }
 
     public JSONObject GetTitleInfo(JSONObject jsonObject) {
@@ -371,4 +388,80 @@ public class KBaseExecute {
         }
         return jsonObject;
     }
+
+    public JSONObject GetYearBookList(JSONObject params) {
+        String strSQL = SQLBuilder.GenerateGetYearBookListNumsQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            loger.error("构建查询年鉴列表数量 SQL 语句失败！");
+            return null;
+        }
+        Connection _con = KBaseCon.GetInitConnect();
+        int count = 0;
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            while (rst.next()) {
+                count = rst.getInt("NUM");
+            }
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+
+        // 查询年份范围
+        List<String> strYearList = new LinkedList<String>();
+        if (params.containsKey("year")) {
+            String strYear = params.getString("year");
+            if (strYear.isEmpty()) {
+                strSQL = SQLBuilder.GenerateGetYearBookTimeAroundQuerySQL();
+                if (strSQL.isEmpty()) {
+                    loger.error("构建查询年鉴列表时间范围 SQL 语句失败！");
+                    return null;
+                }
+                try {
+                    Statement state = _con.createStatement();
+                    ResultSet rst = state.executeQuery(strSQL);
+                    strYearList = Common.AnalysisYearAround(rst);
+                } catch (Exception e) {
+                    loger.error("{}", e);
+                }
+            }
+        }
+        // 查询书籍内容
+        strSQL = SQLBuilder.GenerateGetYearBookListQuerySQL(params, count);
+        if (strSQL.isEmpty()) {
+            loger.error("构建查询年鉴列表 SQL 语句失败！");
+            return null;
+        }
+
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            jsonObject = Common.YearBookListToJSONObject(rst);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        jsonObject.put("timeAround", strYearList);
+        return jsonObject;
+    }
+
+
+    public JSONObject GetSingleBookInfo(JSONObject param) {
+        Connection _con = KBaseCon.GetInitConnect();
+        String strSQL = SQLBuilder.GenerateSingleBookInfoQuerySQL(param);
+        if (strSQL.isEmpty()) {
+            loger.error("构建查询单本书籍基本信息SQL语句失败！");
+            return null;
+        }
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            jsonObject = Common.ResultSetToJSONObject(rst);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonObject;
+    }
+
 }

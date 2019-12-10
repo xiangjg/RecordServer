@@ -1,5 +1,5 @@
 server:
-  port: 8088
+  port: 8089
 spring:
   datasource:
     url: jdbc:postgresql://124.193.98.166:8385/fangzydb
