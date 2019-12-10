@@ -97,7 +97,6 @@ public class UserController extends BaseController {
     @RequestMapping(value = "/delete", method = RequestMethod.POST)
     public void delete(@RequestParam Integer userId, HttpServletResponse response, HttpServletRequest request) {
         UserInfo cUser = getRedisUser(request, redisDao);
-        System.out.println(cUser.toString());
         if (cUser == null || cUser.getRole().getId() != 1)
             printJson(ResultUtil.error(-1, "该用户无操作权限"), response);
         else {

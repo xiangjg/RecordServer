@@ -3,7 +3,9 @@ package com.jone.record.controller.system;
 import com.jone.record.controller.BaseController;
 import com.jone.record.dao.RedisDao;
 import com.jone.record.entity.system.RoleEntity;
+import com.jone.record.entity.system.UserEntity;
 import com.jone.record.entity.vo.RoleRightsVo;
+import com.jone.record.entity.vo.UserInfo;
 import com.jone.record.service.RoleService;
 import com.jone.record.service.UserService;
 import com.jone.record.util.ResultUtil;
@@ -12,11 +14,9 @@ import io.swagger.annotations.ApiOperation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
@@ -66,6 +66,32 @@ public class RoleController extends BaseController {
         }catch (Exception e){
             logger.error("{}",e);
             printJson(ResultUtil.error(-1,e.getMessage()),response);
+        }
+    }
+
+    @RequestMapping(value = "/delete", method = RequestMethod.POST)
+    public void delete(@RequestParam Integer roleId, HttpServletResponse response, HttpServletRequest request) {
+        if (roleId == 1)
+            printJson(ResultUtil.error(-1, "不能删除超级管理员"), response);
+        else {
+            try {
+                roleService.delete(roleId);
+                printJson(ResultUtil.success(), response);
+            } catch (Exception e) {
+                logger.error("{}", e);
+                printJson(ResultUtil.error(-1, e.getMessage()), response);
+            }
+        }
+    }
+
+    @RequestMapping(value = "/save", method = RequestMethod.POST)
+    public void save(@RequestBody RoleEntity role, HttpServletResponse response) {
+        try {
+            roleService.save(role);
+            printJson(ResultUtil.success(), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
 }

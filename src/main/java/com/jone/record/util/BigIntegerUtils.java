@@ -25,6 +25,7 @@ public class BigIntegerUtils {
         for (int i = 1; i < 7; i++) {
             rights.add(i);
         }
+        rights.add(73);
         System.out.println(sumRights(rights));
 
         System.out.println(testRights(BigInteger.valueOf(17592180801534L), 20));

@@ -10,4 +10,9 @@ public interface MenuDao extends JpaRepository<MenuEntity, Integer> {
 
     @Query(value = "select distinct m.pid from MenuEntity m")
     List<Integer> findPids();
+
+    List<MenuEntity> findByLevel(Integer level);
+
+    @Query(value = "select distinct m.level from MenuEntity m")
+    List<Integer> findLevels();
 }

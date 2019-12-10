@@ -2,7 +2,6 @@ package com.jone.record.entity.system;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.math.BigInteger;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,11 +11,11 @@ public class RoleEntity implements Serializable {
     private Integer id;
     private String name;
     private String desc;
-    private BigInteger rights;
-    private BigInteger add;
-    private BigInteger del;
-    private BigInteger change;
-    private BigInteger query;
+    private String rights;
+    private String add;
+    private String del;
+    private String change;
+    private String query;
     private List<MenuEntity> menus;
 
     @Id
@@ -40,7 +39,7 @@ public class RoleEntity implements Serializable {
         this.name = name;
     }
 
-    @Column(name = "desc")
+    @Column(name = "_desc")
     public String getDesc() {
         return desc;
     }
@@ -51,51 +50,51 @@ public class RoleEntity implements Serializable {
 
     @Basic
     @Column(name = "rights")
-    public BigInteger getRights() {
+    public String getRights() {
         return rights;
     }
 
-    public void setRights(BigInteger rights) {
+    public void setRights(String rights) {
         this.rights = rights;
     }
 
     @Basic
     @Column(name = "add")
-    public BigInteger getAdd() {
+    public String getAdd() {
         return add;
     }
 
-    public void setAdd(BigInteger add) {
+    public void setAdd(String add) {
         this.add = add;
     }
 
     @Basic
     @Column(name = "del")
-    public BigInteger getDel() {
+    public String getDel() {
         return del;
     }
 
-    public void setDel(BigInteger del) {
+    public void setDel(String del) {
         this.del = del;
     }
 
     @Basic
     @Column(name = "change")
-    public BigInteger getChange() {
+    public String getChange() {
         return change;
     }
 
-    public void setChange(BigInteger change) {
+    public void setChange(String change) {
         this.change = change;
     }
 
     @Basic
     @Column(name = "query")
-    public BigInteger getQuery() {
+    public String getQuery() {
         return query;
     }
 
-    public void setQuery(BigInteger query) {
+    public void setQuery(String query) {
         this.query = query;
     }
     @Transient

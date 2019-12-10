@@ -9,14 +9,12 @@ import com.jone.record.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/menu")
@@ -62,6 +60,30 @@ public class MenuController extends BaseController {
         try {
             menuService.save(menuEntity);
             printJson(ResultUtil.success(), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    @RequestMapping(value = "/listLevel", method = RequestMethod.POST)
+    @ApiOperation(value = "菜单等级列表", notes = "")
+    public void listLevel(HttpServletResponse response) {
+        try {
+            List<Map<String, Object>> menuList = menuService.listLevel();
+            printJson(ResultUtil.success(menuList), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    @RequestMapping(value = "/findByLevel", method = RequestMethod.POST)
+    @ApiOperation(value = "根据菜单等级获取列表", notes = "")
+    public void findByLevel(@RequestParam Integer level, HttpServletResponse response) {
+        try {
+            List<MenuEntity> menuList = menuService.findByLevel(level);
+            printJson(ResultUtil.success(menuList), response);
         } catch (Exception e) {
             logger.error("{}", e);
             printJson(ResultUtil.error(-1, e.getMessage()), response);
