@@ -158,6 +158,34 @@ public class SQLBuilder {
         return strBuilder.toString().toUpperCase();
     }
 
+    public static String GenerateHistoryNumsQuerySQL(JSONObject params) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select count(*) as count from ");
+        strBuilder.append(EBookTableInfo.GetTableNameByCode(params.getString("type")));
+        strBuilder.append(" where ");
+        // 添加发布状态
+        String strState = "";
+        if (params.containsKey("state")) {
+            strState = params.getString("state");
+            if (!strState.isEmpty()) {
+                strBuilder.append("ISONLINE=");
+                strBuilder.append(strState);
+            }
+        }else {
+            strBuilder.append("ISONLINE=1");
+        }
+        // 标题查询
+        if (params.containsKey("keyword")) {
+            if (!params.getString("keyword").isEmpty()) {
+                strBuilder.append(" and name='");
+                strBuilder.append(params.getString("keyword"));
+                strBuilder.append("'");
+            }
+        }
+
+        return strBuilder.toString().toUpperCase();
+    }
+
     public static String GenerateHistoryQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("select ");
@@ -166,13 +194,22 @@ public class SQLBuilder {
         strBuilder.append(EBookTableInfo.GetTableNameByCode(params.getString("type")));
         strBuilder.append(" where ");
         // 取上架上架状态的志书
-        strBuilder.append("ISONLINE=");
-        strBuilder.append(params.getString("state"));
+        if (params.containsKey("state")) {
+            String strState = params.getString("state");
+            if (!strState.isEmpty()) {
+                strBuilder.append("ISONLINE=");
+                strBuilder.append(strState);
+            }
+        }else {
+            strBuilder.append("ISONLINE=1");
+        }
         // 标题查询
-        if (!params.getString("title").isEmpty()) {
-            strBuilder.append(" and name='");
-            strBuilder.append(params.getString("title"));
-            strBuilder.append("'");
+        if (params.containsKey("keyword")) {
+            if (!params.getString("keyword").isEmpty()) {
+                strBuilder.append(" and name='");
+                strBuilder.append(params.getString("keyword"));
+                strBuilder.append("'");
+            }
         }
         // 分页查询显示 默认 第1页，每页10条
         strBuilder.append(" limit ");
@@ -310,5 +347,89 @@ public class SQLBuilder {
         String strSQL = strBuilder.toString().toUpperCase();
         return strSQL;
     }
+
+    /**
+     * 查询单本书籍的基本信息的SQL语句
+     */
+    public static String GenerateSingleBookInfoQuerySQL(JSONObject params) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select ");
+        strBuilder.append(EFieldInfo.GetFieldsByCode(params.getString("type")));
+        strBuilder.append(" from ");
+        strBuilder.append(EBookTableInfo.GetTableNameByCode(params.getString("type")));
+
+        if (params.containsKey("SYS_FLD_DOI"))
+        strBuilder.append(" where SYS_FLD_DOI='");
+        strBuilder.append(params.getString("id"));
+        strBuilder.append("'");
+        return strBuilder.toString().toUpperCase();
+    }
+
+    /**
+     * 构造查询年鉴列表数量 SQL语句
+     */
+    public static String GenerateGetYearBookListNumsQuerySQL(JSONObject params) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select count(*) as num from DPM_YEARBOOKYEARINFO ");
+        if (params.containsKey("year")) {
+            String year = params.getString("year");
+            if (!year.isEmpty()) {
+                strBuilder.append("where name % '");
+                strBuilder.append(year);
+                strBuilder.append("'");
+            }
+        }
+        return strBuilder.toString().toUpperCase();
+    }
+
+    public static String GenerateGetYearBookTimeAroundQuerySQL() {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select NAME from DPM_YEARBOOKYEARINFO group by name order by name desc");
+        return strBuilder.toString().toUpperCase();
+    }
+
+    public static String GenerateGetYearBookListQuerySQL(JSONObject params, int count) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select NAME,ISSUEDEP,ISSUEDATE,ISBN,SYS_FLD_DOI,SYS_FLD_COVERPATH from DPM_YEARBOOKYEARINFO ");
+
+        // 添加年度查询条件
+        if (params.containsKey("year")) {
+            String year = params.getString("year");
+            if (!year.isEmpty()) {
+                strBuilder.append("where name % '");
+                strBuilder.append(year);
+                strBuilder.append("'");
+            }
+        }
+
+        // 排序
+        strBuilder.append(" order by name desc");
+
+        // 添加分页
+        if (count <= 10) {
+            strBuilder.append(" limit 0,");
+            strBuilder.append(count);
+        } else {
+            int pageSize = 0;
+            if (params.containsKey("pageSize")) {
+                pageSize = params.getInteger("pageSize");
+                int page = 0;
+                if (params.containsKey("page")) {
+                    page = params.getInteger("page");
+                    int start = (page - 1) * pageSize;
+                    strBuilder.append(" limit ");
+                    strBuilder.append(start);
+                    strBuilder.append(",");
+                    strBuilder.append(pageSize);
+                }
+            }
+        }
+        return strBuilder.toString().toUpperCase();
+    }
+
+    /**
+     * 构造查询期刊年份区间SQL语句
+     */
+
 
 }

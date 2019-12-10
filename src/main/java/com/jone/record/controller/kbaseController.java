@@ -60,19 +60,19 @@ public class kbaseController extends BaseController {
      *
      * @return 返回JSON格式字符串
      * @params 输入JSONObject对象
-     * 输入参数示例：{"type":"1","state":"1","page":"1","pageSize":"10","title":"贵州省*"}
+     * 输入参数示例：{"type":"1","state":"1","page":"1","pageSize":"10","keyword":"贵州省*"}
      * 资源类型，type：1，志书；2，年鉴；3，地方史；4，地情资料;
      * 上下状态，state：0，下架；1，上架；
      * 显示页码，page：分页查询，当前显示第几页，默认显示第 1 页；
      * 每页显示，pageSize：每页显示记录数，默认为 10 条；
      * 检索标题，title：根据书名进行检索。
      */
-    @RequestMapping(value = "/GetHistoryBook", method = RequestMethod.POST)
+    @RequestMapping(value = "/GetBooksInfo", method = RequestMethod.POST)
     @ApiOperation(value = "根据标题获取书籍列表信息", notes = "输入JSONObject参数：资源类型type，上下架state，显示页码page，每页显示数量pageSize,检索标题title")
-    public void GetHistoryBook(@RequestBody JSONObject params, HttpServletResponse response) {
+    public void GetBooksInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
-            JSONArray jsonArray = kbaseTools.GetHistoryBook(params);
-            printJson(ResultUtil.success(jsonArray), response);
+            JSONObject jsonObject = kbaseTools.GetHistoryBook(params);
+            printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
             logger.error("{}", e);
             printJson(ResultUtil.error(-1, e.getMessage()), response);
@@ -238,9 +238,9 @@ public class kbaseController extends BaseController {
      * @params JSON字符串，如：{"id":"192"}
      * @ID 查询记录的ID
      */
-    @RequestMapping(value = "/getDynamicContent", method = RequestMethod.POST)
+    @RequestMapping(value = "/GetDynamicContent", method = RequestMethod.POST)
     @ApiOperation(value = "查询方志动态详细内容", notes = "输入JSONObject参数：记录ID-id")
-    public void getDynamicContent(@RequestBody JSONObject params, HttpServletResponse response) {
+    public void GetDynamicContent(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
             JSONObject jsonObject = kbaseTools.GetDynamicContent(params);
             printJson(ResultUtil.success(jsonObject), response);
@@ -248,4 +248,56 @@ public class kbaseController extends BaseController {
             loger.error("{}", e);
         }
     }
+
+    /**
+     * 查询年鉴列表
+     *
+     * @return 返回JSON格式字符串
+     * @params 输入JSONObject对象，如：{"year":"2008","page":"1","pageSize":"10"}
+     * @year 输入查询年限
+     * @page 查询页索引，默认查询第 1 页
+     * @pageSize 每页显示数据条数，默认显示 1 条
+     */
+    @RequestMapping(value = "GetYearBookList", method = RequestMethod.POST)
+    @ApiOperation(value = "查询年鉴列表信息", notes = "输入JSONObject对象，查询年份-year，查询页索引-page，每页显示数据条数-pageSize")
+    public void GetYearBookList(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject jsonObject = kbaseTools.GetYearBookList(params);
+            printJson(ResultUtil.success(jsonObject), response);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+    }
+
+    /**
+     * 查询单本书籍的信息
+     *
+     * @return 返回书籍的基本信息
+     * @params 输入JSONObject对象，如：{"type":"1","id":"2811FAE6-17BF-48e8-B1A4-A93A525F5B04","keyword":"贵州"}
+     * @type 书籍类型：志书：1；年鉴：2；地情资料：3；地方史：4；期刊，5
+     * @id 书籍的GUID，为GUID格式的字符串，"2811FAE6-17BF-48e8-B1A4-A93A525F5B04"
+     * @keyword 查询关键词，可以为空
+     */
+    @RequestMapping(value = "GetSingleBookInfo", method = RequestMethod.POST)
+    @ApiOperation(value = "查询单本书籍的信息", notes = "输入JSONObject对象，资源类型-type，书籍的GUID-id")
+    public void GetSingleBookInfo(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject jsonObject = kbaseTools.GetSingleBookInfo(params);
+            printJson(ResultUtil.success(jsonObject), response);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+    }
+
+    /**
+     * 查询书籍和目录信息
+     *
+     * @params 输入JSONObject对象，格式为 {"type":"1","keyword":"地质构造","page":"1","pageSize":"10"}
+     */
+    public void SearchBookChapter(@RequestBody JSONObject params, HttpServletResponse response){
+
+    }
+
+
+
 }
