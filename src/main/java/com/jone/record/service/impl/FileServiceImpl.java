@@ -29,9 +29,9 @@ public class FileServiceImpl implements FileService {
     private TypeDao typeDao;
 
     @Override
-    public List<FileEntity> upload(List<MultipartFile> files, Integer type, UserInfo userInfo) throws Exception {
+    public List<FileEntity> upload(List<MultipartFile> files, Integer type, Integer refId, UserInfo userInfo) throws Exception {
         List<FileEntity> list = new ArrayList<>();
-        TypeEntity typeEntity = typeDao.findByTypeAndRef(type, "file");
+        TypeEntity typeEntity = typeDao.findByType(type);
         if (typeEntity == null)
             throw new Exception("没有该类型定义");
         if (files == null || files.size() == 0)
@@ -54,6 +54,7 @@ public class FileServiceImpl implements FileService {
                 fileEntity.setCreateTime(now);
                 fileEntity.setUserId(userInfo.getUserId());
                 fileEntity.setUserName(userInfo.getUserName());
+                fileEntity.setRefId(refId);
 
                 File file1 = new File(filePath + File.separator + type + File.separator + fileName);
                 FileUtils.writeByteArrayToFile(file1, data);

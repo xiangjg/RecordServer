@@ -2,9 +2,13 @@ package com.jone.record.config;
 
 public class Definition {
     /**
-     * 专题基础信息图片
+     * 专题-基础信息图片
      */
     public static final int TYPE_FILE_SPECIAL = 1;
+    /**
+     * 专题-栏目附件
+     */
+    public static final int TYPE_FILE_COLUMN = 2;
     /**
      * 个人中心消息类型定义：未读
      */

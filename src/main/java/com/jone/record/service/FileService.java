@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface FileService {
 
-    List<FileEntity> upload(List<MultipartFile> files, Integer type, UserInfo userInfo) throws Exception;
+    List<FileEntity> upload(List<MultipartFile> files, Integer type, Integer refId, UserInfo userInfo) throws Exception;
 
     FileEntity getFile(Integer id) throws Exception;
 

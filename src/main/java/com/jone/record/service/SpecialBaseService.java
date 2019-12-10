@@ -12,7 +12,7 @@ public interface SpecialBaseService {
 
     List<TQztSubjectsEntity> listByState(Integer state) throws Exception;
 
-    TQztSubjectsEntity save(TQztSubjectsEntity subjectsEntity,List<MultipartFile> files, UserInfo user) throws Exception;
+    TQztSubjectsEntity save(TQztSubjectsEntity subjectsEntity, UserInfo user) throws Exception;
 
     void delete(Integer id) throws Exception;
 

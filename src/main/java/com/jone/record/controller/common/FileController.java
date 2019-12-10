@@ -35,7 +35,7 @@ public class FileController extends BaseController {
 
     @RequestMapping(value = "/saveFile",method = RequestMethod.POST)
     @ApiOperation(value="上传文件", notes="传入文件类型type和文件数据列表file")
-    public void saveFile(@RequestParam Integer type,  HttpServletRequest request, HttpServletResponse response){
+    public void saveFile(@RequestParam Integer type, @RequestParam Integer refId,  HttpServletRequest request, HttpServletResponse response){
         BaseData baseData = new BaseData();
         try{
             UserInfo userInfo = getRedisUser(request,redisDao);
@@ -45,7 +45,7 @@ public class FileController extends BaseController {
             }else {
                 MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
                 List<MultipartFile> files = multiRequest.getFiles("file");
-                baseData.setData(fileService.upload(files, type, userInfo));
+                baseData.setData(fileService.upload(files, type, refId, userInfo));
                 baseData.setCode(1);
             }
         }catch (Exception e){

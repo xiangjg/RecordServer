@@ -89,7 +89,7 @@ public class NodeContent implements Serializable {
     }
 
     @Basic
-    @Column(name = "order")
+    @Column(name = "_order")
     public Integer  getOrder() {
         return order;
     }

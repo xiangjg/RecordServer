@@ -5,6 +5,7 @@ import com.jone.record.entity.file.FileEntity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -18,6 +19,7 @@ public class TQztSubjectsEntity implements Serializable {
     private Integer state;
     private byte[] img;
     private Short num;
+    private Date createDate;
     private List<FileEntity> files;
     private List<SubjectsNodes> listNode;
 
@@ -33,6 +35,15 @@ public class TQztSubjectsEntity implements Serializable {
         this.id = id;
     }
 
+    @Column(name = "create_dt")
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
+
     @Basic
     @Column(name = "name")
     public String getName() {
@@ -44,7 +55,7 @@ public class TQztSubjectsEntity implements Serializable {
     }
 
     @Basic
-    @Column(name = "desc")
+    @Column(name = "_desc")
     public String getDesc() {
         return desc;
     }
@@ -84,7 +95,7 @@ public class TQztSubjectsEntity implements Serializable {
     }
 
     @Basic
-    @Column(name = "order")
+    @Column(name = "_order")
     public Short getNum() {
         return num;
     }
