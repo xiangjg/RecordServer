@@ -441,6 +441,7 @@ public class KBaseExecute {
         } catch (Exception e) {
             loger.error("{}", e);
         }
+        jsonObject.put("count", count);
         jsonObject.put("timeAround", strYearList);
         return jsonObject;
     }
@@ -458,6 +459,104 @@ public class KBaseExecute {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             jsonObject = Common.ResultSetToJSONObject(rst);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonObject;
+    }
+
+    public JSONObject GetJournalInfo(JSONObject params) {
+        Connection _con = KBaseCon.GetInitConnect();
+        // 查询满足条件的记录数
+        String strSQL = SQLBuilder.GenerateJournalInfoNumsQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            loger.error("构建查询单本书籍基本信息SQL语句失败！");
+            return null;
+        }
+        int count = 0;
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            while (rst.next()) {
+                count = rst.getInt("count");
+            }
+            jsonObject.put("count", count);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        // 查询满足条件的期刊信息
+        strSQL = SQLBuilder.GenerateJournalInfoQuerySQL(params, count);
+        try {
+            JSONArray jsonArray = new JSONArray(new LinkedList<>());
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            jsonArray = Common.ResultSetToJSONArray(rst);
+            jsonObject.put("content", jsonArray);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonObject;
+    }
+
+    public JSONObject GetJournalYearInfo(JSONObject params) {
+        Connection _con = KBaseCon.GetInitConnect();
+        // 查询满足条件的总记录数
+        String strSQL = SQLBuilder.GenerateGetJournalYearInfoNumsQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            loger.error("构建查询单本书籍基本信息SQL语句失败！");
+            return null;
+        }
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        int count = 0;
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            while (rst.next()) {
+                count = rst.getInt("count");
+            }
+            jsonObject.put("count", count);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+
+        // 查询年份范围
+        List<String> strYearList = new LinkedList<String>();
+        if (params.containsKey("year")) {
+            String strYear = params.getString("year");
+            if (strYear.isEmpty()) {
+                strSQL = SQLBuilder.GenerateGetJournalYearInfoTimeAroundQuerySQL(params.getString("id"));
+                if (strSQL.isEmpty()) {
+                    loger.error("构建查询期刊列表时间范围 SQL 语句失败！");
+                    return null;
+                }
+                try {
+                    String strYearInfo = "";
+                    Statement state = _con.createStatement();
+                    ResultSet rst = state.executeQuery(strSQL);
+                    while (rst.next()) {
+                        strYearInfo = rst.getString("year");
+                        strYearList.add(strYearInfo);
+                    }
+
+                } catch (Exception e) {
+                    loger.error("{}", e);
+                }
+            }
+        }
+        jsonObject.put("timeAround", strYearList);
+        // 查询期刊内容信息
+        strSQL = SQLBuilder.GenerateGetJournalYearInfoQuerySQL(params, count);
+        if (strSQL.isEmpty()) {
+            loger.error("构建查询单本书籍基本信息SQL语句失败！");
+            return null;
+        }
+        try {
+            JSONArray jsonArray = new JSONArray(new LinkedList<>());
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            jsonArray = Common.ResultSetToJSONArray(rst);
+            jsonObject.put("content", jsonArray);
         } catch (Exception e) {
             loger.error("{}", e);
         }

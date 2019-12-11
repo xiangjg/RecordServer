@@ -19,6 +19,17 @@ import com.jone.record.kbase.KBaseExecute;
 import javax.servlet.http.HttpServletResponse;
 
 
+/**
+ * 资源类型约定
+ * 志书   1
+ * 年鉴   2
+ * 期刊   3
+ * 地情资料     4
+ * 多媒体       5
+ * 后续有资源往后追加
+ */
+
+
 @CrossOrigin
 @RestController
 @RequestMapping("/books")
@@ -246,6 +257,7 @@ public class kbaseController extends BaseController {
             printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
             loger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
 
@@ -266,6 +278,7 @@ public class kbaseController extends BaseController {
             printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
             loger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
 
@@ -286,18 +299,61 @@ public class kbaseController extends BaseController {
             printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
             loger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
+
+    /**
+     * 查询期刊基本信息
+     *
+     * @return 返回JSON格式字符串
+     * @params 输入JSONObject对象，格式为 {"keyword":"贵州文史","page":"1","pageSize":"10"}
+     * @keyword 查询的关键词
+     * @page 显示页索引
+     * @pageSize 每页显示记录数
+     */
+    @RequestMapping(value = "GetJournalInfo", method = RequestMethod.POST)
+    @ApiOperation(value = "查询期刊基本信息", notes = "输入JSONObject对象，查询关键词-keyword，显示页索引-page，每页显示记录数-pageSize")
+    public void GetJournalInfo(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject jsonObject = kbaseTools.GetJournalInfo(params);
+            printJson(ResultUtil.success(jsonObject), response);
+        } catch (Exception e) {
+            loger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    /**
+     * 查询期刊的年期信息
+     *
+     * @params 输入JSONObject对象，格式为 {"id":"zdfz","year":"","page":"1","pageSize":"10"}
+     * @id 期刊ID号
+     * @year 期刊年份
+     * page 查询页索引，默认查询第 1 页
+     * @pageSize 每页显示记录数，默认显示 10 条
+     */
+    @RequestMapping(value = "GetJournalYearInfo", method = RequestMethod.POST)
+    @ApiOperation(value = "查询期刊的年期信息", notes = "输入JSONObject对象，期刊ID号-id，期刊年份-year，查询页索引-page，每页显示记录数-pageSize")
+    public void GetJournalYearInfo(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject jsonObject = kbaseTools.GetJournalYearInfo(params);
+            printJson(ResultUtil.success(jsonObject), response);
+        } catch (Exception e) {
+            loger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
 
     /**
      * 查询书籍和目录信息
      *
      * @params 输入JSONObject对象，格式为 {"type":"1","keyword":"地质构造","page":"1","pageSize":"10"}
      */
-    public void SearchBookChapter(@RequestBody JSONObject params, HttpServletResponse response){
+    public void SearchBookChapter(@RequestBody JSONObject params, HttpServletResponse response) {
 
     }
-
 
 
 }

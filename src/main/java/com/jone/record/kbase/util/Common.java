@@ -115,6 +115,9 @@ public class Common {
                     if (strKey.equals("SYS_FLD_FILEPATH") || strKey.equals("SYS_FLD_COVERPATH")) {
                         strValue = strValue.replace('\\', '/');
                         strValue = Common.GetFilePath() + strValue;
+                    } else if (strKey.equals("FOUNDDATE")) {
+                        if (strValue.length() > 10)
+                            strValue = strValue.substring(0, 10);
                     }
                     jsonObject.put(strKey, strValue);
                 }

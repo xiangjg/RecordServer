@@ -171,7 +171,7 @@ public class SQLBuilder {
                 strBuilder.append("ISONLINE=");
                 strBuilder.append(strState);
             }
-        }else {
+        } else {
             strBuilder.append("ISONLINE=1");
         }
         // 标题查询
@@ -200,7 +200,7 @@ public class SQLBuilder {
                 strBuilder.append("ISONLINE=");
                 strBuilder.append(strState);
             }
-        }else {
+        } else {
             strBuilder.append("ISONLINE=1");
         }
         // 标题查询
@@ -359,7 +359,7 @@ public class SQLBuilder {
         strBuilder.append(EBookTableInfo.GetTableNameByCode(params.getString("type")));
 
         if (params.containsKey("SYS_FLD_DOI"))
-        strBuilder.append(" where SYS_FLD_DOI='");
+            strBuilder.append(" where SYS_FLD_DOI='");
         strBuilder.append(params.getString("id"));
         strBuilder.append("'");
         return strBuilder.toString().toUpperCase();
@@ -390,7 +390,7 @@ public class SQLBuilder {
 
     public static String GenerateGetYearBookListQuerySQL(JSONObject params, int count) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select NAME,ISSUEDEP,ISSUEDATE,ISBN,SYS_FLD_DOI,SYS_FLD_COVERPATH from DPM_YEARBOOKYEARINFO ");
+        strBuilder.append("select NAME,ISSUEDEP,ISSUEDATE,ISBN,SYS_FLD_DOI,SYS_FLD_CLASSFICATION,SYS_FLD_COVERPATH from DPM_YEARBOOKYEARINFO ");
 
         // 添加年度查询条件
         if (params.containsKey("year")) {
@@ -430,6 +430,149 @@ public class SQLBuilder {
     /**
      * 构造查询期刊年份区间SQL语句
      */
+    public static String GenerateJournalInfoNumsQuerySQL(JSONObject params) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select count(*) as count from DPM_JOURNALINFO");
+        if (params.containsKey("keyword")) {
+            String keyword = params.getString("keyword");
+            if (!keyword.isEmpty()) {
+                strBuilder.append(" where CNAME % '");
+                strBuilder.append(keyword);
+                strBuilder.append("'");
+            }
+        }
+        return strBuilder.toString().toUpperCase();
+    }
 
+    public static String GenerateJournalInfoQuerySQL(JSONObject params, int count) {
+        StringBuilder strBuilder = new StringBuilder();
+        String strField = "BASEID,CNAME,DESCRIPTION,ISSN,CN,FOUNDDATE,HOSTDEP,TYPE,SYS_FLD_COVERPATH";
+        strBuilder.append("select ");
+        strBuilder.append(strField);
+        strBuilder.append(" from DPM_JOURNALINFO");
+        // 添加关键词检索条件
+        if (params.containsKey("keyword")) {
+            String strKeyword = params.getString("keyword");
+            if (!strKeyword.isEmpty()) {
+                strBuilder.append(" where CNAME % '");
+                strBuilder.append(strKeyword);
+                strBuilder.append("'");
+            }
+        }
+        // 添加分页
+        if (params.containsKey("pageSize")) {
+            int pageSize = params.getInteger("pageSize");
+            if (pageSize > count) {
+                strBuilder.append(" limit 0,");
+                strBuilder.append(count);
+            } else {
+                if (params.containsKey("page")) {
+                    int page = params.getInteger("page");
+                    if (page <= 0) {
+                        strBuilder.append(" limit 0,");
+                        strBuilder.append(pageSize);
+                    } else {
+                        int start = (page - 1) * pageSize;
+                        strBuilder.append(" limit ");
+                        strBuilder.append(start);
+                        strBuilder.append(",");
+                        strBuilder.append(pageSize);
+                    }
+                }
+            }
+        } else {
+            strBuilder.append(" limit 0,10");
+        }
+        return strBuilder.toString().toUpperCase();
+    }
+
+    /**
+     * 查询期刊年期信息
+     */
+    public static String GenerateGetJournalYearInfoNumsQuerySQL(JSONObject params) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select count(*) as count from DPM_JOURNALYEARINFO");
+        // BaseID
+        String strBaseId = "";
+        if (params.containsKey("id")) {
+            strBaseId = params.getString("id");
+            if (!strBaseId.isEmpty()) {
+                strBuilder.append(" where BASEID='");
+                strBuilder.append(strBaseId);
+                strBuilder.append("'");
+            }
+        }
+        // year
+        if (params.containsKey("year")) {
+            String strYear = params.getString("year");
+            if (!strYear.isEmpty() && !strBaseId.isEmpty()) {
+                strBuilder.append(" and YEAR='");
+                strBuilder.append(strYear);
+                strBuilder.append("'");
+            }
+        }
+        return strBuilder.toString().toUpperCase();
+    }
+
+    public static String GenerateGetJournalYearInfoTimeAroundQuerySQL(String id){
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select year from DPM_JOURNALYEARINFO where BASEID='");
+        strBuilder.append(id);
+        strBuilder.append("' GROUP BY YEAR order by YEAR desc");
+        return strBuilder.toString().toUpperCase();
+    }
+
+
+    public static String GenerateGetJournalYearInfoQuerySQL(JSONObject params, int count) {
+        StringBuilder strBuilder = new StringBuilder();
+        String strField = "BASEID,CNAME,YEAR,ISSUE,SYS_FLD_DOI,SYS_FLD_FILEPATH,SYS_FLD_COVERPATH";
+        strBuilder.append("select ");
+        strBuilder.append(strField);
+        strBuilder.append(" from DPM_JOURNALYEARINFO ");
+        // BaseID
+        String strBaseId = "";
+        if (params.containsKey("id")) {
+            strBaseId = params.getString("id");
+            if (!strBaseId.isEmpty()) {
+                strBuilder.append(" where BASEID='");
+                strBuilder.append(strBaseId);
+                strBuilder.append("'");
+            }
+        }
+        // year
+        if (params.containsKey("year")) {
+            String strYear = params.getString("year");
+            if (!strYear.isEmpty() && !strBaseId.isEmpty()) {
+                strBuilder.append(" and YEAR='");
+                strBuilder.append(strYear);
+                strBuilder.append("'");
+            }
+        }
+        // 添加分页
+        if (params.containsKey("pageSize")) {
+            int pageSize = params.getInteger("pageSize");
+            if (pageSize > count) {
+                strBuilder.append(" limit 0,");
+                strBuilder.append(count);
+            } else {
+                if (params.containsKey("page")) {
+                    int page = params.getInteger("page");
+                    if (page <= 0) {
+                        strBuilder.append(" limit 0,");
+                        strBuilder.append(pageSize);
+                    } else {
+                        int start = (page - 1) * pageSize;
+                        strBuilder.append(" limit ");
+                        strBuilder.append(start);
+                        strBuilder.append(",");
+                        strBuilder.append(pageSize);
+                    }
+                }
+            }
+        } else {
+            strBuilder.append(" limit 0,10");
+        }
+        return strBuilder.toString().toUpperCase();
+    }
 
 }
