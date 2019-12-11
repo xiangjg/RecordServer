@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8089
 spring:
   datasource:
     url: jdbc:postgresql://124.193.98.166:8385/fangzydb   # Linux
@@ -35,7 +35,9 @@ spring:
 kbase:
   driverclass: com.kbase.jdbc.Driver
   # url: jdbc:kbase://192.168.1.220:4567    # 10.140.128.128:4567
-  url: jdbc:kbase://10.140.128.128:4567
+  # url: jdbc:kbase://10.140.128.128:4567
+  url: jdbc:kbase://124.193.98.166:8382
+
   username: dbown
   password:
 #  file

@@ -97,7 +97,7 @@ public class SQLBuilder {
     public static String GenerateRecordNumsQuerySQL(JSONObject params) {
         String strSQL = "";
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select count(*) as count from ");
+        strBuilder.append("select count(*) as num from ");
         strBuilder.append(EBookTableInfo.GetTableNameByCode(params.getString("type")));
         strBuilder.append(" where SYS_FLD_CLASSFICATION='");
         strBuilder.append(EClsInfo.GetClsCodeByCode(params.getString("cls")));
@@ -418,7 +418,7 @@ public class SQLBuilder {
                     strBuilder.append(",");
                     strBuilder.append(pageSize);
                 }
-            }else {
+            } else {
                 strBuilder.append(" limit 0,");
                 strBuilder.append(count);
             }
@@ -579,12 +579,22 @@ public class SQLBuilder {
     }
 
 
-    public static String GenerateJournalBaseInfoQuerySQL(JSONObject params){
+    public static String GenerateJournalBaseInfoQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
         String strFields = "BASEID,CNAME,YEAR,ISSUE,SYS_FLD_DOI,SYS_FLD_COVERPATH";
         strBuilder.append("select ");
         strBuilder.append(strFields);
         strBuilder.append(" from DPM_JOURNALYEARINFO where BASEID='");
+        strBuilder.append(params.getString("code"));
+        strBuilder.append("' and SYS_FLD_DOI='");
+        strBuilder.append(params.getString("id"));
+        strBuilder.append("'");
+        return strBuilder.toString().toUpperCase();
+    }
+
+    public static String GenerateJournalBaseCatalogQuerySQL(JSONObject params) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("SELECT SYS_FLD_CATALOG FROM DPM_JOURNALYEARINFO where BASEID='");
         strBuilder.append(params.getString("code"));
         strBuilder.append("' and SYS_FLD_DOI='");
         strBuilder.append(params.getString("id"));

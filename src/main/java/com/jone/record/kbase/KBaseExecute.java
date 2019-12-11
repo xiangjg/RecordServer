@@ -299,7 +299,7 @@ public class KBaseExecute {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             while (rst.next()) {
-                count = rst.getInt("COUNT");
+                count = rst.getInt("num");
             }
             jsonObject.put("count", count);
         } catch (Exception e) {
@@ -578,6 +578,38 @@ public class KBaseExecute {
         } catch (Exception e) {
             loger.error("{}", e);
         }
+        return  jsonObject;
+    }
+
+
+    public JSONObject GetJournalBaseCatalog(JSONObject params){
+        Connection _con = KBaseCon.GetInitConnect();
+        String strSQL = SQLBuilder.GenerateJournalBaseCatalogQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            loger.error("构建查询单期期刊基本信息SQL语句失败！");
+            return null;
+        }
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            String strCatalog = "";
+            while (rst.next()){
+                strCatalog = rst.getString("SYS_FLD_CATALOG");
+            }
+            String strContent = XML.toJSONObject(strCatalog).toString();
+            jsonObject = JSONObject.parseObject(strContent);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return  jsonObject;
+    }
+
+
+    public JSONObject GetJournalReadCatalog(JSONObject params){
+        Connection _con = KBaseCon.GetInitConnect();
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+
         return  jsonObject;
     }
 
