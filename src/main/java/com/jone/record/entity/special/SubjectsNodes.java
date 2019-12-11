@@ -1,5 +1,7 @@
 package com.jone.record.entity.special;
 
+import com.jone.record.entity.file.FileEntity;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.List;
@@ -7,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 @Table(name = "t_qzt_subjects_nodes", schema = "public")
-public class SubjectsNodes implements Serializable {
+public class SubjectsNodes implements Serializable, Comparable<SubjectsNodes> {
     private Integer id;
     private Integer sid;
     private Integer  type;
@@ -17,6 +19,7 @@ public class SubjectsNodes implements Serializable {
     private Integer order;
     private String img;
     private List<NodeContent> listContent;
+    private List<FileEntity> files;
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -81,7 +84,7 @@ public class SubjectsNodes implements Serializable {
     }
 
     @Basic
-    @Column(name = "order")
+    @Column(name = "_order")
     public Integer getOrder() {
         return order;
     }
@@ -106,6 +109,19 @@ public class SubjectsNodes implements Serializable {
 
     public void setListContent(List<NodeContent> listContent) {
         this.listContent = listContent;
+    }
+    @Transient
+    public List<FileEntity> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileEntity> files) {
+        this.files = files;
+    }
+
+    @Override
+    public int compareTo(SubjectsNodes o) {
+        return this.order - o.getOrder();
     }
 
     @Override

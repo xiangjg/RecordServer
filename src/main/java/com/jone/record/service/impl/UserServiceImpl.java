@@ -58,7 +58,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserEntity addUser(registerUserVo user) throws Exception {
-        return null;
+        UserEntity userEntity = userDao.findByLoginNameOrTel(user.getLoginName(), user.getTel());
+        if (userEntity != null)
+            throw new Exception("用户已存在");
+        userEntity = new UserEntity();
+        userEntity.setState(1);
+        userEntity.setRegDt(new Date());
+        userEntity.setRemark("自主注册");
+        userEntity.setTel(user.getTel());
+        userEntity.setEmail(userEntity.getEmail());
+        userEntity.setLoginName(user.getLoginName());
+        userEntity.setName(user.getName());
+        userEntity.setPassword(user.getPassword());
+        RoleEntity entity = roleDao.findById(2).orElse(null);
+        userEntity.setRole(entity);
+        return userDao.save(userEntity);
     }
 
     @Override

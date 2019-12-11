@@ -8,7 +8,7 @@ import java.util.List;
 public interface TypeDao extends JpaRepository<TypeEntity, Integer> {
 
     TypeEntity findByTypeAndRef(Integer type, String ref);
-
+    TypeEntity findByType(Integer type);
     List<TypeEntity> findByRef(String ref);
 
 

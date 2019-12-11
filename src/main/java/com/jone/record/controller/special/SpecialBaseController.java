@@ -18,6 +18,7 @@ import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -52,9 +53,7 @@ public class SpecialBaseController extends BaseController {
             if (null == userInfo) {
                 printJson(ResultUtil.error(-2, "用户登录没有登录,或session过期"), response);
             } else {
-                MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
-                List<MultipartFile> files = multiRequest.getFiles("file");
-                TQztSubjectsEntity subjectsEntity = specialBaseService.save(tQztSubjectsEntity, files, userInfo);
+                TQztSubjectsEntity subjectsEntity = specialBaseService.save(tQztSubjectsEntity, userInfo);
                 printJson(ResultUtil.success(subjectsEntity), response);
             }
         } catch (Exception e) {

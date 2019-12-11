@@ -17,6 +17,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 @Service(value = "specialBaseService")
@@ -45,28 +46,52 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
                 List<FileEntity> fileList = fileService.listByRefIdAndType(s.getId(), Definition.TYPE_FILE_SPECIAL);
                 if (fileList != null && fileList.size() > 0)
                     s.setFiles(fileList);
+                List<SubjectsNodes> nodeList = new ArrayList<>();
+                if (state >= 0)
+                    nodeList = subjectsNodesDao.findByStateAndSidOrderByOrder(state, s.getId());
+                 else
+                    nodeList = subjectsNodesDao.findBySidOrderByOrder(s.getId());
+                for (SubjectsNodes node:nodeList
+                     ) {
+                    List<FileEntity> fileNodeList = fileService.listByRefIdAndType(node.getId(), Definition.TYPE_FILE_COLUMN);
+                    if (fileNodeList != null && fileNodeList.size() > 0)
+                        node.setFiles(fileNodeList);
+
+                    List<NodeContent> contentList = new ArrayList<>();
+                    if (state >= 0)
+                        contentList = nodeContentDao.findByStateAndNid(state, node.getId());
+                    else
+                        contentList = nodeContentDao.findByNid(node.getId());
+                    node.setListContent(contentList);
+                }
+                s.setListNode(nodeList);
             }
         }
         return subjectsEntityList;
     }
+
     @Transactional
     @Override
-    public TQztSubjectsEntity save(TQztSubjectsEntity subjectsEntity, List<MultipartFile> files, UserInfo user) throws Exception {
+    public TQztSubjectsEntity save(TQztSubjectsEntity subjectsEntity, UserInfo user) throws Exception {
+        if (subjectsEntity.getCreator() == null)
+            subjectsEntity.setCreator(user.getUserName());
+        if (subjectsEntity.getCreateDate() == null)
+            subjectsEntity.setCreateDate(new Date());
+        subjectsEntity.setState(Definition.TYPE_STATE_VALID);
         subjectsEntity = tQztSubjectsDao.save(subjectsEntity);
-        if (files != null && files.size() > 0) {
-            fileService.upload(files, Definition.TYPE_FILE_SPECIAL, user);
-        }
         List<SubjectsNodes> nodes = subjectsEntity.getListNode();
-        if(nodes!=null&&nodes.size()>0){
-            for (SubjectsNodes node:nodes
-                 ) {
+        if (nodes != null && nodes.size() > 0) {
+            for (SubjectsNodes node : nodes
+            ) {
                 List<NodeContent> contents = node.getListContent();
                 node.setSid(subjectsEntity.getId());
-                node =  subjectsNodesDao.save(node);
-                if(contents!=null&&contents.size()>0){
-                    for (NodeContent content:contents
+                node.setState(Definition.TYPE_STATE_VALID);
+                node = subjectsNodesDao.save(node);
+                if (contents != null && contents.size() > 0) {
+                    for (NodeContent content : contents
                     ) {
                         content.setNid(node.getId());
+                        content.setState(Definition.TYPE_STATE_VALID);
                         nodeContentDao.save(content);
                     }
                 }
@@ -74,7 +99,7 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
         }
         return subjectsEntity;
     }
-
+    @Transactional
     @Override
     public void delete(Integer id) throws Exception {
         tQztSubjectsDao.updateState(id, Definition.TYPE_STATE_DELETE);
@@ -87,12 +112,12 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
         else
             return subjectsNodesDao.findBySidOrderByOrder(sid);
     }
-
+    @Transactional
     @Override
     public SubjectsNodes save(SubjectsNodes subjectsNodes) throws Exception {
         return subjectsNodesDao.save(subjectsNodes);
     }
-
+    @Transactional
     @Override
     public void deleteSubjectsNodes(Integer id) throws Exception {
         subjectsNodesDao.updateState(id, Definition.TYPE_STATE_DELETE);
@@ -105,12 +130,12 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
         else
             return nodeContentDao.findByNid(nid);
     }
-
+    @Transactional
     @Override
     public NodeContent save(NodeContent nodeContent) throws Exception {
         return nodeContentDao.save(nodeContent);
     }
-
+    @Transactional
     @Override
     public void deleteNodeContent(Integer id) throws Exception {
         nodeContentDao.updateState(id, Definition.TYPE_STATE_DELETE);
