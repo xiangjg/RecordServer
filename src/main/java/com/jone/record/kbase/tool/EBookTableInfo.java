@@ -10,8 +10,10 @@ import com.alibaba.fastjson.JSONObject;
 public enum EBookTableInfo {
     kbase_History_Books ("1", "DPM_BOOK"),                     // 志书
     kbase_Year_Books ("2", "DPM_YEARBOOKYEARINFO"),            // 年鉴
-    kbase_Local_History_Books ("3", "DPM_LOCALHISTORY"),       // 地方史
+    kbase_Journal_books("3","DPM_JOURNALINFO"),                // 期刊
     kbase_Situation_Books ("4", "DPM_SITUATION"),              // 地情资料
+    kbase_Multi_Media("5",""),                                 // 多媒体，只包含图片
+    kbase_Local_History_Books ("6", "DPM_LOCALHISTORY"),       // 地方史
     ;
 
     private String code;

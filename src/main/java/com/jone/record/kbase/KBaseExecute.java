@@ -293,19 +293,19 @@ public class KBaseExecute {
         jsonObject.put("pageIndex", params.getString("page"));
         String strSQL = SQLBuilder.GenerateRecordNumsQuerySQL(params);
         // 查询并添加记录总数
-        String strValue = "";
+        int count = 0;
         Connection _con = KBaseCon.GetInitConnect();
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             while (rst.next()) {
-                strValue = rst.getString("num");
+                count = rst.getInt("COUNT");
             }
-            jsonObject.put("total", strValue);
+            jsonObject.put("count", count);
         } catch (Exception e) {
             loger.error("{}", e);
         }
-        if (Integer.parseInt(strValue) <= 0) {
+        if (count <= 0) {
             String strErr = String.format("记录数为0");
             loger.error("{}", strErr);
         }
@@ -525,7 +525,7 @@ public class KBaseExecute {
         if (params.containsKey("year")) {
             String strYear = params.getString("year");
             if (strYear.isEmpty()) {
-                strSQL = SQLBuilder.GenerateGetJournalYearInfoTimeAroundQuerySQL(params.getString("id"));
+                strSQL = SQLBuilder.GenerateGetJournalYearInfoTimeAroundQuerySQL(params.getString("code"));
                 if (strSQL.isEmpty()) {
                     loger.error("构建查询期刊列表时间范围 SQL 语句失败！");
                     return null;
@@ -561,6 +561,24 @@ public class KBaseExecute {
             loger.error("{}", e);
         }
         return jsonObject;
+    }
+
+    public JSONObject GetJournalBaseInfo(JSONObject params){
+        Connection _con = KBaseCon.GetInitConnect();
+        String strSQL = SQLBuilder.GenerateJournalBaseInfoQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            loger.error("构建查询单期期刊基本信息SQL语句失败！");
+            return null;
+        }
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            jsonObject = Common.ResultSetToJSONObject(rst);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return  jsonObject;
     }
 
 }

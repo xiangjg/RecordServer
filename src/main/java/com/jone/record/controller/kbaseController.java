@@ -327,17 +327,36 @@ public class kbaseController extends BaseController {
     /**
      * 查询期刊的年期信息
      *
-     * @params 输入JSONObject对象，格式为 {"id":"zdfz","year":"","page":"1","pageSize":"10"}
+     * @params 输入JSONObject对象，格式为 {"code":"zdfz","year":"","page":"1","pageSize":"10"}
      * @id 期刊ID号
      * @year 期刊年份
      * page 查询页索引，默认查询第 1 页
      * @pageSize 每页显示记录数，默认显示 10 条
      */
     @RequestMapping(value = "GetJournalYearInfo", method = RequestMethod.POST)
-    @ApiOperation(value = "查询期刊的年期信息", notes = "输入JSONObject对象，期刊ID号-id，期刊年份-year，查询页索引-page，每页显示记录数-pageSize")
+    @ApiOperation(value = "查询期刊的年期信息", notes = "输入JSONObject对象，期刊号-code，期刊年份-year，查询页索引-page，每页显示记录数-pageSize")
     public void GetJournalYearInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
             JSONObject jsonObject = kbaseTools.GetJournalYearInfo(params);
+            printJson(ResultUtil.success(jsonObject), response);
+        } catch (Exception e) {
+            loger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    /**
+     * 查询单期期刊的基本信息
+     * @params 输入JSONObject对象，格式为 {"code":"ydfz","id":"A02BE975-2543-4a13-B5AF-EFD6DB199685"}
+     * @code 期刊号,如："zdfz"
+     * @id 期刊的GUID，如："A02BE975-2543-4a13-B5AF-EFD6DB199685"
+     * @return 返回期刊的基本信息，为JSON格式字符串
+     */
+    @RequestMapping(value = "GetJournalBaseInfo", method = RequestMethod.POST)
+    @ApiOperation(value = "查询单期期刊的基本信息", notes = "输入JSONObject对象，期刊号-code，期刊的GUID-id")
+    public void GetJournalBaseInfo(@RequestBody JSONObject params, HttpServletResponse response){
+        try {
+            JSONObject jsonObject = kbaseTools.GetJournalBaseInfo(params);
             printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
             loger.error("{}", e);
