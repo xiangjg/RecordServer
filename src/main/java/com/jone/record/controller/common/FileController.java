@@ -59,7 +59,7 @@ public class FileController extends BaseController {
 
     @RequestMapping(value = "/uploadFile",method = RequestMethod.POST)
     @ApiOperation(value="更新文件", notes="传入文件类型type、文件数据列表file、要更新的文件编码数组ids")
-    public void uploadFile(@RequestParam Integer type, @RequestParam Integer refId, @RequestParam List<Integer> ids,  HttpServletRequest request, HttpServletResponse response){
+    public void uploadFile(@RequestParam Integer type, @RequestParam List<Integer> ids,  HttpServletRequest request, HttpServletResponse response){
         BaseData baseData = new BaseData();
         try{
             UserInfo userInfo = getRedisUser(request,redisDao);
