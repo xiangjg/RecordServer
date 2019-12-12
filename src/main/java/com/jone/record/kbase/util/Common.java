@@ -8,6 +8,7 @@ package com.jone.record.kbase.util;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jone.record.kbase.entity.Catalog;
+import com.jone.record.kbase.entity.KBaseConfig;
 import com.jone.record.kbase.tool.EJournalType;
 import org.apache.commons.collections.map.LinkedMap;
 import org.json.XML;
@@ -235,10 +236,8 @@ public class Common {
 
     public static String GetFilePath() {
         String strIpAddress = "";
-        InetAddress addr = null;
         try {
-            addr = InetAddress.getLocalHost();
-            String hostname = addr.getHostAddress();
+            String hostname = KBaseConfig.getCoverPath();
             strIpAddress = String.format("http://%s/gzsfzy", hostname);
         } catch (Exception e) {
             loger.error("{}", e);

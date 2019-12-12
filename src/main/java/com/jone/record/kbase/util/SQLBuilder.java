@@ -629,4 +629,43 @@ public class SQLBuilder {
         return strBuilder.toString().toUpperCase();
     }
 
+    public static String GenerateBookChapterInfoGroupNumsQuerySQL(JSONObject params){
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select count(*) as count from ");
+        strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
+        strBuilder.append(" where title % '");
+        strBuilder.append(params.getString("keyword"));
+        strBuilder.append("' GROUP by PARENTDOI");
+        return strBuilder.toString().toUpperCase();
+    }
+
+
+    public static String GenerateBookChapterInfoGroupQuerySQL(JSONObject params){
+        StringBuilder strBuilder = new StringBuilder();
+        String strFields = "PARENTNAME,title,PARENTDOI";
+        strBuilder.append("select ");
+        strBuilder.append(strFields);
+        strBuilder.append(" from ");
+        strBuilder.append(params.getString("type"));
+        strBuilder.append(" where title % '");
+        strBuilder.append(params.getString("keyword"));
+        strBuilder.append("'");
+        return strBuilder.toString().toUpperCase();
+    }
+
+    public static String GenerateBookChapterInfoQuerySQL(JSONObject params){
+        StringBuilder strBuilder = new StringBuilder();
+        String strFields = "title,PARENTDOI";
+        strBuilder.append("select ");
+        strBuilder.append(strFields);
+        strBuilder.append(" from ");
+        strBuilder.append(params.getString("type"));
+        strBuilder.append(" where title % '");
+        strBuilder.append(params.getString("keyword"));
+        strBuilder.append("'");
+
+
+        return strBuilder.toString().toUpperCase();
+    }
+
 }

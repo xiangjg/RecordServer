@@ -628,7 +628,7 @@ public class KBaseExecute {
      * 查询期刊文章全文信息
      */
     public JSONObject GetJournalFullText(JSONObject params) {
-        String strSQL=SQLBuilder.GenerateJournalFullTextQuerySQL(params);
+        String strSQL = SQLBuilder.GenerateJournalFullTextQuerySQL(params);
         if (strSQL.isEmpty()) {
             loger.error("构建查询期刊文章全文信息SQL语句失败！");
             return null;
@@ -645,5 +645,44 @@ public class KBaseExecute {
         return jsonObject;
     }
 
+    /**
+     * 查询书籍章节目录信息
+     */
+    public JSONObject GetBookChapterInfo(JSONObject params) {
+        Connection _con = KBaseCon.GetInitConnect();
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        String strSQL =  SQLBuilder.GenerateBookChapterInfoGroupNumsQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            loger.error("构建询书籍章节目录信息SQL语句失败！");
+            return null;
+        }
+        int count = 0;
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            while (rst.next()) {
+                count = rst.getInt("count");
+            }
+            jsonObject.put("count", count);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+
+        strSQL = SQLBuilder.GenerateBookChapterInfoGroupQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            loger.error("构建询书籍章节目录信息SQL语句失败！");
+            return null;
+        }
+
+
+
+        strSQL = SQLBuilder.GenerateBookChapterInfoQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            loger.error("构建询书籍章节目录信息SQL语句失败！");
+            return null;
+        }
+
+        return jsonObject;
+    }
 
 }
