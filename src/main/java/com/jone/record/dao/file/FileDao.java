@@ -9,4 +9,6 @@ public interface FileDao extends JpaRepository<FileEntity, Integer> {
 
     List<FileEntity> findByRefId(Integer refId);
     List<FileEntity> findByRefIdAndFileType(Integer refId, Integer type);
+
+    List<FileEntity> findByIdIn(List<Integer> ids);
 }

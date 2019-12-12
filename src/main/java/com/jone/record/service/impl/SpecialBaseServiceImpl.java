@@ -115,7 +115,17 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
     @Transactional
     @Override
     public SubjectsNodes save(SubjectsNodes subjectsNodes) throws Exception {
-        return subjectsNodesDao.save(subjectsNodes);
+        subjectsNodes = subjectsNodesDao.save(subjectsNodes);
+        List<NodeContent> contents = subjectsNodes.getListContent();
+        if (contents != null && contents.size() > 0) {
+            for (NodeContent content : contents
+            ) {
+                content.setNid(subjectsNodes.getId());
+                content.setState(Definition.TYPE_STATE_VALID);
+                nodeContentDao.save(content);
+            }
+        }
+        return subjectsNodes;
     }
     @Transactional
     @Override

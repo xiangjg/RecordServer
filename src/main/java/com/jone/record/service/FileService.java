@@ -10,6 +10,8 @@ public interface FileService {
 
     List<FileEntity> upload(List<MultipartFile> files, Integer type, Integer refId, UserInfo userInfo) throws Exception;
 
+    List<FileEntity> upload(List<MultipartFile> files, Integer type, List<Integer> ids, UserInfo userInfo) throws Exception;
+
     FileEntity getFile(Integer id) throws Exception;
 
     void deleteFile(Integer id) throws Exception;
