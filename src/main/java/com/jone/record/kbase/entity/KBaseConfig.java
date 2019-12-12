@@ -32,7 +32,7 @@ public class KBaseConfig {
         KBaseConfig.password = password;
     }
 
-    @Value("${kbase.coverPath}")
+    @Value("${kbase.coverpath}")
     public void setCoverPath(String coverPath) {
         KBaseConfig.coverPath = coverPath;
     }

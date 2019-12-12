@@ -35,4 +35,5 @@ kbase:
   url: jdbc:kbase://10.140.128.128:4567
   username: dbown
   password:
+  coverPath: 124.193.98.166:8386      # 书籍相关附件IP
 filePath: /home/fzy/recordFile

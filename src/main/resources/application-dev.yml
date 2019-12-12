@@ -33,13 +33,12 @@ spring:
     auto: true
 # KBase
 kbase:
+  coverPath: 124.193.98.166:8386      # 书籍相关附件IP
   driverclass: com.kbase.jdbc.Driver
   # url: jdbc:kbase://192.168.1.220:4567    # 10.140.128.128:4567
   url: jdbc:kbase://10.140.128.128:4567
   username: dbown
   password:
-  coverPath: 124.193.98.166:8386      # 书籍相关附件IP
-
 #  file
 filePath: E:\\code\\github\\RecordServer\\file
 
