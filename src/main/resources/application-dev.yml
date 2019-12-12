@@ -1,9 +1,9 @@
 server:
-  port: 8089
+  port: 8080
 spring:
   datasource:
-    url: jdbc:postgresql://124.193.98.166:8385/fangzydb   # Linux
-    # url: jdbc:postgresql://10.140.128.132:5432/fangzydb     # windows
+    # url: jdbc:postgresql://124.193.98.166:8385/fangzydb   # Linux
+    url: jdbc:postgresql://10.140.128.132:5432/fangzydb     # windows
     password: postgres
     username: postgres
     driver-class-name: org.postgresql.Driver
@@ -33,12 +33,13 @@ spring:
     auto: true
 # KBase
 kbase:
+  coverPath: 124.193.98.166:8386      # 书籍相关附件IP
   driverclass: com.kbase.jdbc.Driver
   # url: jdbc:kbase://192.168.1.220:4567    # 10.140.128.128:4567
-  # url: jdbc:kbase://10.140.128.128:4567
-  url: jdbc:kbase://124.193.98.166:8382
-
+  url: jdbc:kbase://10.140.128.128:4567
   username: dbown
   password:
 #  file
 filePath: E:\\code\\github\\RecordServer\\file
+
+

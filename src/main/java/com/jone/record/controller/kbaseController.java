@@ -375,7 +375,7 @@ public class kbaseController extends BaseController {
      */
     @RequestMapping(value = "GetJournalBaseCatalog", method = RequestMethod.POST)
     @ApiOperation(value = "查询单期期刊的基本目录信息", notes = "输入JSONObject对象，期刊号-code，期刊的GUID-id")
-    public void GetJournalBaseCatalog(@RequestBody JSONObject params, HttpServletResponse response){
+    public void GetJournalBaseCatalog(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
             JSONObject jsonObject = kbaseTools.GetJournalBaseCatalog(params);
             printJson(ResultUtil.success(jsonObject), response);
@@ -387,16 +387,37 @@ public class kbaseController extends BaseController {
 
     /**
      * 查询单期期刊的阅读目录信息
+     *
      * @return 返回期刊的基本信息，为JSON格式字符串
      * @params 输入JSONObject对象，格式为 {"code":"ydfz","id":"A02BE975-2543-4a13-B5AF-EFD6DB199685"}
      * @code 期刊号, 如："zdfz"
      * @id 期刊的GUID，如："A02BE975-2543-4a13-B5AF-EFD6DB199685"
-     * */
+     */
     @RequestMapping(value = "GetJournalReadCatalog", method = RequestMethod.POST)
     @ApiOperation(value = "查询单期期刊的阅读目录信息", notes = "输入JSONObject对象，期刊号-code，期刊的GUID-id")
-    public void GetJournalReadCatalog(@RequestBody JSONObject params, HttpServletResponse response){
+    public void GetJournalReadCatalog(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
-            JSONObject jsonObject = kbaseTools.GetJournalReadCatalog(params);
+            JSONArray jsonArray = kbaseTools.GetJournalReadCatalog(params);
+            printJson(ResultUtil.success(jsonArray), response);
+        } catch (Exception e) {
+            loger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    /**
+     * 查询期刊文章全文
+     *
+     * @return 返回期刊的基本信息，为JSON格式字符串
+     * @params 输入JSONObject对象，格式为 {"id": "bb6b5b1a-749f-4fbd-96b7-9faa97446eff","code": "GYWE"}
+     * @code 期刊号, 如："GYWE"
+     * @id 期刊的GUID，如："bb6b5b1a-749f-4fbd-96b7-9faa97446eff"
+     */
+    @RequestMapping(value = "GetJournalFullText", method = RequestMethod.POST)
+    @ApiOperation(value = "查询期刊文章全文", notes = "输入JSONObject对象，期刊号-code，期刊的GUID-id")
+    public void GetJournalFullText(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject jsonObject = kbaseTools.GetJournalFullText(params);
             printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
             loger.error("{}", e);
@@ -405,13 +426,24 @@ public class kbaseController extends BaseController {
     }
 
     /**
-     * 查询书籍和目录信息
+     * 查询书籍的目录信息
      *
+     * @return 返回JSON格式字符串
      * @params 输入JSONObject对象，格式为 {"type":"1","keyword":"地质构造","page":"1","pageSize":"10"}
+     * @type 资源类型，志书-1,年鉴-2,期刊-3(不在此范围内),地情资料-4,多媒体-5
+     * @keyword 检索关键词
+     * @page 显示页索引，默认为显示第 1 页
+     * @pageSize 每页显示记录数，默认为 10 条
      */
-    public void SearchBookChapter(@RequestBody JSONObject params, HttpServletResponse response) {
-
+    @RequestMapping(value = "GetBookChapterInfo", method = RequestMethod.POST)
+    @ApiOperation(value = "查询书籍的目录信息", notes = "输入JSONObject对象,资源类型-type,检索关键词-keyword,显示页索引-page,每页显示记录数-pageSize")
+    public void GetBookChapterInfo(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject jsonObject = kbaseTools.GetBookChapterInfo(params);
+            printJson(ResultUtil.success(jsonObject), response);
+        } catch (Exception e) {
+            loger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
     }
-
-
 }

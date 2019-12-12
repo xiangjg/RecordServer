@@ -12,8 +12,10 @@ public enum ECatalogTableInfo {
 
     kbase_History_Books("1", "DPM_CHAPTER"),                  // 志书
     kbase_Year_Books("2", "DPM_YEARBOOKARTICLE"),             // 年鉴
-    kbase_Local_History_Books("3", "DPM_CHAPTER"),            // 地方史
-    kbase_Situation_Books("4", "DPM_CHAPTER"),                // 地情资料
+    kbase_Journal_books("3","DPM_JOURNALARTICLE"),            // 期刊
+    kbase_Local_History_Books("4", "DPM_CHAPTER"),            // 地方史
+    kbase_Multi_Media("5","DPM_PIC"),                         // 多媒体，图片
+    kbase_Situation_Books("6", "DPM_CHAPTER"),                // 地情资料
     ;
 
     private String code;

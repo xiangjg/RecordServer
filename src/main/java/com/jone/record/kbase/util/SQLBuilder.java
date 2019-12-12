@@ -602,4 +602,70 @@ public class SQLBuilder {
         return strBuilder.toString().toUpperCase();
     }
 
+    public static String GenerateJournalReadCatalogQuerySQL(JSONObject params){
+        StringBuilder strBuilder = new StringBuilder();
+        String strFields = "NAME,SYS_FLD_DOI,BASEID,PARENTDOI";
+        strBuilder.append("select ");
+        strBuilder.append(strFields);
+        strBuilder.append(" from DPM_JOURNALARTICLE where BASEID='");
+        strBuilder.append(params.getString("code"));
+        strBuilder.append("' and PARENTDOI='");
+        strBuilder.append(params.getString("id"));
+        strBuilder.append("'");
+        return strBuilder.toString().toUpperCase();
+    }
+
+
+    public static String GenerateJournalFullTextQuerySQL(JSONObject params){
+        StringBuilder strBuilder = new StringBuilder();
+        String strFields = "BASEID,SYS_FLD_DOI,PARENTDOI,SYS_FLD_PARAXML";
+        strBuilder.append("select ");
+        strBuilder.append(strFields);
+        strBuilder.append(" from DPM_JOURNALARTICLE where BASEID='");
+        strBuilder.append(params.getString("code"));
+        strBuilder.append("' and SYS_FLD_DOI='");
+        strBuilder.append(params.getString("id"));
+        strBuilder.append("'");
+        return strBuilder.toString().toUpperCase();
+    }
+
+    public static String GenerateBookChapterInfoGroupNumsQuerySQL(JSONObject params){
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select count(*) as count from ");
+        strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
+        strBuilder.append(" where title % '");
+        strBuilder.append(params.getString("keyword"));
+        strBuilder.append("' GROUP by PARENTDOI");
+        return strBuilder.toString().toUpperCase();
+    }
+
+
+    public static String GenerateBookChapterInfoGroupQuerySQL(JSONObject params){
+        StringBuilder strBuilder = new StringBuilder();
+        String strFields = "PARENTNAME,title,PARENTDOI";
+        strBuilder.append("select ");
+        strBuilder.append(strFields);
+        strBuilder.append(" from ");
+        strBuilder.append(params.getString("type"));
+        strBuilder.append(" where title % '");
+        strBuilder.append(params.getString("keyword"));
+        strBuilder.append("'");
+        return strBuilder.toString().toUpperCase();
+    }
+
+    public static String GenerateBookChapterInfoQuerySQL(JSONObject params){
+        StringBuilder strBuilder = new StringBuilder();
+        String strFields = "title,PARENTDOI";
+        strBuilder.append("select ");
+        strBuilder.append(strFields);
+        strBuilder.append(" from ");
+        strBuilder.append(params.getString("type"));
+        strBuilder.append(" where title % '");
+        strBuilder.append(params.getString("keyword"));
+        strBuilder.append("'");
+
+
+        return strBuilder.toString().toUpperCase();
+    }
+
 }

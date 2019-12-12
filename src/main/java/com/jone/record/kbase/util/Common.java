@@ -8,6 +8,7 @@ package com.jone.record.kbase.util;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jone.record.kbase.entity.Catalog;
+import com.jone.record.kbase.entity.KBaseConfig;
 import com.jone.record.kbase.tool.EJournalType;
 import org.apache.commons.collections.map.LinkedMap;
 import org.json.XML;
@@ -119,10 +120,9 @@ public class Common {
                     } else if (strKey.equals("FOUNDDATE")) {
                         if (strValue.length() > 10)
                             strValue = strValue.substring(0, 10);
-                    }
-                    else if (strKey.equals("TYPE")){
+                    } else if (strKey.equals("TYPE")) {
                         String cnName = EJournalType.GetNameByCode(strValue);
-                        jsonObject.put("cnType",cnName);
+                        jsonObject.put("cnType", cnName);
                     }
                     jsonObject.put(strKey, strValue);
                 }
@@ -236,10 +236,8 @@ public class Common {
 
     public static String GetFilePath() {
         String strIpAddress = "";
-        InetAddress addr = null;
         try {
-            addr = InetAddress.getLocalHost();
-            String hostname = addr.getHostAddress();
+            String hostname = KBaseConfig.getCoverPath();
             strIpAddress = String.format("http://%s/gzsfzy", hostname);
         } catch (Exception e) {
             loger.error("{}", e);
@@ -280,4 +278,32 @@ public class Common {
         return list;
     }
 
+
+    public static JSONObject AnalysisJournalFullText(ResultSet rst) {
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        try {
+            ResultSetMetaData rstMeta = rst.getMetaData();
+            int column = rstMeta.getColumnCount();
+            String strKey = "";
+            String strValue = "";
+            while (rst.next()) {
+                for (int i = 1; i <= column; i++) {
+                    strKey = rstMeta.getColumnName(i);
+                    strValue = rst.getString(strKey);
+                    if (strKey.equals("SYS_FLD_PARAXML")) {
+                        DealFiles dealFiles = new DealFiles();
+                        dealFiles.setStrServerFilePath(rst.getString("PARENTDOI"));
+                        dealFiles.setType(5);
+                        String strFullText = dealFiles.AnalysisJournalFullText(strValue);
+                        jsonObject.put("fullText", strFullText);
+                    } else {
+                        jsonObject.put(strKey, strValue);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonObject;
+    }
 }
