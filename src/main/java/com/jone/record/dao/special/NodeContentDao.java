@@ -7,11 +7,13 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface NodeContentDao extends JpaRepository<NodeContent, Integer> {
 
     List<NodeContent> findByStateAndNid(Integer state, Integer nid);
+    List<NodeContent> findByStateAndNidIn(Integer state, Collection<Integer> nid);
     List<NodeContent> findByNid(Integer nid);
     @Transactional
     @Modifying

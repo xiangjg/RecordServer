@@ -1,6 +1,7 @@
 package com.jone.record.service.impl;
 
 import com.jone.record.config.Definition;
+import com.jone.record.dao.file.FileDao;
 import com.jone.record.dao.special.NodeContentDao;
 import com.jone.record.dao.special.SubjectsNodesDao;
 import com.jone.record.dao.special.TQztSubjectsDao;
@@ -40,6 +41,8 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
     private FileService fileService;
     @Autowired
     private NodeContentDao nodeContentDao;
+    @Autowired
+    private FileDao fileDao;
 
     @Override
     public PageVo<TQztSubjectsEntity> listByState(Integer state, Integer page, Integer size) throws Exception {
@@ -58,7 +61,7 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
             }
         };
         Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, "num"));
-        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        PageRequest pageRequest = PageRequest.of(page - 1, size, sort);
         Page<TQztSubjectsEntity> pageList = null;
         if (state >= 0)
             pageList = tQztSubjectsDao.findAll(specification, pageRequest);
@@ -81,17 +84,20 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
                     nodeList = subjectsNodesDao.findByStateAndSidOrderByOrder(state, s.getId());
                  else
                     nodeList = subjectsNodesDao.findBySidOrderByOrder(s.getId());
+                 List<Integer> nids = new ArrayList<>();
+                for (SubjectsNodes n:nodeList
+                     ) {
+                    nids.add(n.getId());
+                }
+                List<NodeContent> contentAllList = nodeContentDao.findByStateAndNidIn(state, nids);
+                List<FileEntity> fileNodeAllList = fileDao.findByRefIdInAndFileType(nids, Definition.TYPE_FILE_COLUMN);
                 for (SubjectsNodes node:nodeList
                      ) {
-                    List<FileEntity> fileNodeList = fileService.listByRefIdAndType(node.getId(), Definition.TYPE_FILE_COLUMN);
+                    List<FileEntity> fileNodeList = getFileListByNid(node.getId(), fileNodeAllList);
                     if (fileNodeList != null && fileNodeList.size() > 0)
                         node.setFiles(fileNodeList);
 
-                    List<NodeContent> contentList = new ArrayList<>();
-                    if (state >= 0)
-                        contentList = nodeContentDao.findByStateAndNid(state, node.getId());
-                    else
-                        contentList = nodeContentDao.findByNid(node.getId());
+                    List<NodeContent> contentList = getContentListByNid(node.getId(), contentAllList);
                     node.setListContent(contentList);
                 }
                 s.setListNode(nodeList);
@@ -99,6 +105,25 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
         }
         pageData.setData(subjectsEntityList);
         return pageData;
+    }
+    private List<FileEntity> getFileListByNid(Integer nid, List<FileEntity> allList){
+        List<FileEntity> list = new ArrayList<>();
+        for (FileEntity n:allList
+        ) {
+            if(n.getRefId() == nid)
+                list.add(n);
+        }
+        return list;
+    }
+
+    private List<NodeContent> getContentListByNid(Integer nid, List<NodeContent> allList){
+        List<NodeContent> list = new ArrayList<>();
+        for (NodeContent n:allList
+             ) {
+            if(n.getNid() == nid)
+                list.add(n);
+        }
+        return list;
     }
 
     @Transactional

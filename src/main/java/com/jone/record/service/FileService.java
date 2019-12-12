@@ -4,6 +4,7 @@ import com.jone.record.entity.file.FileEntity;
 import com.jone.record.entity.vo.UserInfo;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collection;
 import java.util.List;
 
 public interface FileService {
