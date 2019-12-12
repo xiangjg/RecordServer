@@ -72,12 +72,19 @@ public class FileServiceImpl implements FileService {
         List<FileEntity> list = fileDao.findByIdIn(ids);
         Date now = new Date();
         int index = 1;
+
         for (int i = 0; i < files.size(); i++
         ) {
             MultipartFile file = files.get(i);
             byte[] data = file.getBytes();
             if (data.length > 0) {
                 FileEntity fileEntity = findFileById(ids.get(i), list);
+
+                //删除原文件
+                File delFile = new File(filePath + File.separator + fileEntity.getFileType() + File.separator + fileEntity.getFileName());
+                if(delFile.exists())
+                    delFile.delete();
+
                 String name = file.getOriginalFilename();
                 String fileName = System.currentTimeMillis() + "_" + index;
 

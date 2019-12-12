@@ -8,13 +8,22 @@ import com.jone.record.entity.file.FileEntity;
 import com.jone.record.entity.special.NodeContent;
 import com.jone.record.entity.special.SubjectsNodes;
 import com.jone.record.entity.special.TQztSubjectsEntity;
+import com.jone.record.entity.vo.PageVo;
 import com.jone.record.entity.vo.UserInfo;
 import com.jone.record.service.FileService;
 import com.jone.record.service.SpecialBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
@@ -33,13 +42,34 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
     private NodeContentDao nodeContentDao;
 
     @Override
-    public List<TQztSubjectsEntity> listByState(Integer state) throws Exception {
-        List<TQztSubjectsEntity> subjectsEntityList = new ArrayList<>();
-        if (state >= 0) {
-            subjectsEntityList = tQztSubjectsDao.findByStateOrderByNumAsc(state);
-        } else {
-            subjectsEntityList = tQztSubjectsDao.findAll();
-        }
+    public PageVo<TQztSubjectsEntity> listByState(Integer state, Integer page, Integer size) throws Exception {
+        PageVo pageData = new PageVo();
+        if(page == null)
+            page = 1;
+        if(size == null)
+            size = 10;
+        Specification specification = new Specification<TQztSubjectsEntity>() {
+            @Override
+            public Predicate toPredicate(Root<TQztSubjectsEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicates = new ArrayList<>();
+                if (state >= 0)
+                    predicates.add(criteriaBuilder.equal(root.get("state"), state));
+                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+            }
+        };
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, "num"));
+        PageRequest pageRequest = PageRequest.of(page, size, sort);
+        Page<TQztSubjectsEntity> pageList = null;
+        if (state >= 0)
+            pageList = tQztSubjectsDao.findAll(specification, pageRequest);
+        else
+            pageList = tQztSubjectsDao.findAll(pageRequest);
+        pageData.setPage(page);
+        pageData.setSize(size);
+        pageData.setTotal(pageList.getTotalElements());
+        pageData.setTotalPages(pageList.getTotalPages());
+
+        List<TQztSubjectsEntity> subjectsEntityList = pageList.getContent();
         if (subjectsEntityList != null && subjectsEntityList.size() > 0) {
             for (TQztSubjectsEntity s : subjectsEntityList
             ) {
@@ -67,7 +97,8 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
                 s.setListNode(nodeList);
             }
         }
-        return subjectsEntityList;
+        pageData.setData(subjectsEntityList);
+        return pageData;
     }
 
     @Transactional

@@ -3,6 +3,7 @@ package com.jone.record.service;
 import com.jone.record.entity.special.NodeContent;
 import com.jone.record.entity.special.SubjectsNodes;
 import com.jone.record.entity.special.TQztSubjectsEntity;
+import com.jone.record.entity.vo.PageVo;
 import com.jone.record.entity.vo.UserInfo;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -10,7 +11,7 @@ import java.util.List;
 
 public interface SpecialBaseService {
 
-    List<TQztSubjectsEntity> listByState(Integer state) throws Exception;
+    PageVo<TQztSubjectsEntity> listByState(Integer state, Integer page, Integer size) throws Exception;
 
     TQztSubjectsEntity save(TQztSubjectsEntity subjectsEntity, UserInfo user) throws Exception;
 

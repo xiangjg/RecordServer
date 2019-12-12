@@ -6,6 +6,7 @@ import com.jone.record.dao.RedisDao;
 import com.jone.record.entity.special.NodeContent;
 import com.jone.record.entity.special.SubjectsNodes;
 import com.jone.record.entity.special.TQztSubjectsEntity;
+import com.jone.record.entity.vo.PageVo;
 import com.jone.record.entity.vo.UserInfo;
 import com.jone.record.service.SpecialBaseService;
 import com.jone.record.util.ResultUtil;
@@ -34,9 +35,9 @@ public class SpecialBaseController extends BaseController {
     @RequestMapping(value = "/list", method = RequestMethod.POST)
     @ApiOperation(value = "基础信息列表", notes = "输入state")
     @SystemControllerLog(description = "查看基础信息列表")
-    public void list(@RequestParam Integer state, HttpServletResponse response) {
+    public void list(@RequestParam Integer state,@RequestParam Integer page,@RequestParam Integer size, HttpServletResponse response) {
         try {
-            List<TQztSubjectsEntity> subjectsEntityList = specialBaseService.listByState(state);
+            PageVo<TQztSubjectsEntity> subjectsEntityList = specialBaseService.listByState(state, page, size);
             printJson(ResultUtil.success(subjectsEntityList), response);
         } catch (Exception e) {
             logger.error("{}", e);
