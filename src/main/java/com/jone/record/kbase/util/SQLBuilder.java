@@ -602,4 +602,31 @@ public class SQLBuilder {
         return strBuilder.toString().toUpperCase();
     }
 
+    public static String GenerateJournalReadCatalogQuerySQL(JSONObject params){
+        StringBuilder strBuilder = new StringBuilder();
+        String strFields = "NAME,SYS_FLD_DOI,BASEID,PARENTDOI";
+        strBuilder.append("select ");
+        strBuilder.append(strFields);
+        strBuilder.append(" from DPM_JOURNALARTICLE where BASEID='");
+        strBuilder.append(params.getString("code"));
+        strBuilder.append("' and PARENTDOI='");
+        strBuilder.append(params.getString("id"));
+        strBuilder.append("'");
+        return strBuilder.toString().toUpperCase();
+    }
+
+
+    public static String GenerateJournalFullTextQuerySQL(JSONObject params){
+        StringBuilder strBuilder = new StringBuilder();
+        String strFields = "BASEID,SYS_FLD_DOI,PARENTDOI,SYS_FLD_PARAXML";
+        strBuilder.append("select ");
+        strBuilder.append(strFields);
+        strBuilder.append(" from DPM_JOURNALARTICLE where BASEID='");
+        strBuilder.append(params.getString("code"));
+        strBuilder.append("' and SYS_FLD_DOI='");
+        strBuilder.append(params.getString("id"));
+        strBuilder.append("'");
+        return strBuilder.toString().toUpperCase();
+    }
+
 }

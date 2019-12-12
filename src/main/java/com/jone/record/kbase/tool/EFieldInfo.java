@@ -1,14 +1,16 @@
 package com.jone.record.kbase.tool;
 
-
 import com.alibaba.fastjson.JSONObject;
 
 public enum EFieldInfo {
 
     kbase_History_Books ("1", "NAME,AUTHOR,ISBN,ISSUEDEP,ISSUEDATE,SYS_FLD_CLASSFICATION,SYS_FLD_DOI,SYS_FLD_FILEPATH,SYS_FLD_COVERPATH,SYS_FLD_ABSTRACT"),                     // 志书
     kbase_Year_Books ("2", "NAME,AUTHOR,ISBN,ISSUEDEP,ISSUEDATE,SYS_FLD_CLASSFICATION,SYS_FLD_DOI,SYS_FLD_FILEPATH,SYS_FLD_COVERPATH,SYS_FLD_ABSTRACT"),            // 年鉴
-    kbase_Local_History_Books ("3", "NAME,AUTHOR,ISBN,ISSUEDEP,ISSUEDATE,SYS_FLD_CLASSFICATION,SYS_FLD_DOI,SYS_FLD_FILEPATH,SYS_FLD_COVERPATH,SYS_FLD_ABSTRACT"),       // 地方史
-    kbase_Situation_Books ("4", "NAME,AUTHOR,ISBN,ISSUEDEP,ISSUEDATE,SYS_FLD_CLASSFICATION,SYS_FLD_DOI,SYS_FLD_FILEPATH,SYS_FLD_COVERPATH,SYS_FLD_ABSTRACT");              // 地情资料
+    kbase_Journal_books("3","DPM_JOURNALINFO"),
+    kbase_Local_History_Books ("4", "NAME,AUTHOR,ISBN,ISSUEDEP,ISSUEDATE,SYS_FLD_CLASSFICATION,SYS_FLD_DOI,SYS_FLD_FILEPATH,SYS_FLD_COVERPATH,SYS_FLD_ABSTRACT"),       // 地方史
+    kbase_Multi_Media("5","DPM_PIC"),
+    kbase_Situation_Books ("6", "NAME,AUTHOR,ISBN,ISSUEDEP,ISSUEDATE,SYS_FLD_CLASSFICATION,SYS_FLD_DOI,SYS_FLD_FILEPATH,SYS_FLD_COVERPATH,SYS_FLD_ABSTRACT"),              // 地情资料
+    ;
 
     private String code;
     private String strFields;

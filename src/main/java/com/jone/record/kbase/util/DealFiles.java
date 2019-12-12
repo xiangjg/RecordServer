@@ -66,6 +66,39 @@ public class DealFiles {
     }
 
     /**
+     * 解析期刊全文
+     */
+    public String AnalysisJournalFullText(String strXmlInfo) {
+        String strFullText = "";
+        List<String> list = new LinkedList<String>();
+        Document doc = null;
+        Element root = null;
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
+        try {
+            doc = DocumentHelper.parseText(strXmlInfo);
+            root = doc.getRootElement();// 指向根节点  <root>
+            getNodes(root, list);
+
+            String strContent = "";
+            String strTitle = "";
+            for (int i = 0; i < list.size(); i++) {
+                if (0 == i) {
+                    strTitle = list.get(i);
+                } else {
+                    String strList = list.get(i);
+                    strContent += strList;
+                }
+            }
+            jsonObject.put("title", strTitle);
+            jsonObject.put("content", strContent);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        strFullText = jsonObject.toJSONString();
+        return strFullText;
+    }
+
+    /**
      * 从指定节点开始,递归遍历所有子节点
      */
     public void getNodes(Element node, List<String> list) {
