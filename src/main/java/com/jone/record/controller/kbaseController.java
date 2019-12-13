@@ -429,7 +429,7 @@ public class kbaseController extends BaseController {
      * 查询书籍的目录信息
      *
      * @return 返回JSON格式字符串
-     * @params 输入JSONObject对象，格式为 {"type":"1","keyword":"地质构造","page":"1","pageSize":"10"}
+     * @params 输入JSONObject对象，格式为 {"type":"1","keyword":"贵州","page":"1","pageSize":"10"}
      * @type 资源类型，志书-1,年鉴-2,期刊-3(不在此范围内),地情资料-4,多媒体-5
      * @keyword 检索关键词
      * @page 显示页索引，默认为显示第 1 页
@@ -440,6 +440,29 @@ public class kbaseController extends BaseController {
     public void GetBookChapterInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
             JSONObject jsonObject = kbaseTools.GetBookChapterInfo(params);
+            printJson(ResultUtil.success(jsonObject), response);
+        } catch (Exception e) {
+            loger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    /**
+     * 单本书籍的全文检索
+     *
+     * @return 返回JSON格式字符串
+     * @params 输入JSONObject对象，格式为 {"type":"1","id":"E88D6665-2B2F-47f1-8FFD-717F785FBAF0","keyword":"贵州","page":"1","pageSize":"10"}
+     * @type 资源类型 志书-1,年鉴-2,期刊-3,地情资料-4,多媒体-5
+     * @id 书籍的GUID
+     * @keyword 检索关键词
+     * @page 显示页索引，默认为显示第 1 页
+     * @pageSize 每页显示记录数，默认为 10 条
+     */
+    @RequestMapping(value = "GetSingleBookFullTextQuery", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ApiOperation(value = "单本书籍的全文检索", notes = "输入JSONObject对象,资源类型-type,书籍的GUID-id,检索关键词-keyword,显示页索引-page,每页显示记录数-pageSize")
+    public void GetSingleBookFullTextQuery(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject jsonObject = kbaseTools.GetSingleBookFullTextQuery(params);
             printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
             loger.error("{}", e);

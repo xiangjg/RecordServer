@@ -8,6 +8,7 @@ package com.jone.record.kbase.util;
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.jone.record.kbase.entity.Catalog;
+import com.jone.record.kbase.entity.JournalCatalog;
 import com.jone.record.kbase.entity.KBaseConfig;
 import com.jone.record.kbase.tool.EJournalType;
 import org.apache.commons.collections.map.LinkedMap;
@@ -303,4 +304,49 @@ public class Common {
         }
         return jsonObject;
     }
+
+    public static List<JournalCatalog> ResultSetToList(ResultSet rst) {
+        List<JournalCatalog> list = new LinkedList<JournalCatalog>();
+        try {
+            ResultSetMetaData rstMetaData = rst.getMetaData();
+            int column = rstMetaData.getColumnCount();
+            String key = "", value = "";
+            while (rst.next()) {
+                JournalCatalog jCatalog = new JournalCatalog();
+                for (int i = 1; i <= column; i++) {
+                    key = rstMetaData.getColumnName(i);
+                    value = rst.getString(key);
+                    if (key.equals("PARENTDOI")) {
+                        jCatalog.setParentGuid(value);
+                    } else if (key.equals("TITLE")) {
+                        jCatalog.setTitle(value);
+                    } else if (key.equals("SYS_FLD_DOI")) {
+                        jCatalog.setCurrentGuid(value);
+                    } else if (key.equals("SYS_FLD_ORDERNUM")) {
+                        jCatalog.setOrderId(value);
+                    }
+                }
+                list.add(jCatalog);
+            }
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return list;
+    }
+
+    public static List<Object> MapToJSONObjectList(Map<String, List<JournalCatalog>> map){
+        List<Object> jsonObjectList = new LinkedList<Object>();
+        Iterator<Map.Entry<String, List<JournalCatalog>>> entries = map.entrySet().iterator();
+        while (entries.hasNext()) {
+            JSONObject jsonObj = new JSONObject(new LinkedHashMap<>());
+            Map.Entry<String, List<JournalCatalog>> entry = entries.next();
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            jsonObj.put("BookId",key);
+            jsonObj.put("Catalog", value);
+            jsonObjectList.add(jsonObj);
+        }
+        return jsonObjectList;
+    }
+
 }

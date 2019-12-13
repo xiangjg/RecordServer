@@ -16,7 +16,6 @@ import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.media.jai.operator.MinFilterDescriptor;
 import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -657,41 +656,89 @@ public class KBaseExecute {
             loger.error("构建询书籍章节目录信息SQL语句失败！");
             return null;
         }
+
+        // 查询满足条件的目录列表
         List<JournalCatalog> list = new LinkedList<JournalCatalog>();
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
-            ResultSetMetaData rstMetaData = rst.getMetaData();
-            int column = rstMetaData.getColumnCount();
-            String key = "", value = "";
-            String guid = "";
-            while (rst.next()) {
-                JournalCatalog jCatalog = new JournalCatalog();
-                for (int i = 1; i <= column; i++) {
-                    key = rstMetaData.getColumnName(i);
-                    value = rst.getString(key);
-                    if (key.equals("PARENTDOI")) {
-                        guid = value;
-                        jCatalog.setParentGuid(value);
-                    } else if (key.equals("TITLE")) {
-                        jCatalog.setTitle(value);
-                    } else if (key.equals("SYS_FLD_DOI")) {
-                        jCatalog.setCurrentGuid(value);
-                    } else if (key.equals("SYS_FLD_ORDERNUM")) {
-                        jCatalog.setOrderId(value);
-                    }
-                }
-                list.add(jCatalog);
-            }
-            int n = 10;
+            list = Common.ResultSetToList(rst);
         } catch (Exception e) {
             loger.error("{}", e);
         }
 
+        // 将满足条件的目录列表进行分组
         Map<String, List<JournalCatalog>> map = new LinkedHashMap<>();
         map = list.stream().collect(Collectors.groupingBy(JournalCatalog::getParentGuid));
+        // 添加书籍的本书，分页总记录数
+        int mapSize = map.size();
+        jsonObject.put("count", mapSize);
 
+        // 将Map转换成List
+        List<Object> ObjectList = Common.MapToJSONObjectList(map);
+
+        // 计算分页详情
+        int start = 0, end = 0;
+        int pageSize = 0, page = 0;
+        if (params.containsKey("pageSize")) {
+            pageSize = params.getInteger("pageSize");
+        } else {
+            pageSize = 10;
+        }
+        if (params.containsKey("page")) {
+            page = params.getInteger("page");
+        } else {
+            page = 1;
+        }
+        start = (page - 1) * pageSize;
+        if (mapSize <= pageSize) {
+            end = mapSize;
+        } else {
+            end = page * pageSize;
+            if (end > mapSize)
+                end = mapSize;
+        }
+        List<Object> jsonObjectList = ObjectList.subList(start, end);
+        jsonObject.put("content", jsonObjectList);
         return jsonObject;
     }
+
+    public JSONObject GetSingleBookFullTextQuery(JSONObject params) {
+        Connection _con = KBaseCon.GetInitConnect();
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        String strSQL = SQLBuilder.GenerateSingleBookFullTextNumsQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            loger.error("构建询书籍章节目录信息SQL语句失败！");
+            return null;
+        }
+        int count = 0;
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            while (rst.next()) {
+                count = rst.getInt("total");
+            }
+            jsonObject.put("count", count);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+
+        strSQL = SQLBuilder.GenerateSingleBookFullTextQuerySQL(params, count);
+        if (strSQL.isEmpty()) {
+            loger.error("构建询书籍章节目录信息SQL语句失败！");
+            return null;
+        }
+        JSONArray jsonArray = new JSONArray(new LinkedList<>());
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            jsonArray = Common.ResultSetToJSONArray(rst);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        jsonObject.put("content", jsonArray);
+        return jsonObject;
+    }
+
 
 }

@@ -1,10 +1,7 @@
 package com.jone.record.kbase.util;
 
 import com.alibaba.fastjson.JSONObject;
-import com.jone.record.kbase.tool.EBookTableInfo;
-import com.jone.record.kbase.tool.ECatalogTableInfo;
-import com.jone.record.kbase.tool.EClsInfo;
-import com.jone.record.kbase.tool.EFieldInfo;
+import com.jone.record.kbase.tool.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -648,9 +645,16 @@ public class SQLBuilder {
         strBuilder.append(strFields);
         strBuilder.append(" from ");
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
-        strBuilder.append(" where title % '");
-        strBuilder.append(params.getString("keyword"));
-        strBuilder.append("' order by PARENTDOI");
+        if (params.containsKey("keyword")) {
+            String keyword = params.getString("keyword");
+            if (!keyword.isEmpty()) {
+                strBuilder.append(" where title % '");
+                strBuilder.append(keyword);
+                strBuilder.append("'");
+            }
+        }
+
+        strBuilder.append(" order by PARENTDOI");
         return strBuilder.toString().toUpperCase();
     }
 
@@ -664,6 +668,92 @@ public class SQLBuilder {
         strBuilder.append(" where title % '");
         strBuilder.append(params.getString("keyword"));
         strBuilder.append("'");
+        return strBuilder.toString().toUpperCase();
+    }
+
+    public static String GenerateSingleBookFullTextNumsQuerySQL(JSONObject params) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select count(*) as total from ");
+        strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
+        String strKeyword = "";
+        if (params.containsKey("keyword")) {
+            strKeyword = params.getString("keyword");
+            if (!strKeyword.isEmpty()) {
+                strBuilder.append(" where ");
+                strBuilder.append(EFullTextField.GetFieldByCode(params.getString("type")));
+                strBuilder.append(" % '");
+                strBuilder.append(strKeyword);
+                strBuilder.append("'");
+            }
+        }
+        if (params.containsKey("id")) {
+            String strGuid = params.getString("id");
+            if (!strGuid.isEmpty()) {
+                if (strKeyword.isEmpty()) {
+                    strBuilder.append(" where ");
+                } else {
+                    strBuilder.append(" and ");
+                }
+                strBuilder.append("PARENTDOI='");
+                strBuilder.append(params.getString("id"));
+                strBuilder.append("'");
+            }
+        }
+        return strBuilder.toString().toUpperCase();
+    }
+
+    /**
+     * 生成查询单本书籍全文内容SQL语句
+     */
+    public static String GenerateSingleBookFullTextQuerySQL(JSONObject params, int count) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select ");
+        strBuilder.append(EFullFields.GetFieldByCode(params.getString("type")));
+        strBuilder.append(" from ");
+        strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
+        String strKeyword = "";
+        if (params.containsKey("keyword")) {
+            strKeyword = params.getString("keyword");
+            if (!strKeyword.isEmpty()) {
+                strBuilder.append(" where ");
+                strBuilder.append(EFullTextField.GetFieldByCode(params.getString("type")));
+                strBuilder.append(" % '");
+                strBuilder.append(strKeyword);
+                strBuilder.append("'");
+            }
+        }
+        if (params.containsKey("id")) {
+            String strGuid = params.getString("id");
+            if (!strGuid.isEmpty()) {
+                if (strKeyword.isEmpty()) {
+                    strBuilder.append(" where ");
+                } else {
+                    strBuilder.append(" and ");
+                }
+                strBuilder.append("PARENTDOI='");
+                strBuilder.append(params.getString("id"));
+                strBuilder.append("'");
+            }
+        }
+        // 分页
+        if (params.containsKey("pageSize")) {
+            int pageSize = params.getInteger("pageSize");
+            if (count <= pageSize) {
+                strBuilder.append(" limit 0,");
+                strBuilder.append(count);
+            } else {
+                if (params.containsKey("page")) {
+                    int page = params.getInteger("page");
+                    int start = (page - 1) * pageSize;
+                    strBuilder.append(" limit ");
+                    strBuilder.append(start);
+                    strBuilder.append(",");
+                    strBuilder.append(pageSize);
+                }
+            }
+        } else {
+            strBuilder.append(" limit 0,10");
+        }
         return strBuilder.toString().toUpperCase();
     }
 
