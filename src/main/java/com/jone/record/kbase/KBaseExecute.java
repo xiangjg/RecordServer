@@ -6,6 +6,7 @@ package com.jone.record.kbase;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jone.record.kbase.entity.JournalCatalog;
 import com.jone.record.kbase.util.Common;
 import com.jone.record.kbase.util.DealFiles;
 import com.jone.record.kbase.util.SQLBuilder;
@@ -15,10 +16,10 @@ import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.media.jai.operator.MinFilterDescriptor;
 import java.sql.*;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class KBaseExecute {
 
@@ -97,10 +98,10 @@ public class KBaseExecute {
         try {
             state = _con.createStatement();
             rst = state.executeQuery(strSQL);
-            String key = "count";
+            String key = "total";
             int value = 0;
             while (rst.next()) {
-                value = rst.getInt("count(*)");
+                value = rst.getInt("total");
             }
             if (0 == value) {
                 return null;
@@ -163,7 +164,7 @@ public class KBaseExecute {
             ResultSet rst = state.executeQuery(strSQL);
             int count = 0;
             while (rst.next()) {
-                count = rst.getInt("count");
+                count = rst.getInt("total");
             }
             jsonObject.put("count", count);
         } catch (Exception e) {
@@ -198,7 +199,7 @@ public class KBaseExecute {
         titleObject = GetPagedQueryObjectInfo(strSQL, jsonObject.getInteger("pageSize"));
 
         // 获取分页查询信息SQL
-        strSQL = SQLBuilder.GenerateTopicRecordInfoQuerySQL(jsonObject, titleObject.getInteger("count"));
+        strSQL = SQLBuilder.GenerateTopicRecordInfoQuerySQL(jsonObject, titleObject.getInteger("total"));
         if (strSQL.isEmpty()) {
             return null;
         }
@@ -299,7 +300,7 @@ public class KBaseExecute {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             while (rst.next()) {
-                count = rst.getInt("num");
+                count = rst.getInt("total");
             }
             jsonObject.put("count", count);
         } catch (Exception e) {
@@ -479,7 +480,7 @@ public class KBaseExecute {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             while (rst.next()) {
-                count = rst.getInt("count");
+                count = rst.getInt("total");
             }
             jsonObject.put("count", count);
         } catch (Exception e) {
@@ -513,7 +514,7 @@ public class KBaseExecute {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             while (rst.next()) {
-                count = rst.getInt("count");
+                count = rst.getInt("total");
             }
             jsonObject.put("count", count);
         } catch (Exception e) {
@@ -651,36 +652,44 @@ public class KBaseExecute {
     public JSONObject GetBookChapterInfo(JSONObject params) {
         Connection _con = KBaseCon.GetInitConnect();
         JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
-        String strSQL =  SQLBuilder.GenerateBookChapterInfoGroupNumsQuerySQL(params);
+        String strSQL = SQLBuilder.GenerateBookChapterInfoGroupQuerySQL(params);
         if (strSQL.isEmpty()) {
             loger.error("构建询书籍章节目录信息SQL语句失败！");
             return null;
         }
-        int count = 0;
+        List<JournalCatalog> list = new LinkedList<JournalCatalog>();
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
+            ResultSetMetaData rstMetaData = rst.getMetaData();
+            int column = rstMetaData.getColumnCount();
+            String key = "", value = "";
+            String guid = "";
             while (rst.next()) {
-                count = rst.getInt("count");
+                JournalCatalog jCatalog = new JournalCatalog();
+                for (int i = 1; i <= column; i++) {
+                    key = rstMetaData.getColumnName(i);
+                    value = rst.getString(key);
+                    if (key.equals("PARENTDOI")) {
+                        guid = value;
+                        jCatalog.setParentGuid(value);
+                    } else if (key.equals("TITLE")) {
+                        jCatalog.setTitle(value);
+                    } else if (key.equals("SYS_FLD_DOI")) {
+                        jCatalog.setCurrentGuid(value);
+                    } else if (key.equals("SYS_FLD_ORDERNUM")) {
+                        jCatalog.setOrderId(value);
+                    }
+                }
+                list.add(jCatalog);
             }
-            jsonObject.put("count", count);
+            int n = 10;
         } catch (Exception e) {
             loger.error("{}", e);
         }
 
-        strSQL = SQLBuilder.GenerateBookChapterInfoGroupQuerySQL(params);
-        if (strSQL.isEmpty()) {
-            loger.error("构建询书籍章节目录信息SQL语句失败！");
-            return null;
-        }
-
-
-
-        strSQL = SQLBuilder.GenerateBookChapterInfoQuerySQL(params);
-        if (strSQL.isEmpty()) {
-            loger.error("构建询书籍章节目录信息SQL语句失败！");
-            return null;
-        }
+        Map<String, List<JournalCatalog>> map = new LinkedHashMap<>();
+        map = list.stream().collect(Collectors.groupingBy(JournalCatalog::getParentGuid));
 
         return jsonObject;
     }

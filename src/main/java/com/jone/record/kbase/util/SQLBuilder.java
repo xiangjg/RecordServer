@@ -21,7 +21,7 @@ public class SQLBuilder {
     public static String GeneratePagedQuerySQL(JSONObject params) {
         String strSQL = "";
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select count(*) from ");
+        strBuilder.append("select count(*) as total from ");
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
 
         // 添加查询条件 关键词
@@ -97,7 +97,7 @@ public class SQLBuilder {
     public static String GenerateRecordNumsQuerySQL(JSONObject params) {
         String strSQL = "";
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select count(*) as num from ");
+        strBuilder.append("select count(*) as total from ");
         strBuilder.append(EBookTableInfo.GetTableNameByCode(params.getString("type")));
         strBuilder.append(" where SYS_FLD_CLASSFICATION='");
         strBuilder.append(EClsInfo.GetClsCodeByCode(params.getString("cls")));
@@ -160,7 +160,7 @@ public class SQLBuilder {
 
     public static String GenerateHistoryNumsQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select count(*) as count from ");
+        strBuilder.append("select count(*) as total from ");
         strBuilder.append(EBookTableInfo.GetTableNameByCode(params.getString("type")));
         strBuilder.append(" where ");
         // 添加发布状态
@@ -358,10 +358,11 @@ public class SQLBuilder {
         strBuilder.append(" from ");
         strBuilder.append(EBookTableInfo.GetTableNameByCode(params.getString("type")));
 
-        if (params.containsKey("SYS_FLD_DOI"))
+        if (params.containsKey("id")) {
             strBuilder.append(" where SYS_FLD_DOI='");
-        strBuilder.append(params.getString("id"));
-        strBuilder.append("'");
+            strBuilder.append(params.getString("id"));
+            strBuilder.append("'");
+        }
         return strBuilder.toString().toUpperCase();
     }
 
@@ -435,7 +436,7 @@ public class SQLBuilder {
      */
     public static String GenerateJournalInfoNumsQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select count(*) as count from DPM_JOURNALINFO");
+        strBuilder.append("select count(*) as total from DPM_JOURNALINFO");
         if (params.containsKey("keyword")) {
             String keyword = params.getString("keyword");
             if (!keyword.isEmpty()) {
@@ -494,7 +495,7 @@ public class SQLBuilder {
      */
     public static String GenerateGetJournalYearInfoNumsQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select count(*) as count from DPM_JOURNALYEARINFO");
+        strBuilder.append("select count(*) as total from DPM_JOURNALYEARINFO");
         // BaseID
         String strBaseId = "";
         if (params.containsKey("code")) {
@@ -602,7 +603,7 @@ public class SQLBuilder {
         return strBuilder.toString().toUpperCase();
     }
 
-    public static String GenerateJournalReadCatalogQuerySQL(JSONObject params){
+    public static String GenerateJournalReadCatalogQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
         String strFields = "NAME,SYS_FLD_DOI,BASEID,PARENTDOI";
         strBuilder.append("select ");
@@ -616,7 +617,7 @@ public class SQLBuilder {
     }
 
 
-    public static String GenerateJournalFullTextQuerySQL(JSONObject params){
+    public static String GenerateJournalFullTextQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
         String strFields = "BASEID,SYS_FLD_DOI,PARENTDOI,SYS_FLD_PARAXML";
         strBuilder.append("select ");
@@ -629,7 +630,7 @@ public class SQLBuilder {
         return strBuilder.toString().toUpperCase();
     }
 
-    public static String GenerateBookChapterInfoGroupNumsQuerySQL(JSONObject params){
+    public static String GenerateBookChapterInfoGroupNumsQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("select count(*) as count from ");
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
@@ -640,20 +641,20 @@ public class SQLBuilder {
     }
 
 
-    public static String GenerateBookChapterInfoGroupQuerySQL(JSONObject params){
+    public static String GenerateBookChapterInfoGroupQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
-        String strFields = "PARENTNAME,title,PARENTDOI";
+        String strFields = " TITLE,PARENTDOI,SYS_FLD_DOI,SYS_FLD_ORDERNUM";
         strBuilder.append("select ");
         strBuilder.append(strFields);
         strBuilder.append(" from ");
-        strBuilder.append(params.getString("type"));
+        strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
         strBuilder.append(" where title % '");
         strBuilder.append(params.getString("keyword"));
-        strBuilder.append("'");
+        strBuilder.append("' order by PARENTDOI");
         return strBuilder.toString().toUpperCase();
     }
 
-    public static String GenerateBookChapterInfoQuerySQL(JSONObject params){
+    public static String GenerateBookChapterInfoQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
         String strFields = "title,PARENTDOI";
         strBuilder.append("select ");
@@ -663,8 +664,6 @@ public class SQLBuilder {
         strBuilder.append(" where title % '");
         strBuilder.append(params.getString("keyword"));
         strBuilder.append("'");
-
-
         return strBuilder.toString().toUpperCase();
     }
 

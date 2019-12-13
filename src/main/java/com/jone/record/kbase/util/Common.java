@@ -15,8 +15,6 @@ import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.text.SimpleDateFormat;
@@ -32,7 +30,7 @@ public class Common {
         try {
             String strValue = "";
             while (rst.next()) {
-                strValue = rst.getString("COUNT");
+                strValue = rst.getString("total");
                 jsonObject.put("count", strValue);
             }
         } catch (Exception e) {
@@ -277,7 +275,6 @@ public class Common {
         }
         return list;
     }
-
 
     public static JSONObject AnalysisJournalFullText(ResultSet rst) {
         JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());

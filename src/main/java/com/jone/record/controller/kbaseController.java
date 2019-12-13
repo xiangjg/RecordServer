@@ -54,7 +54,7 @@ public class kbaseController extends BaseController {
      * 资源类型，type：1，志书；2，年鉴；3，地方史；4，地情资料。
      * 分类代码，cls：0，全部；1，志书；2，年鉴，3：地方史；4，地情资料
      */
-    @RequestMapping(value = "/GetBooksNums", method = RequestMethod.POST)
+    @RequestMapping(value = "/GetBooksNums", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "获取数据表记录数", notes = "输入JSONObject参数：资源类型type，分类类型cls。")
     public void GetBooksNums(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -78,7 +78,7 @@ public class kbaseController extends BaseController {
      * 每页显示，pageSize：每页显示记录数，默认为 10 条；
      * 检索标题，title：根据书名进行检索。
      */
-    @RequestMapping(value = "/GetBooksInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "/GetBooksInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "根据标题获取书籍列表信息", notes = "输入JSONObject参数：资源类型type，上下架state，显示页码page，每页显示数量pageSize,检索标题title")
     public void GetBooksInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -98,7 +98,7 @@ public class kbaseController extends BaseController {
      * @type 资源类型：1，志书；2，年鉴；3，地方史；4，地情资料;
      * @id 书籍的为唯一标识符，为GUID格式
      */
-    @RequestMapping(value = "/GetReadCatalog", method = RequestMethod.POST)
+    @RequestMapping(value = "/GetReadCatalog", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "获取碎片化阅读目录", notes = "输入JSONObject参数：资源类型type，书籍的ID-id")
     public void GetReadCatalog(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -118,7 +118,7 @@ public class kbaseController extends BaseController {
      * @type 资源类型：1，志书；2，年鉴；3，地方史；4，地情资料;
      * @id 书籍的为唯一标识符，为GUID格式
      */
-    @RequestMapping(value = "/GetBookCatalog", method = RequestMethod.POST)
+    @RequestMapping(value = "/GetBookCatalog", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "获取书籍基本目录信息", notes = "输入JSONObject参数：资源类型-type，书籍的ID-id")
     public void GetBookCatalog(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -142,7 +142,7 @@ public class kbaseController extends BaseController {
      * @pageSize 显示条数，当前页的显示条数，默认为是10条
      * @params 输入JSONObject对象，格式为 {"type":"1", "id":"5D5A3DEA-1609-40c6-A6EF-76D069D7A764","keyword":"地质构造","page":"1","pageSize":"10"}
      */
-    @RequestMapping(value = "/GetTitleInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "/GetTitleInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "获取专题标题目录信息", notes = "输入JSONObject参数：资源类型-type，书籍ID-id，检索词-keyword，显示页码-page，每页显示数量-pageSize")
     public void GetTitleInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -164,7 +164,7 @@ public class kbaseController extends BaseController {
      * @guid 书籍的GUID
      * @id 章节的排序ID
      */
-    @RequestMapping(value = "/GetFullTextInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "/GetFullTextInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "查询全文内容", notes = "输入JSONObject参数：资源类型-type，书籍ID-guid，章节排序ID-id")
     public void GetFullTextInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -188,7 +188,7 @@ public class kbaseController extends BaseController {
      * @page 显示页码，当前显示第几页，默认显示第一页
      * @pageSize 显示条数，当前页的显示条数，默认为是10条
      */
-    @RequestMapping(value = "/GetBookList", method = RequestMethod.POST)
+    @RequestMapping(value = "/GetBookList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "查询书籍的分类列表", notes = "输入JSONObject参数：资源类型-type，上下架-state，资源分类-cls，显示页码-page，每页显示数量-pageSize")
     public void GetBookList(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -207,7 +207,7 @@ public class kbaseController extends BaseController {
      * @params JSON字符串，如：{"num":"4"}
      * @num 需要返回记录的条数
      */
-    @RequestMapping(value = "/GetDynamicHomeInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "/GetDynamicHomeInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "获取方志动态首页显示内容", notes = "输入JSONObject参数：记录数-num")
     public void GetDynamicHomeInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -230,7 +230,7 @@ public class kbaseController extends BaseController {
      * @page 显示页码，默认显示第 1 页
      * @pzgeSize 每一页显示记录数，默认显示 10 条
      */
-    @RequestMapping(value = "/GetDynamicTitleList", method = RequestMethod.POST)
+    @RequestMapping(value = "/GetDynamicTitleList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "查询方志动态的标题信息", notes = "输入JSONObject参数：发布状态-state,最近天数-day,显示页数-page,显示条数-pageSize")
     public void GetDynamicTitleList(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -249,7 +249,7 @@ public class kbaseController extends BaseController {
      * @params JSON字符串，如：{"id":"192"}
      * @ID 查询记录的ID
      */
-    @RequestMapping(value = "/GetDynamicContent", method = RequestMethod.POST)
+    @RequestMapping(value = "/GetDynamicContent", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "查询方志动态详细内容", notes = "输入JSONObject参数：记录ID-id")
     public void GetDynamicContent(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -270,7 +270,7 @@ public class kbaseController extends BaseController {
      * @page 查询页索引，默认查询第 1 页
      * @pageSize 每页显示数据条数，默认显示 1 条
      */
-    @RequestMapping(value = "GetYearBookList", method = RequestMethod.POST)
+    @RequestMapping(value = "GetYearBookList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "查询年鉴列表信息", notes = "输入JSONObject对象，查询年份-year，查询页索引-page，每页显示数据条数-pageSize")
     public void GetYearBookList(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -291,7 +291,7 @@ public class kbaseController extends BaseController {
      * @id 书籍的GUID，为GUID格式的字符串，"2811FAE6-17BF-48e8-B1A4-A93A525F5B04"
      * @keyword 查询关键词，可以为空
      */
-    @RequestMapping(value = "GetSingleBookInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "GetSingleBookInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "查询单本书籍的信息", notes = "输入JSONObject对象，资源类型-type，书籍的GUID-id")
     public void GetSingleBookInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -312,7 +312,7 @@ public class kbaseController extends BaseController {
      * @page 显示页索引
      * @pageSize 每页显示记录数
      */
-    @RequestMapping(value = "GetJournalInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "GetJournalInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "查询期刊基本信息", notes = "输入JSONObject对象，查询关键词-keyword，显示页索引-page，每页显示记录数-pageSize")
     public void GetJournalInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -333,7 +333,7 @@ public class kbaseController extends BaseController {
      * page 查询页索引，默认查询第 1 页
      * @pageSize 每页显示记录数，默认显示 10 条
      */
-    @RequestMapping(value = "GetJournalYearInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "GetJournalYearInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "查询期刊的年期信息", notes = "输入JSONObject对象，期刊号-code，期刊年份-year，查询页索引-page，每页显示记录数-pageSize")
     public void GetJournalYearInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -353,7 +353,7 @@ public class kbaseController extends BaseController {
      * @code 期刊号, 如："zdfz"
      * @id 期刊的GUID，如："A02BE975-2543-4a13-B5AF-EFD6DB199685"
      */
-    @RequestMapping(value = "GetJournalBaseInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "GetJournalBaseInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "查询单期期刊的基本信息", notes = "输入JSONObject对象，期刊号-code，期刊的GUID-id")
     public void GetJournalBaseInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -373,7 +373,7 @@ public class kbaseController extends BaseController {
      * @code 期刊号, 如："zdfz"
      * @id 期刊的GUID，如："A02BE975-2543-4a13-B5AF-EFD6DB199685"
      */
-    @RequestMapping(value = "GetJournalBaseCatalog", method = RequestMethod.POST)
+    @RequestMapping(value = "GetJournalBaseCatalog", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "查询单期期刊的基本目录信息", notes = "输入JSONObject对象，期刊号-code，期刊的GUID-id")
     public void GetJournalBaseCatalog(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -393,7 +393,7 @@ public class kbaseController extends BaseController {
      * @code 期刊号, 如："zdfz"
      * @id 期刊的GUID，如："A02BE975-2543-4a13-B5AF-EFD6DB199685"
      */
-    @RequestMapping(value = "GetJournalReadCatalog", method = RequestMethod.POST)
+    @RequestMapping(value = "GetJournalReadCatalog", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "查询单期期刊的阅读目录信息", notes = "输入JSONObject对象，期刊号-code，期刊的GUID-id")
     public void GetJournalReadCatalog(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -413,7 +413,7 @@ public class kbaseController extends BaseController {
      * @code 期刊号, 如："GYWE"
      * @id 期刊的GUID，如："bb6b5b1a-749f-4fbd-96b7-9faa97446eff"
      */
-    @RequestMapping(value = "GetJournalFullText", method = RequestMethod.POST)
+    @RequestMapping(value = "GetJournalFullText", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "查询期刊文章全文", notes = "输入JSONObject对象，期刊号-code，期刊的GUID-id")
     public void GetJournalFullText(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
@@ -435,7 +435,7 @@ public class kbaseController extends BaseController {
      * @page 显示页索引，默认为显示第 1 页
      * @pageSize 每页显示记录数，默认为 10 条
      */
-    @RequestMapping(value = "GetBookChapterInfo", method = RequestMethod.POST)
+    @RequestMapping(value = "GetBookChapterInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
     @ApiOperation(value = "查询书籍的目录信息", notes = "输入JSONObject对象,资源类型-type,检索关键词-keyword,显示页索引-page,每页显示记录数-pageSize")
     public void GetBookChapterInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
