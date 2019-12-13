@@ -68,6 +68,58 @@ public class FileServiceImpl implements FileService {
     }
 
     @Override
+    public List<FileEntity> upload(List<MultipartFile> files, Integer type,List<Integer> ids, UserInfo userInfo) throws Exception {
+        List<FileEntity> list = fileDao.findByIdIn(ids);
+        Date now = new Date();
+        int index = 1;
+
+        for (int i = 0; i < files.size(); i++
+        ) {
+            MultipartFile file = files.get(i);
+            byte[] data = file.getBytes();
+            if (data.length > 0) {
+                FileEntity fileEntity = findFileById(ids.get(i), list);
+
+                //删除原文件
+                File delFile = new File(filePath + File.separator + fileEntity.getFileType() + File.separator + fileEntity.getFileName());
+                if(delFile.exists())
+                    delFile.delete();
+
+                String name = file.getOriginalFilename();
+                String fileName = System.currentTimeMillis() + "_" + index;
+
+                fileEntity.setContentType(file.getContentType());
+                fileEntity.setFileName(fileName);
+                fileEntity.setName(name);
+                fileEntity.setFileType(type);
+                fileEntity.setSize(new Double(data.length / 1024));
+                fileEntity.setCreateTime(now);
+                fileEntity.setUserId(userInfo.getUserId());
+                fileEntity.setUserName(userInfo.getUserName());
+
+                File file1 = new File(filePath + File.separator + type + File.separator + fileName);
+                FileUtils.writeByteArrayToFile(file1, data);
+                list.add(fileEntity);
+
+                index++;
+            }
+        }
+        fileDao.saveAll(list);
+        return list;
+    }
+
+    private FileEntity findFileById(Integer id, List<FileEntity> list) {
+        FileEntity f = null;
+        for (int i = 0; i < list.size(); i++) {
+            if(list.get(i).getId() == id){
+                f = list.get(i);
+                break;
+            }
+        }
+        return f;
+    }
+
+    @Override
     public FileEntity getFile(Integer id) throws Exception {
         FileEntity file = fileDao.findById(id).orElse(null);
         if (file != null) {

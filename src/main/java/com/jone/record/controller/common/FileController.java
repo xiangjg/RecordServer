@@ -34,7 +34,7 @@ public class FileController extends BaseController {
     private RedisDao redisDao;
 
     @RequestMapping(value = "/saveFile",method = RequestMethod.POST)
-    @ApiOperation(value="上传文件", notes="传入文件类型type和文件数据列表file")
+    @ApiOperation(value="上传文件", notes="传入文件类型type、文件数据列表file、关联编码refId")
     public void saveFile(@RequestParam Integer type, @RequestParam Integer refId,  HttpServletRequest request, HttpServletResponse response){
         BaseData baseData = new BaseData();
         try{
@@ -46,6 +46,30 @@ public class FileController extends BaseController {
                 MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
                 List<MultipartFile> files = multiRequest.getFiles("file");
                 baseData.setData(fileService.upload(files, type, refId, userInfo));
+                baseData.setCode(1);
+            }
+        }catch (Exception e){
+            e.printStackTrace();
+            baseData.setMessage(e.getMessage());
+            baseData.setCode(-1);
+        }finally {
+            this.printJson(baseData,response);
+        }
+    }
+
+    @RequestMapping(value = "/uploadFile",method = RequestMethod.POST)
+    @ApiOperation(value="更新文件", notes="传入文件类型type、文件数据列表file、要更新的文件编码数组ids")
+    public void uploadFile(@RequestParam Integer type, @RequestParam List<Integer> ids,  HttpServletRequest request, HttpServletResponse response){
+        BaseData baseData = new BaseData();
+        try{
+            UserInfo userInfo = getRedisUser(request,redisDao);
+            if(null==userInfo){
+                baseData.setCode(-2);
+                baseData.setMessage("用户登录没有登录,或session过期");
+            }else {
+                MultipartHttpServletRequest multiRequest = (MultipartHttpServletRequest) request;
+                List<MultipartFile> files = multiRequest.getFiles("file");
+                baseData.setData(fileService.upload(files, type, ids, userInfo));
                 baseData.setCode(1);
             }
         }catch (Exception e){

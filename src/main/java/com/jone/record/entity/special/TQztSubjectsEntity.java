@@ -17,7 +17,6 @@ public class TQztSubjectsEntity implements Serializable {
     private String desc;
     private String creator;
     private Integer state;
-    private byte[] img;
     private Short num;
     private Date createDate;
     private List<FileEntity> files;
@@ -84,15 +83,6 @@ public class TQztSubjectsEntity implements Serializable {
         this.state = state;
     }
 
-    @Basic
-    @Column(name = "img")
-    public byte[] getImg() {
-        return img;
-    }
-
-    public void setImg(byte[] img) {
-        this.img = img;
-    }
 
     @Basic
     @Column(name = "_order")
@@ -130,14 +120,12 @@ public class TQztSubjectsEntity implements Serializable {
                 Objects.equals(name, that.name) &&
                 Objects.equals(desc, that.desc) &&
                 Objects.equals(creator, that.creator) &&
-                Arrays.equals(img, that.img) &&
                 Objects.equals(num, that.num);
     }
 
     @Override
     public int hashCode() {
         int result = Objects.hash(id, name, desc, creator, state, num);
-        result = 31 * result + Arrays.hashCode(img);
         return result;
     }
 }

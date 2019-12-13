@@ -1,6 +1,7 @@
 package com.jone.record.service.impl;
 
 import com.jone.record.config.Definition;
+import com.jone.record.dao.file.FileDao;
 import com.jone.record.dao.special.NodeContentDao;
 import com.jone.record.dao.special.SubjectsNodesDao;
 import com.jone.record.dao.special.TQztSubjectsDao;
@@ -8,13 +9,22 @@ import com.jone.record.entity.file.FileEntity;
 import com.jone.record.entity.special.NodeContent;
 import com.jone.record.entity.special.SubjectsNodes;
 import com.jone.record.entity.special.TQztSubjectsEntity;
+import com.jone.record.entity.vo.PageVo;
 import com.jone.record.entity.vo.UserInfo;
 import com.jone.record.service.FileService;
 import com.jone.record.service.SpecialBaseService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
@@ -31,15 +41,38 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
     private FileService fileService;
     @Autowired
     private NodeContentDao nodeContentDao;
+    @Autowired
+    private FileDao fileDao;
 
     @Override
-    public List<TQztSubjectsEntity> listByState(Integer state) throws Exception {
-        List<TQztSubjectsEntity> subjectsEntityList = new ArrayList<>();
-        if (state >= 0) {
-            subjectsEntityList = tQztSubjectsDao.findByStateOrderByNumAsc(state);
-        } else {
-            subjectsEntityList = tQztSubjectsDao.findAll();
-        }
+    public PageVo<TQztSubjectsEntity> listByState(Integer state, Integer page, Integer size) throws Exception {
+        PageVo pageData = new PageVo();
+        if(page == null)
+            page = 1;
+        if(size == null)
+            size = 10;
+        Specification specification = new Specification<TQztSubjectsEntity>() {
+            @Override
+            public Predicate toPredicate(Root<TQztSubjectsEntity> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> predicates = new ArrayList<>();
+                if (state >= 0)
+                    predicates.add(criteriaBuilder.equal(root.get("state"), state));
+                return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
+            }
+        };
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, "num"));
+        PageRequest pageRequest = PageRequest.of(page - 1, size, sort);
+        Page<TQztSubjectsEntity> pageList = null;
+        if (state >= 0)
+            pageList = tQztSubjectsDao.findAll(specification, pageRequest);
+        else
+            pageList = tQztSubjectsDao.findAll(pageRequest);
+        pageData.setPage(page);
+        pageData.setSize(size);
+        pageData.setTotal(pageList.getTotalElements());
+        pageData.setTotalPages(pageList.getTotalPages());
+
+        List<TQztSubjectsEntity> subjectsEntityList = pageList.getContent();
         if (subjectsEntityList != null && subjectsEntityList.size() > 0) {
             for (TQztSubjectsEntity s : subjectsEntityList
             ) {
@@ -51,23 +84,46 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
                     nodeList = subjectsNodesDao.findByStateAndSidOrderByOrder(state, s.getId());
                  else
                     nodeList = subjectsNodesDao.findBySidOrderByOrder(s.getId());
+                 List<Integer> nids = new ArrayList<>();
+                for (SubjectsNodes n:nodeList
+                     ) {
+                    nids.add(n.getId());
+                }
+                List<NodeContent> contentAllList = nodeContentDao.findByStateAndNidIn(state, nids);
+                List<FileEntity> fileNodeAllList = fileDao.findByRefIdInAndFileType(nids, Definition.TYPE_FILE_COLUMN);
                 for (SubjectsNodes node:nodeList
                      ) {
-                    List<FileEntity> fileNodeList = fileService.listByRefIdAndType(node.getId(), Definition.TYPE_FILE_COLUMN);
+                    List<FileEntity> fileNodeList = getFileListByNid(node.getId(), fileNodeAllList);
                     if (fileNodeList != null && fileNodeList.size() > 0)
                         node.setFiles(fileNodeList);
 
-                    List<NodeContent> contentList = new ArrayList<>();
-                    if (state >= 0)
-                        contentList = nodeContentDao.findByStateAndNid(state, node.getId());
-                    else
-                        contentList = nodeContentDao.findByNid(node.getId());
+                    List<NodeContent> contentList = getContentListByNid(node.getId(), contentAllList);
                     node.setListContent(contentList);
                 }
                 s.setListNode(nodeList);
             }
         }
-        return subjectsEntityList;
+        pageData.setData(subjectsEntityList);
+        return pageData;
+    }
+    private List<FileEntity> getFileListByNid(Integer nid, List<FileEntity> allList){
+        List<FileEntity> list = new ArrayList<>();
+        for (FileEntity n:allList
+        ) {
+            if(n.getRefId() == nid)
+                list.add(n);
+        }
+        return list;
+    }
+
+    private List<NodeContent> getContentListByNid(Integer nid, List<NodeContent> allList){
+        List<NodeContent> list = new ArrayList<>();
+        for (NodeContent n:allList
+             ) {
+            if(n.getNid() == nid)
+                list.add(n);
+        }
+        return list;
     }
 
     @Transactional
@@ -115,7 +171,17 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
     @Transactional
     @Override
     public SubjectsNodes save(SubjectsNodes subjectsNodes) throws Exception {
-        return subjectsNodesDao.save(subjectsNodes);
+        subjectsNodes = subjectsNodesDao.save(subjectsNodes);
+        List<NodeContent> contents = subjectsNodes.getListContent();
+        if (contents != null && contents.size() > 0) {
+            for (NodeContent content : contents
+            ) {
+                content.setNid(subjectsNodes.getId());
+                content.setState(Definition.TYPE_STATE_VALID);
+                nodeContentDao.save(content);
+            }
+        }
+        return subjectsNodes;
     }
     @Transactional
     @Override
