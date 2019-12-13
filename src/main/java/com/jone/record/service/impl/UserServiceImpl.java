@@ -66,7 +66,7 @@ public class UserServiceImpl implements UserService {
         userEntity.setRegDt(new Date());
         userEntity.setRemark("自主注册");
         userEntity.setTel(user.getTel());
-        userEntity.setEmail(userEntity.getEmail());
+        userEntity.setEmail(user.getEmail());
         userEntity.setLoginName(user.getLoginName());
         userEntity.setName(user.getName());
         userEntity.setPassword(user.getPassword());
