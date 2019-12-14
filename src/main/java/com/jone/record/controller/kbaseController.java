@@ -469,4 +469,26 @@ public class kbaseController extends BaseController {
             printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
+
+    /**
+     * 查询大事记信息列表
+     *
+     * @return 返回JSON格式的字符串
+     * @params 输入JSONObject对象，格式为 {"startTime":"2015-01-01","endTime":"2015-09-31","page":"1","pageSize":"10"}
+     * @startTime 起始时间
+     * @endTime 终止时间
+     * @page 显示页索引，默认为显示第 1 页
+     * @pageSize 每页显示记录数，默认为 10 条
+     */
+    @RequestMapping(value = "GetChronicleEvents", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ApiOperation(value = "查询大事记信息列表", notes = "输入JSONObject对象,起始时间-startTime,终止时间-endTime,显示页索引-page,每页显示记录数-pageSize")
+    public void GetChronicleEvents(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject jsonObject = kbaseTools.GetChronicleEvents(params);
+            printJson(ResultUtil.success(jsonObject), response);
+        } catch (Exception e) {
+            loger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
 }

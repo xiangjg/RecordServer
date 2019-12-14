@@ -1,5 +1,6 @@
 package com.jone.record.kbase.util;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.jone.record.kbase.tool.*;
 import org.slf4j.Logger;
@@ -778,4 +779,48 @@ public class SQLBuilder {
         return strBuilder.toString().toUpperCase();
     }
 
+
+    public static String GenerateChronicleEventsNumsQuerySQL(JSONObject params) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select count(*) as total from DPM_CHRONICLEVENTS where DATE>'");
+        strBuilder.append(params.getString("startTime"));
+        strBuilder.append("' and DATE<'");
+        strBuilder.append(params.getString("endTime"));
+        strBuilder.append("'");
+        return strBuilder.toString().toUpperCase();
+    }
+
+    public static String GenerateChronicleEventsQuerySQL(JSONObject params, int count) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select ID,TITLE,DATE,EVENT from DPM_CHRONICLEVENTS where DATE>'");
+        strBuilder.append(params.getString("startTime"));
+        strBuilder.append("' and DATE<'");
+        strBuilder.append(params.getString("endTime"));
+        strBuilder.append("'");
+
+        if (params.containsKey("pageSize")) {
+            int pageSize = params.getInteger("pageSize");
+            if (count <= pageSize) {
+                strBuilder.append(" limit 0,");
+                strBuilder.append(count);
+            } else {
+                if (params.containsKey("page")) {
+                    int page = params.getInteger("page");
+                    if (page >= 1) {
+                        int start = (page - 1) * pageSize;
+                        strBuilder.append(" limit ");
+                        strBuilder.append(start);
+                        strBuilder.append(",");
+                        strBuilder.append(pageSize);
+                    } else {
+                        strBuilder.append(" limit 0,");
+                        strBuilder.append(pageSize);
+                    }
+                }
+            }
+        } else {
+            strBuilder.append(" limit 0,10");
+        }
+        return strBuilder.toString().toUpperCase();
+    }
 }

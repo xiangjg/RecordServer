@@ -735,5 +735,41 @@ public class KBaseExecute {
         return jsonObject;
     }
 
+    public JSONObject GetChronicleEvents(JSONObject params) {
+        Connection _con = KBaseCon.GetInitConnect();
+        String strSQL = SQLBuilder.GenerateChronicleEventsNumsQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            loger.error("构建查询大事记列表信息数量SQL语句失败！");
+            return null;
+        }
+        int count = 0;
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            while (rst.next()) {
+                count = rst.getInt("total");
+            }
+            jsonObject.put("count", count);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        // 构建分页查询
+        strSQL = SQLBuilder.GenerateChronicleEventsQuerySQL(params, count);
+        if (strSQL.isEmpty()) {
+            loger.error("构建查询大事记列表信息SQL语句失败！");
+            return null;
+        }
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            JSONArray jsonArray = new JSONArray(new LinkedList<>());
+            jsonArray = Common.ResultSetToJSONArray(rst);
+            jsonObject.put("content", jsonArray);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonObject;
+    }
 
 }
