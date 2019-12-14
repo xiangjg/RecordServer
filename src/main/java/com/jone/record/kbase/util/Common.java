@@ -7,6 +7,7 @@ package com.jone.record.kbase.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jone.record.kbase.KBaseCon;
 import com.jone.record.kbase.entity.Catalog;
 import com.jone.record.kbase.entity.JournalCatalog;
 import com.jone.record.kbase.entity.KBaseConfig;
@@ -16,14 +17,46 @@ import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 public class Common {
 
     private static final Logger loger = LoggerFactory.getLogger(Common.class);
+
+    public static String GetIamgeFiles(String value) {
+        Connection _con = KBaseCon.GetInitConnect();
+        String[] strArr = value.split(";");
+        String strImagePath = strArr[0];
+        String urlId = strImagePath.substring(0, strImagePath.indexOf("."));
+        String strSQL = String.format("select url from BINARYDATA where urlid='%s'", urlId);
+        String strImageFile = "";
+        ResultSet rst = null;
+        PreparedStatement st = null;
+        try {
+            st = _con.prepareStatement(strSQL);
+            rst = st.executeQuery();
+            while (rst.next()) {
+                strImageFile = rst.getString("url");
+            }
+        } catch (SQLException e) {
+            loger.error("{}", e);
+        } finally {
+            try {
+                if (null != rst) {
+                    rst.close();
+                }
+                if (null != st) {
+                    st.close();
+                }
+            } catch (Exception e) {
+                loger.error("{}", e);
+            }
+        }
+        return strImageFile;
+    }
 
     public static JSONObject RSetToString(ResultSet rst) {
         JSONObject jsonObject = new JSONObject(new LinkedMap());
@@ -122,6 +155,12 @@ public class Common {
                     } else if (strKey.equals("TYPE")) {
                         String cnName = EJournalType.GetNameByCode(strValue);
                         jsonObject.put("cnType", cnName);
+                    }
+                    if (strKey.equals("ACCESSORIES")) {
+                        strKey = "COVERPATH";
+                        if (!strValue.isEmpty()) {
+                            strValue = GetIamgeFiles(strValue);
+                        }
                     }
                     jsonObject.put(strKey, strValue);
                 }

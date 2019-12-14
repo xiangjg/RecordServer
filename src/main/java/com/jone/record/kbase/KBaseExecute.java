@@ -15,6 +15,7 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 
 import java.sql.*;
 import java.util.*;
@@ -44,7 +45,7 @@ public class KBaseExecute {
                     if (columnName.equals("ACCESSORIES")) {
                         columnName = "COVERPATH";
                         if (!value.isEmpty()) {
-                            value = GetIamgeFiles(value);
+                            value = Common.GetIamgeFiles(value);
                         }
                     }
                     jsonObj.put(columnName, value);
@@ -55,38 +56,6 @@ public class KBaseExecute {
             loger.error("{}", e);
         }
         return jsonArr;
-    }
-
-    private String GetIamgeFiles(String value) {
-        Connection _con = KBaseCon.GetInitConnect();
-        String[] strArr = value.split(";");
-        String strImagePath = strArr[0];
-        String urlId = strImagePath.substring(0, strImagePath.indexOf("."));
-        String strSQL = String.format("select url from BINARYDATA where urlid='%s'", urlId);
-        String strImageFile = "";
-        ResultSet rst = null;
-        PreparedStatement st = null;
-        try {
-            st = _con.prepareStatement(strSQL);
-            rst = st.executeQuery();
-            while (rst.next()) {
-                strImageFile = rst.getString("url");
-            }
-        } catch (SQLException e) {
-            loger.error("{}", e);
-        } finally {
-            try {
-                if (null != rst) {
-                    rst.close();
-                }
-                if (null != st) {
-                    st.close();
-                }
-            } catch (Exception e) {
-                loger.error("{}", e);
-            }
-        }
-        return strImageFile;
     }
 
     private JSONObject GetPagedQueryObjectInfo(String strSQL, int pageSize) {
@@ -186,19 +155,28 @@ public class KBaseExecute {
         return jsonObject;
     }
 
-    public JSONObject GetTitleInfo(JSONObject jsonObject) {
+    public JSONObject GetTitleInfo(JSONObject params) {
         JSONArray jsonArray = new JSONArray(new LinkedList<>());
         JSONObject titleObject = new JSONObject(new LinkedMap());
 
         // 获取数据库记录数SQL
-        String strSQL = SQLBuilder.GeneratePagedQuerySQL(jsonObject);
+        String strSQL = SQLBuilder.GeneratePagedQuerySQL(params);
         if (strSQL.isEmpty()) {
             return null;
         }
-        titleObject = GetPagedQueryObjectInfo(strSQL, jsonObject.getInteger("pageSize"));
+
+        int pageSize = 0;
+        if (params.containsKey("pageSize")) {
+            pageSize = params.getInteger("pageSize");
+        } else {
+            pageSize = 10;
+        }
+
+        titleObject = GetPagedQueryObjectInfo(strSQL, pageSize);
+        int total = titleObject.getInteger("total");
 
         // 获取分页查询信息SQL
-        strSQL = SQLBuilder.GenerateTopicRecordInfoQuerySQL(jsonObject, titleObject.getInteger("total"));
+        strSQL = SQLBuilder.GenerateTopicRecordInfoQuerySQL(params, total);
         if (strSQL.isEmpty()) {
             return null;
         }
@@ -367,6 +345,23 @@ public class KBaseExecute {
             loger.error("满足查询条件的记录不存在！");
             return null;
         }
+        jsonObject.put("count", total);
+
+        strSQL = SQLBuilder.GenerateGetDynamicListQuerySQL(params, total);
+        if (strSQL.isEmpty()) {
+            loger.error("SQL查询语句构建失败！");
+            return null;
+        }
+
+        JSONArray jsonArray = new JSONArray(new LinkedList<>());
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            jsonArray = Common.ResultSetToJSONArray(rst);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        jsonObject.put("content", jsonArray);
         return jsonObject;
     }
 

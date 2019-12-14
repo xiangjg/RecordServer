@@ -16,36 +16,37 @@ public class SQLBuilder {
      * 生成查询数据库记录总数，根据查询条件
      */
     public static String GeneratePagedQuerySQL(JSONObject params) {
-        String strSQL = "";
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("select count(*) as total from ");
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
 
         // 添加查询条件 关键词
-        String strKeyword = params.getString("keyword");
-        if (!strKeyword.isEmpty()) {
-            strBuilder.append(" where title % '");
-            strBuilder.append(strKeyword);
-            strBuilder.append("'");
+        String strKeyword = "";
+        if (params.containsKey("keyword")) {
+            strKeyword = params.getString("keyword");
+            if (!strKeyword.isEmpty()) {
+                strBuilder.append(" where title % '");
+                strBuilder.append(strKeyword);
+                strBuilder.append("'");
+            }
         }
 
         // 添加查询条件 书籍ID
-        String strId = params.getString("id");
-        if (!strId.isEmpty()) {
-            if (!strKeyword.isEmpty()) {
-                strBuilder.append(" and PARENTDOI='");
-                strBuilder.append(strId);
-                strBuilder.append("'");
-            } else {
-                strBuilder.append(" where PARENTDOI='");
-                strBuilder.append(strId);
-                strBuilder.append("'");
+        if (params.containsKey("id")) {
+            String strId = params.getString("id");
+            if (!strId.isEmpty()) {
+                if (!strKeyword.isEmpty()) {
+                    strBuilder.append(" and PARENTDOI='");
+                    strBuilder.append(strId);
+                    strBuilder.append("'");
+                } else {
+                    strBuilder.append(" where PARENTDOI='");
+                    strBuilder.append(strId);
+                    strBuilder.append("'");
+                }
             }
-
-
         }
-        strSQL = strBuilder.toString().toUpperCase();
-        return strSQL;
+        return strBuilder.toString().toUpperCase();
     }
 
     /**
@@ -54,7 +55,7 @@ public class SQLBuilder {
     public static String GenerateTopicRecordInfoQuerySQL(JSONObject params, int count) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("select ");
-        strBuilder.append("TITLE,PARENTNAME,SYS_FLD_PARENTDOI,SYS_FLD_ABSTRACT,SYS_FLD_DOI");
+        strBuilder.append("TITLE,PARENTDOI,PARENTNAME,SYS_FLD_PARENTDOI,SYS_FLD_ABSTRACT,SYS_FLD_DOI");
         strBuilder.append(" from ");
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
         // 添加查询条件
@@ -317,7 +318,7 @@ public class SQLBuilder {
     /**
      * 构造查询方志动态列表内容信息语句
      */
-    public static String GenerateGetDynamicListQuery(JSONObject params) {
+    public static String GenerateGetDynamicListQuerySQL(JSONObject params, int count) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("select ID,TITLE,SOURCE,PUBDATE,DIGEST,ACCESSORIES from ");
         strBuilder.append(_tableName);
@@ -326,8 +327,28 @@ public class SQLBuilder {
         strBuilder.append("' and PUBDATE>'");
         strBuilder.append(Common.GetSearchDate(params.getString("day")));
         strBuilder.append("'");
-        String strSQL = strBuilder.toString().toUpperCase();
-        return strSQL;
+
+        int pageSize = 0;
+        if (params.containsKey("pageSize")) {
+            pageSize = params.getInteger("pageSize");
+            if (count <= pageSize) {
+                strBuilder.append(" limit 0,");
+                strBuilder.append(count);
+            } else {
+                int page = 0;
+                if (params.containsKey("page")) {
+                    page = params.getInteger("page");
+                    int start = (page - 1) * pageSize;
+                    strBuilder.append(" limit ");
+                    strBuilder.append(start);
+                    strBuilder.append(",");
+                    strBuilder.append(pageSize);
+                }
+            }
+        } else {
+            strBuilder.append(" limit 0,10");
+        }
+        return strBuilder.toString().toUpperCase();
     }
 
 
