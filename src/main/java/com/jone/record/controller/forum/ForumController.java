@@ -5,6 +5,7 @@ import com.jone.record.entity.forum.CourseCategory;
 import com.jone.record.entity.forum.CoursesEntity;
 import com.jone.record.entity.forum.EpisodesEntity;
 import com.jone.record.entity.map.ShareEntity;
+import com.jone.record.entity.vo.PageVo;
 import com.jone.record.service.ForumService;
 import com.jone.record.util.ResultUtil;
 import io.swagger.annotations.Api;
@@ -64,9 +65,9 @@ public class ForumController extends BaseController {
 
     @RequestMapping(value = "/listCourse", method = RequestMethod.POST)
     @ApiOperation(value = "课程信息列表", notes = "输入state")
-    public void listCourse(@RequestParam Integer state, HttpServletResponse response) {
+    public void listCourse(@RequestParam Integer state,@RequestParam Integer page,@RequestParam Integer size, HttpServletResponse response) {
         try {
-            List<CoursesEntity> coursesEntities = forumService.listCourse(state);
+            PageVo<CoursesEntity> coursesEntities = forumService.listCourse(state, page, size);
             printJson(ResultUtil.success(coursesEntities), response);
         } catch (Exception e) {
             logger.error("{}", e);

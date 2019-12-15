@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface EpisodesEntityDao extends JpaRepository<EpisodesEntity, Integer> {
     List<EpisodesEntity> findByCourseIdAndState(Integer courseId, Integer state);
-
+    List<EpisodesEntity> findByCourseId(Integer courseId);
     @Transactional
     @Modifying
     @Query("update EpisodesEntity e set e.playCnt = e.playCnt + 1 where e.id = :id and e.courseId = :courseId")

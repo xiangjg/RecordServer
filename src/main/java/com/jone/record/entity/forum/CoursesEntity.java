@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -20,6 +21,7 @@ public class CoursesEntity implements Serializable {
     private Date createDt;
     private Date updateDt;
     private Integer state;
+    private List<EpisodesEntity> episodesList;
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
@@ -130,6 +132,14 @@ public class CoursesEntity implements Serializable {
 
     public void setState(Integer state) {
         this.state = state;
+    }
+    @Transient
+    public List<EpisodesEntity> getEpisodesList() {
+        return episodesList;
+    }
+
+    public void setEpisodesList(List<EpisodesEntity> episodesList) {
+        this.episodesList = episodesList;
     }
 
     @Override
