@@ -4,6 +4,7 @@ import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -11,7 +12,7 @@ import java.util.Objects;
 public class CoursesEntity implements Serializable {
     private Integer id;
     private String name;
-    private Integer catId;
+    private CourseCategory category;
     private String synopsis;
     private String keyword;
     private String copyright;
@@ -20,6 +21,7 @@ public class CoursesEntity implements Serializable {
     private Date createDt;
     private Date updateDt;
     private Integer state;
+    private List<EpisodesEntity> episodesList;
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
@@ -42,14 +44,14 @@ public class CoursesEntity implements Serializable {
         this.name = name;
     }
 
-    @Basic
-    @Column(name = "cat_id")
-    public Integer getCatId() {
-        return catId;
+    @ManyToOne
+    @JoinColumn(name = "cat_id")
+    public CourseCategory getCategory() {
+        return category;
     }
 
-    public void setCatId(Integer catId) {
-        this.catId = catId;
+    public void setCategory(CourseCategory category) {
+        this.category = category;
     }
 
     @Basic
@@ -131,6 +133,14 @@ public class CoursesEntity implements Serializable {
     public void setState(Integer state) {
         this.state = state;
     }
+    @Transient
+    public List<EpisodesEntity> getEpisodesList() {
+        return episodesList;
+    }
+
+    public void setEpisodesList(List<EpisodesEntity> episodesList) {
+        this.episodesList = episodesList;
+    }
 
     @Override
     public boolean equals(Object o) {
@@ -138,7 +148,6 @@ public class CoursesEntity implements Serializable {
         if (o == null || getClass() != o.getClass()) return false;
         CoursesEntity that = (CoursesEntity) o;
         return id == that.id &&
-                catId == that.catId &&
                 playCnt == that.playCnt &&
                 state == that.state &&
                 Objects.equals(name, that.name) &&
@@ -152,6 +161,6 @@ public class CoursesEntity implements Serializable {
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name, catId, synopsis, keyword, copyright, cover, playCnt, createDt, updateDt, state);
+        return Objects.hash(id, name,  synopsis, keyword, copyright, cover, playCnt, createDt, updateDt, state);
     }
 }
