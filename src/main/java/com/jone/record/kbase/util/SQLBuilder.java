@@ -693,7 +693,7 @@ public class SQLBuilder {
         return strBuilder.toString().toUpperCase();
     }
 
-    public static String GenerateSingleBookFullTextNumsQuerySQL(JSONObject params) {
+    public static String GenerateBookListCatalogNumsQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("select count(*) as total from ");
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
@@ -727,7 +727,7 @@ public class SQLBuilder {
     /**
      * 生成查询单本书籍全文内容SQL语句
      */
-    public static String GenerateSingleBookFullTextQuerySQL(JSONObject params, int count) {
+    public static String GenerateBookListCatalogQuerySQL(JSONObject params, int count) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("select ");
         strBuilder.append(EFullFields.GetFieldByCode(params.getString("type")));
@@ -782,9 +782,9 @@ public class SQLBuilder {
 
     public static String GenerateChronicleEventsNumsQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select count(*) as total from DPM_CHRONICLEVENTS where DATE>'");
+        strBuilder.append("select count(*) as total from DPM_CHRONICLEVENTS where EventDATE>'");
         strBuilder.append(params.getString("startTime"));
-        strBuilder.append("' and DATE<'");
+        strBuilder.append("' and EventDATE<'");
         strBuilder.append(params.getString("endTime"));
         strBuilder.append("'");
         return strBuilder.toString().toUpperCase();
@@ -792,9 +792,9 @@ public class SQLBuilder {
 
     public static String GenerateChronicleEventsQuerySQL(JSONObject params, int count) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select ID,TITLE,DATE,EVENT from DPM_CHRONICLEVENTS where DATE>'");
+        strBuilder.append("select ID,TITLE,EventDATE,EVENT from DPM_CHRONICLEVENTS where EventDATE>'");
         strBuilder.append(params.getString("startTime"));
-        strBuilder.append("' and DATE<'");
+        strBuilder.append("' and EventDATE<'");
         strBuilder.append(params.getString("endTime"));
         strBuilder.append("'");
 

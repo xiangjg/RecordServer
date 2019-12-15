@@ -7,12 +7,12 @@ import com.alibaba.fastjson.JSONObject;
  */
 public enum EFullFields {
 
-    kbase_History_Books("1", "TITLE,PARENTDOI,SYS_FLD_DOI"),                     // 志书
-    kbase_Year_Books("2", "TITLE,PARENTDOI,SYS_FLD_DOI"),            // 年鉴
+    kbase_History_Books("1", "TITLE,PARENTDOI,SYS_FLD_DOI,SYS_FLD_ORDERNUM"),                     // 志书
+    kbase_Year_Books("2", "TITLE,PARENTDOI,SYS_FLD_DOI,SYS_FLD_ORDERNUM"),            // 年鉴
     kbase_Journal_books("3", "NAME,PARENTDOI,SYS_FLD_DOI"),                // 期刊
-    kbase_Situation_Books("4", "NAME,PARENTDOI,SYS_FLD_DOI"),              // 地情资料
+    kbase_Situation_Books("4", "NAME,PARENTDOI,SYS_FLD_DOI,SYS_FLD_ORDERNUM"),              // 地情资料
     kbase_Multi_Media("5", "NAME,PARENTDOI,SYS_FLD_DOI"),                          // 多媒体，只包含图片
-    kbase_Local_History_Books("6", "NAME,PARENTDOI,SYS_FLD_DOI"),       // 地方史
+    kbase_Local_History_Books("6", "NAME,PARENTDOI,SYS_FLD_DOI,SYS_FLD_ORDERNUM"),       // 地方史
     ;
 
     EFullFields(String code, String field) {

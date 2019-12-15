@@ -15,7 +15,6 @@ import org.apache.commons.collections.map.LinkedMap;
 import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.orm.jpa.JpaObjectRetrievalFailureException;
 
 import java.sql.*;
 import java.util.*;
@@ -120,6 +119,19 @@ public class KBaseExecute {
         return jsonObj;
     }
 
+    public JSONObject GetBooksInfo(JSONObject params) {
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        if (params.containsKey("type")) {
+            String type = params.getString("type");
+            if (type.equals("3")) {
+                jsonObject = GetJournalInfo(params);
+            } else {
+                jsonObject = GetHistoryBook(params);
+            }
+        }
+        return jsonObject;
+    }
+
     public JSONObject GetHistoryBook(JSONObject params) {
         Connection _con = KBaseCon.GetInitConnect();
         String strSQL = SQLBuilder.GenerateHistoryNumsQuerySQL(params);
@@ -195,6 +207,19 @@ public class KBaseExecute {
         return titleObject;
     }
 
+    public JSONObject GetFullTextInfo(JSONObject params) {
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        if (params.containsKey("type")) {
+            String type = params.getString("type");
+            if (type.equals("3")) {
+                jsonObject = GetJournalFullText(params);
+            } else {
+                jsonObject = GetTopicContent(params);
+            }
+        }
+        return jsonObject;
+    }
+
     public JSONObject GetTopicContent(JSONObject params) {
         String strSQL = SQLBuilder.GenerateTopicContentQuerySQL(params);
         if (strSQL.isEmpty()) {
@@ -227,6 +252,19 @@ public class KBaseExecute {
     }
 
     public JSONObject GetBookCatalog(JSONObject params) {
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
+        if (params.containsKey("type")) {
+            String type = params.getString("type");
+            if (type.equals("3")) {
+                jsonObject = GetJournalBaseCatalog(params);
+            } else {
+                jsonObject = GetBooksCatalog(params);
+            }
+        }
+        return jsonObject;
+    }
+
+    public JSONObject GetBooksCatalog(JSONObject params) {
         String strSQL = SQLBuilder.GenerateBookCatalogQuerySQL(params);
         if (strSQL.isEmpty()) {
             return null;
@@ -249,22 +287,52 @@ public class KBaseExecute {
         return catalogObject;
     }
 
-    public JSONObject GetReadCatalog(JSONObject jsonObject) {
-        String strSQL = SQLBuilder.GenerateReadCatalogQuerySQL(jsonObject);
+    public JSONObject GetReadCatalog(JSONObject params) {
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
+        if (params.containsKey("type")) {
+            String type = params.getString("type");
+            if (type.equals("3")) {
+                JSONArray jsonArray = new JSONArray(new LinkedList<>());
+                jsonArray = GetJournalReadCatalog(params);
+                jsonObject.put("catalog", jsonArray);
+            } else {
+                jsonObject = GetReadCatalogs(params);
+            }
+        }
+        return jsonObject;
+    }
+
+    public JSONObject GetReadCatalogs(JSONObject params) {
+        String strSQL = SQLBuilder.GenerateReadCatalogQuerySQL(params);
         if (strSQL.isEmpty()) {
             return null;
         }
-        JSONObject jsonObj = new JSONObject(new LinkedMap());
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
         Connection _con = KBaseCon.GetInitConnect();
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
-            jsonObj = Common.AnalysisCatalog(rst);
+            jsonObject = Common.AnalysisCatalog(rst);
         } catch (Exception e) {
             loger.error("{}", e);
         }
-        return jsonObj;
+        return jsonObject;
     }
+
+    public JSONObject GetBookList(JSONObject params) {
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
+        String type = "";
+        if (params.containsKey("type")) {
+            type = params.getString("type");
+            if (type.equals("3")) {
+                jsonObject = GetJournalInfo(params);
+            } else {
+                jsonObject = GetBookListByCls(params);
+            }
+        }
+        return jsonObject;
+    }
+
 
     public JSONObject GetBookListByCls(JSONObject params) {
         JSONObject jsonObject = new JSONObject(new LinkedMap());
@@ -698,10 +766,10 @@ public class KBaseExecute {
         return jsonObject;
     }
 
-    public JSONObject GetSingleBookFullTextQuery(JSONObject params) {
+    public JSONObject GetBookListCatalog(JSONObject params) {
         Connection _con = KBaseCon.GetInitConnect();
         JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
-        String strSQL = SQLBuilder.GenerateSingleBookFullTextNumsQuerySQL(params);
+        String strSQL = SQLBuilder.GenerateBookListCatalogNumsQuerySQL(params);
         if (strSQL.isEmpty()) {
             loger.error("构建询书籍章节目录信息SQL语句失败！");
             return null;
@@ -718,7 +786,7 @@ public class KBaseExecute {
             loger.error("{}", e);
         }
 
-        strSQL = SQLBuilder.GenerateSingleBookFullTextQuerySQL(params, count);
+        strSQL = SQLBuilder.GenerateBookListCatalogQuerySQL(params, count);
         if (strSQL.isEmpty()) {
             loger.error("构建询书籍章节目录信息SQL语句失败！");
             return null;
