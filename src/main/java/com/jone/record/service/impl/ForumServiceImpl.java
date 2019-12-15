@@ -1,6 +1,7 @@
 package com.jone.record.service.impl;
 
 
+import com.jone.record.config.Definition;
 import com.jone.record.dao.forum.CourseCategoryDao;
 import com.jone.record.dao.forum.CoursesEntityDao;
 import com.jone.record.dao.forum.EpisodesEntityDao;
@@ -91,6 +92,11 @@ public class ForumServiceImpl implements ForumService {
 
     @Override
     public CoursesEntity save(CoursesEntity coursesEntity) throws Exception {
+        CourseCategory category = courseCategoryDao.findById(coursesEntity.getCategory().getId()).orElse(null);
+        if(category==null)
+            throw new Exception("没有该课程分类，请先新增课程分类");
+
+        coursesEntity.setState(Definition.TYPE_STATE_VALID);
         coursesEntity = coursesEntityDao.save(coursesEntity);
         List<EpisodesEntity> entityList = coursesEntity.getEpisodesList();
         if(entityList!=null&&entityList.size()>0){
@@ -98,6 +104,7 @@ public class ForumServiceImpl implements ForumService {
                  ) {
                 e.setCourseId(coursesEntity.getId());
                 e.setUpdateDt(new Date());
+                e.setState(Definition.TYPE_STATE_VALID);
             }
             episodesEntityDao.saveAll(entityList);
         }
@@ -106,7 +113,11 @@ public class ForumServiceImpl implements ForumService {
 
     @Override
     public void deleteCourse(Integer id) throws Exception {
-        coursesEntityDao.deleteById(id);
+        CoursesEntity episodesEntity = coursesEntityDao.findById(id).orElse(null);
+        if(episodesEntity!=null){
+            episodesEntity.setState(Definition.TYPE_STATE_DELETE);
+            coursesEntityDao.save(episodesEntity);
+        }
     }
 
     @Override
@@ -122,12 +133,17 @@ public class ForumServiceImpl implements ForumService {
     @Override
     public EpisodesEntity save(EpisodesEntity episodesEntity) throws Exception {
         episodesEntity.setUpdateDt(new Date());
+        episodesEntity.setState(Definition.TYPE_STATE_VALID);
         return episodesEntityDao.save(episodesEntity);
     }
 
     @Override
     public void deleteEpisodesEntity(Integer id) throws Exception {
-        episodesEntityDao.deleteById(id);
+        EpisodesEntity episodesEntity = episodesEntityDao.findById(id).orElse(null);
+        if(episodesEntity!=null){
+            episodesEntity.setState(Definition.TYPE_STATE_DELETE);
+            episodesEntityDao.save(episodesEntity);
+        }
     }
 
     @Override
