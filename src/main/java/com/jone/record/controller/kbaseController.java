@@ -508,4 +508,28 @@ public class kbaseController extends BaseController {
             printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
+
+    /**
+     * 单本书全文检索
+     *
+     * @return 返回JSON格式的字符串
+     * @params 输入JSONObject对象，格式为 {"type":"1","id":"2E2B7D0D-0AD0-44ea-A4B4-97487D96C101","keyword":"贵阳","page":"1","pageSize":"10"}
+     * @type 资源类型，志书 1,年鉴 2,期刊 3,地情资料 4,多媒体 5。
+     * @id 书籍GUID
+     * @keyword 关键词
+     * @page 显示页索引，默认为显示第 1 页
+     * @pageSize 每页显示记录数，默认为 10 条
+     */
+    @RequestMapping(value = "QueryFullText", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
+    @ApiOperation(value = "单本书全文检索", notes = "输入JSONObject对象,资源类型-type,书籍GUID-id,关键词-keyword,显示页索引-page,每页显示记录数-pageSize")
+    public void QueryFullText(@RequestBody JSONObject params, HttpServletResponse response) {
+        try {
+            JSONObject jsonObject = kbaseTools.QueryFullText(params);
+            printJson(ResultUtil.success(jsonObject), response);
+        } catch (Exception e) {
+            loger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
 }

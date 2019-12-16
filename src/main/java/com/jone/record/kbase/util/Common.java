@@ -155,8 +155,7 @@ public class Common {
                     } else if (strKey.equals("TYPE")) {
                         String cnName = EJournalType.GetNameByCode(strValue);
                         jsonObject.put("cnType", cnName);
-                    }
-                    if (strKey.equals("ACCESSORIES")) {
+                    } else if (strKey.equals("ACCESSORIES")) {
                         strKey = "COVERPATH";
                         if (!strValue.isEmpty()) {
                             strValue = GetIamgeFiles(strValue);
@@ -191,7 +190,7 @@ public class Common {
                         strValue = Common.GetFilePath() + strValue;
                     } else if (strKey.equals("NAME")) {
                         String strYear = strValue.substring(strValue.length() - 4, strValue.length());
-                        object.put("year", strYear);
+                        object.put("YEAR", strYear);
 //                        strKey = "YEAR";
 //                        strValue = strYear;
                     }
@@ -413,5 +412,42 @@ public class Common {
         }
         return jsonObjectList;
     }
+
+    public static String GetQueryFullTextFields(String type) {
+        String strFields = "";
+        // 志书和地情资料
+        if (type.equals("1") || type.equals("4")) {
+            strFields = "TITLE,PARENTNAME,PARENTDOI,SYS_FLD_DOI,SYS_FLD_ORDERNUM";
+        } else if (type.equals("2")) {
+            // 年鉴
+            strFields = "TITLE,PARENTNAME,PARENTDOI,SYS_FLD_DOI,SYS_FLD_ORDERNUM";
+        } else if (type.equals("3")) {  // 期刊
+            strFields = "NAME,BASEID,SYS_FLD_DOI,YEAR,ISSUE,FULLTEXT";
+        }
+        return strFields;
+    }
+
+    public static JSONArray RestToJSONArray(ResultSet rst) {
+        JSONArray jsonArray = new JSONArray(new LinkedList<>());
+        try {
+            ResultSetMetaData rsMetaData = rst.getMetaData();
+            int column = rsMetaData.getColumnCount();
+            String strKey = "";
+            String strValue = "";
+            while (rst.next()) {
+                JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+                for (int i = 1; i <= column; i++) {
+                    strKey = rsMetaData.getColumnName(i);
+                    strValue = rst.getString(strKey);
+                    jsonObject.put(strKey, strValue);
+                }
+                jsonArray.add(jsonObject);
+            }
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonArray;
+    }
+
 
 }

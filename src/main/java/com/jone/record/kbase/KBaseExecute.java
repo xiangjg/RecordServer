@@ -275,10 +275,12 @@ public class KBaseExecute {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             String strResult = "";
-            String strField = "SYS_FLD_CATALOG";
+            loger.error(strSQL);
             while (rst.next()) {
-                strResult = rst.getString(strField);
+                strResult = rst.getString("SYS_FLD_CATALOG");
+                loger.error(strResult);
             }
+
             String strContent = XML.toJSONObject(strResult).toString();
             catalogObject = JSONObject.parseObject(strContent);
         } catch (Exception e) {
@@ -846,7 +848,7 @@ public class KBaseExecute {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             JSONArray jsonArray = new JSONArray(new LinkedList<>());
-            jsonArray = Common.ResultSetToJSONArray(rst);
+            jsonArray = Common.RestToJSONArray(rst);
             jsonObject.put("content", jsonArray);
         } catch (Exception e) {
             loger.error("{}", e);
@@ -854,4 +856,36 @@ public class KBaseExecute {
         return jsonObject;
     }
 
+    public JSONObject QueryFullText(JSONObject params) {
+        Connection _con = KBaseCon.GetInitConnect();
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        String strSQL = SQLBuilder.GenerateQueryFullTextNumsSQL(params);
+        if (strSQL.isEmpty()) {
+            loger.error("构建全文检索记录数 SQL 语句失败！");
+            return null;
+        }
+        int count = 0;
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            while (rst.next()) {
+                count = rst.getInt("total");
+            }
+            jsonObject.put("count", count);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+
+        strSQL = SQLBuilder.GenerateQueryFullTextSQL(params, count);
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            JSONArray jsonArray = new JSONArray(new LinkedList<>());
+            jsonArray = Common.ResultSetToJSONArray(rst);
+            jsonObject.put("content", jsonArray);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonObject;
+    }
 }

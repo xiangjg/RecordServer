@@ -5,6 +5,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.jone.record.kbase.tool.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.context.properties.source.MapConfigurationPropertySource;
 
 public class SQLBuilder {
 
@@ -782,9 +783,9 @@ public class SQLBuilder {
 
     public static String GenerateChronicleEventsNumsQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select count(*) as total from DPM_CHRONICLEVENTS where EventDATE>'");
+        strBuilder.append("select count(*) as total from DPM_CHRONICLEVENTS where eventTime>'");
         strBuilder.append(params.getString("startTime"));
-        strBuilder.append("' and EventDATE<'");
+        strBuilder.append("' and eventTime<'");
         strBuilder.append(params.getString("endTime"));
         strBuilder.append("'");
         return strBuilder.toString().toUpperCase();
@@ -792,9 +793,9 @@ public class SQLBuilder {
 
     public static String GenerateChronicleEventsQuerySQL(JSONObject params, int count) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select ID,TITLE,EventDATE,EVENT from DPM_CHRONICLEVENTS where EventDATE>'");
+        strBuilder.append("select ID,TITLE,EventDATE,EVENT from DPM_CHRONICLEVENTS where eventTime>'");
         strBuilder.append(params.getString("startTime"));
-        strBuilder.append("' and EventDATE<'");
+        strBuilder.append("' and eventTime<'");
         strBuilder.append(params.getString("endTime"));
         strBuilder.append("'");
 
@@ -818,6 +819,73 @@ public class SQLBuilder {
                     }
                 }
             }
+        } else {
+            strBuilder.append(" limit 0,10");
+        }
+        return strBuilder.toString().toUpperCase();
+    }
+
+
+    public static String GenerateQueryFullTextNumsSQL(JSONObject params) {
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select count(*) as total from ");
+        strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
+        strBuilder.append(" where PARENTDOI='");
+        strBuilder.append(params.getString("id"));
+        strBuilder.append("'");
+        if (params.containsKey("keyword")) {
+            String strKeyword = params.getString("keyword");
+            if (!strKeyword.isEmpty()) {
+                strBuilder.append(" and ");
+                strBuilder.append(EFullTextField.GetFieldByCode(params.getString("type")));
+                strBuilder.append(" % '");
+                strBuilder.append(strKeyword);
+                strBuilder.append("'");
+            }
+        }
+        return strBuilder.toString().toUpperCase();
+    }
+
+    public static String GenerateQueryFullTextSQL(JSONObject params, int count) {
+        StringBuilder strBuilder = new StringBuilder();
+        String strFields = Common.GetQueryFullTextFields(params.getString("type"));
+        strBuilder.append("select ");
+        strBuilder.append(strFields);
+        strBuilder.append(" from ");
+        strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
+        strBuilder.append(" where PARENTDOI='");
+        strBuilder.append(params.getString("id"));
+        strBuilder.append("'");
+        if (params.containsKey("keyword")) {
+            String strKeyword = params.getString("keyword");
+            if (!strKeyword.isEmpty()) {
+                strBuilder.append(" and ");
+                strBuilder.append(EFullTextField.GetFieldByCode(params.getString("type")));
+                strBuilder.append(" % '");
+                strBuilder.append(strKeyword);
+                strBuilder.append("'");
+            }
+        }
+        // 分页
+        if (params.containsKey("pageSize")) {
+            int pageSize = params.getInteger("pageSize");
+            if (pageSize >= count) {
+                strBuilder.append(" limit 0,");
+                strBuilder.append(count);
+            } else {
+                if (params.containsKey("page")) {
+                    int page = params.getInteger("page");
+                    int start = (page - 1) * pageSize;
+                    strBuilder.append(" limit ");
+                    strBuilder.append(start);
+                    strBuilder.append(",");
+                    strBuilder.append(pageSize);
+                } else {
+                    strBuilder.append(" limit 0,");
+                    strBuilder.append(pageSize);
+                }
+            }
+
         } else {
             strBuilder.append(" limit 0,10");
         }

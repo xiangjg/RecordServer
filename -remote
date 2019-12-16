@@ -1,0 +1,590 @@
+[33mcommit 07aa59732faa548b58679eb020a9d3df0277ee5a[m[33m ([m[1;36mHEAD -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 3cc1dff 8b1deb6
+Author: Dugg <410127985@qq.com>
+Date:   Mon Dec 16 13:52:01 2019 +0800
+
+    Merge branch 'master' of https://github.com/xiangjg/RecordServer
+
+[33mcommit 3cc1dff337b3564b6eb51078a1fdb07e98bdc1aa[m
+Author: Dugg <410127985@qq.com>
+Date:   Mon Dec 16 13:51:51 2019 +0800
+
+    合并年鉴和期刊分期接口，年鉴接口优化
+
+[33mcommit 8b1deb6b4b300efe919bf9cc84af59f6d6ad9e51[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Dec 16 10:07:00 2019 +0800
+
+    课堂焦点及专题图集
+
+[33mcommit 3c119463edecf2a666d897d9350bd099f42b761f[m
+Merge: b4f765f 81579b3
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Dec 16 09:10:02 2019 +0800
+
+    Merge remote-tracking branch 'origin/master'
+    
+    # Conflicts:
+    #       src/main/resources/application-dev.yml
+
+[33mcommit b4f765fffd2765a9ab67128a66226b2294f9d1f9[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Dec 16 09:09:23 2019 +0800
+
+    优化
+
+[33mcommit 81579b3c7734f445f2d30b6e1d06f269cb1d97ef[m
+Merge: c8bbcc6 b16cfac
+Author: Dugg <410127985@qq.com>
+Date:   Sun Dec 15 21:38:30 2019 +0800
+
+    Merge branch 'master' of https://github.com/xiangjg/RecordServer
+
+[33mcommit c8bbcc6abd2f57093debdab488260610b68f4d7e[m
+Author: Dugg <410127985@qq.com>
+Date:   Sun Dec 15 21:38:18 2019 +0800
+
+    1.合并公用接口；2.接口优化
+
+[33mcommit b16cfacfbec5476b0123fffdc8fd344e6e9afd21[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Sun Dec 15 15:34:10 2019 +0800
+
+    方志讲堂
+
+[33mcommit 4a99ad3399a40b4c4234c1f55c000d7a934954bc[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Sun Dec 15 15:18:49 2019 +0800
+
+    方志讲堂
+
+[33mcommit b54a360e6f9ccfe5ee2edc19e003da57eb318d5b[m
+Author: Dugg <410127985@qq.com>
+Date:   Sat Dec 14 22:08:00 2019 +0800
+
+    添加查询大事记接口
+
+[33mcommit 0450b9709e5dbbca3aacac446e341e35b8dc1c12[m
+Author: Dugg <410127985@qq.com>
+Date:   Sat Dec 14 19:28:14 2019 +0800
+
+    1.优化部分接口；2.完成方志动态列表接口内容。
+
+[33mcommit d879e94e81bf8e3cc6ef72edfdf8c1092d1b786b[m
+Author: Dugg <410127985@qq.com>
+Date:   Sat Dec 14 00:52:57 2019 +0800
+
+    1.添加单本书的全文检索接口；2.添加书籍的目录检索接口
+
+[33mcommit ccf7190967d3243e3d60a6672e9fee86fe4bbea9[m
+Merge: 8bb46d9 3c43b47
+Author: Dugg <410127985@qq.com>
+Date:   Fri Dec 13 11:49:22 2019 +0800
+
+    Merge branch 'master' of https://github.com/xiangjg/RecordServer
+
+[33mcommit 8bb46d9ee0734ea9a8209c51182c1bb3e0c9c1b2[m
+Author: Dugg <410127985@qq.com>
+Date:   Fri Dec 13 11:49:08 2019 +0800
+
+    优化接口的分页显示
+
+[33mcommit 04138eef11412cc1216196ca22b1ec0beffcc7e2[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Fri Dec 13 09:11:14 2019 +0800
+
+    优化
+
+[33mcommit 3c43b47e5e37d24f3f05a3115a042b1a223f28e0[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Thu Dec 12 17:41:51 2019 +0800
+
+    优化查询
+
+[33mcommit 5f20ce9516c39833d62802a92a2557f4fc9b6e50[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Thu Dec 12 16:59:43 2019 +0800
+
+    专题分页
+
+[33mcommit 6608535f96ddad694502f4fff81315091c9687b3[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Thu Dec 12 15:46:36 2019 +0800
+
+    文件更新接口
+
+[33mcommit 9a971b088ca2a90c610930bbcd8d2a5ae7ec9534[m
+Merge: 47897cd c85d6fc
+Author: xiangjg <1991887681@qq.com>
+Date:   Thu Dec 12 15:39:00 2019 +0800
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit 47897cde350ecdc407211902994a557f0d92d00a[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Thu Dec 12 15:36:20 2019 +0800
+
+    文件更新接口
+
+[33mcommit c85d6fc3f7f0517b7111add5e4b91927b0449727[m
+Author: Dugg <410127985@qq.com>
+Date:   Thu Dec 12 15:26:45 2019 +0800
+
+    修改附件文件路径
+
+[33mcommit c60ad853e021a72ef58a7766c326bacaf4161942[m
+Author: Dugg <410127985@qq.com>
+Date:   Thu Dec 12 14:29:31 2019 +0800
+
+    修改附件IP路径
+
+[33mcommit 9ddca21a717cc77939440ca9d741d06cec660632[m
+Author: Dugg <410127985@qq.com>
+Date:   Thu Dec 12 10:41:14 2019 +0800
+
+    1.添加查询期刊文章全文接口；2。添加查询期刊目录接口。
+
+[33mcommit ae853b455bdb510838d5929522b9a066d8fc2844[m
+Author: Hmily198867 <410127985@qq.com>
+Date:   Wed Dec 11 22:44:17 2019 +0800
+
+    添加查询单期期刊基本目录（带页码）
+
+[33mcommit 6680d79d19ea1b07fd03ba82f7ce04a0628ed39e[m
+Author: Dugg <410127985@qq.com>
+Date:   Wed Dec 11 20:27:53 2019 +0800
+
+    修改期刊接口
+
+[33mcommit 88ca8be1c80c2a304b686712cb60785dd41de606[m
+Merge: 7a971b7 356605a
+Author: Dugg <410127985@qq.com>
+Date:   Wed Dec 11 10:12:50 2019 +0800
+
+    Merge branch 'master' of https://github.com/xiangjg/RecordServer
+
+[33mcommit 7a971b7973f87a6a03e4f1dba3d99a5d5ba67292[m
+Author: Dugg <410127985@qq.com>
+Date:   Wed Dec 11 10:12:38 2019 +0800
+
+    1.添加查询期刊内容的接口；2.修改年鉴查询接口信息。
+
+[33mcommit 356605a45dbb05d2d2cf8f751813ec5081cba38a[m
+Merge: 8c18e9e 78ad1a8
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Dec 10 17:46:08 2019 +0800
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit 8c18e9e8625f872a32de2ceebe93d87ef50ff2ba[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Dec 10 17:45:57 2019 +0800
+
+    管理功能完善
+
+[33mcommit 78ad1a8faf770598c4352eba3e2c4f8f67de1a1d[m
+Merge: 459dad9 479fda4
+Author: Dugg <410127985@qq.com>
+Date:   Tue Dec 10 16:41:28 2019 +0800
+
+    Merge branch 'master' of https://github.com/xiangjg/RecordServer
+    修改端口号
+
+[33mcommit 459dad9def05d49e55df40616eeb4999cad353fd[m
+Author: Dugg <410127985@qq.com>
+Date:   Tue Dec 10 16:41:09 2019 +0800
+
+    1.修改查询书籍目录接口，可以根据关键词进行查询；2.添加查询单本书籍的信息；3.添加查询年鉴接口。
+
+[33mcommit 479fda4defd44c34cab136c77209450c7aa01da1[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Dec 10 11:55:37 2019 +0800
+
+    管理功能完善
+
+[33mcommit 2599374d55798877cdba311e9e424586a7c7de5a[m
+Merge: 0565ce2 e8b9240
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Dec 10 08:44:26 2019 +0800
+
+    Merge remote-tracking branch 'origin/master'
+    
+    # Conflicts:
+    #       src/main/java/com/jone/record/kbase/KBaseExecute.java
+    #       src/main/resources/application-dev.yml
+
+[33mcommit 0565ce2789fe6b7394820184a4fc70122454ced6[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Dec 10 08:42:46 2019 +0800
+
+    更新配置
+
+[33mcommit e8b924045de5c4468000c0f15d8a80390b3433bf[m
+Author: Dugg <410127985@qq.com>
+Date:   Mon Dec 9 22:14:29 2019 +0800
+
+    1.修改KBase初始化连接，删除application.properties配置文件，统一读取application.yml文件，方便打包；2.删除读取配置文件的LoadConfig.java文件；3.修改GetTitleInfo查询的分页问题。
+
+[33mcommit 0dbae118df30b472475ea5fc6ab275d6f1f4a891[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Dec 9 17:53:50 2019 +0800
+
+    更新配置
+
+[33mcommit 044461444bb20fe05e4173d5dba0fcbe795a64a7[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Dec 9 13:51:42 2019 +0800
+
+    更新配置
+
+[33mcommit 8e838459f4696d1434a2378fb749910a698b5542[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Dec 9 12:00:38 2019 +0800
+
+    更新配置
+
+[33mcommit 9b231579acd486e5f2db6ca2f5dfa39cc668cf17[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Dec 9 11:31:45 2019 +0800
+
+    更新配置
+
+[33mcommit 314700a377ba376d87d68d0c218e7d4fece75430[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Dec 9 10:44:29 2019 +0800
+
+    服务器地址修改
+
+[33mcommit 053202e768b6e2d4a9d2909515de431212bb6482[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Sun Dec 8 16:10:11 2019 +0800
+
+    菜单列表
+
+[33mcommit 217fd6159c3f905566f40ba123c082fcbd63eac2[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Fri Dec 6 17:40:30 2019 +0800
+
+    用户管理
+
+[33mcommit be2c4ef717c1038eabcba72d673a1a78c8c8db30[m
+Merge: bbe62b5 f8333c4
+Author: xiangjg <1991887681@qq.com>
+Date:   Wed Dec 4 18:26:00 2019 +0800
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit bbe62b566c0cf1863231c1a3235c4d652ceb8ebd[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Wed Dec 4 18:25:49 2019 +0800
+
+    角色权限
+
+[33mcommit f8333c4d82a69071c9acd5042136f0b791ef9acb[m
+Author: Dugg <410127985@qq.com>
+Date:   Tue Dec 3 18:30:38 2019 +0800
+
+    1.增加方志动态首页展示内容查询接口和详细内容查询接口；
+    2.根据前端实际需求修改其他接口。
+
+[33mcommit 192512ef3606143ac8236eebbeb7477e9aebe48d[m
+Author: Dugg <410127985@qq.com>
+Date:   Thu Nov 28 19:05:56 2019 +0800
+
+    修改专题库目录查询接口，志书全文阅读接口
+
+[33mcommit 6924b25106ef4eede7c3c7233101ada7e141e796[m
+Author: Dugg <410127985@qq.com>
+Date:   Wed Nov 27 20:15:05 2019 +0800
+
+    修改碎片化阅读目录接口和获取全文接口
+
+[33mcommit 95d264db5406ebcee8b2a624199bbbbec25fd751[m
+Author: Dugg <410127985@qq.com>
+Date:   Tue Nov 26 22:39:36 2019 +0800
+
+    修改接口文件内容，添加书籍列表查询接口
+
+[33mcommit 5ff6ca5e3a355d9591aacb113650988cee5a279d[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Nov 25 16:00:02 2019 +0800
+
+    个人中心接口
+
+[33mcommit 07cd8c6009d49e775c5959a3611877108323da16[m
+Merge: b37005e 45d081c
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Nov 25 15:30:50 2019 +0800
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit b37005ecab5e93f0f64ac68730e4301de30caa3f[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Nov 25 14:52:50 2019 +0800
+
+    个人中心接口
+
+[33mcommit 45d081cf5e3ec58a3044cde7314c701886b75240[m
+Author: Dugg <410127985@qq.com>
+Date:   Fri Nov 22 10:09:50 2019 +0800
+
+    添加获取志书目录和志书全文阅读获取章节内容接口
+
+[33mcommit 663a54e45dbda6af153cfe37432a4aa42f9e8bf3[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Wed Nov 20 17:25:48 2019 +0800
+
+    个人中心-消息接口
+
+[33mcommit aaaba5842c9f6147350db122571681d074b5575a[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Wed Nov 20 17:24:09 2019 +0800
+
+    个人中心-消息接口
+
+[33mcommit f07940107fc0f08cfcd422420ecba1667b37caa7[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Wed Nov 20 17:20:35 2019 +0800
+
+    个人中心-消息接口
+
+[33mcommit 07dcc3d52cec5f1eeb0c4d1c97ada441c9a08114[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Wed Nov 20 17:17:55 2019 +0800
+
+    个人中心-消息接口
+
+[33mcommit 15c6722c6ff03dbea8e8a1ead2d75d61bfc6b083[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Wed Nov 20 15:52:41 2019 +0800
+
+    过时方法更新
+
+[33mcommit b0cd8016b2f333455b250e19f97a0a80aa5438eb[m
+Author: Hmily198867 <410127985@qq.com>
+Date:   Sun Nov 17 04:22:39 2019 +0800
+
+    添加查看志书基本信息时获取目录的接口
+
+[33mcommit 79f83a97b83914a13f8d41f11880d1a0bed401c9[m
+Author: Dugg <410127985@qq.com>
+Date:   Sat Nov 16 20:41:33 2019 +0800
+
+    添加在线碎片化阅读时KBase获取书籍目录接口
+
+[33mcommit d14d0d5c766536d301aadc2256e00e85bc36c4a2[m
+Merge: ed28ae3 6d84b5e
+Author: xiangjg <1991887681@qq.com>
+Date:   Thu Nov 14 10:05:15 2019 +0800
+
+    Merge remote-tracking branch 'origin/master'
+
+[33mcommit ed28ae39d02e6be23c720d5cb86a196652070a15[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Thu Nov 14 10:05:05 2019 +0800
+
+    系统日志及kbase获取配置修改
+
+[33mcommit 6d84b5e91c1e10a87218862aac6cc33db9767d1b[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Nov 11 11:24:25 2019 +0800
+
+    Create README.md
+
+[33mcommit c0d2a3d627903417a528c7d116ed6559c78d27b5[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Nov 11 11:17:11 2019 +0800
+
+    系统日志及kbase获取配置修改
+
+[33mcommit 465097f74bbdba1f1acdbe3ff95075934eb59238[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Fri Nov 8 08:51:23 2019 +0800
+
+    delete config file
+
+[33mcommit b7f9e7b54bd28071bbf103be19ad76eda36234f9[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Fri Nov 8 08:50:35 2019 +0800
+
+    delete config file
+
+[33mcommit 331bf70210c234534c5ade993ec5f38a9bf17066[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Fri Nov 8 08:48:52 2019 +0800
+
+    delete config file
+
+[33mcommit 084369853a22161683e79b2368f958d3ddd4c0fc[m
+Author: Dugg <410127985@qq.com>
+Date:   Thu Nov 7 17:23:28 2019 +0800
+
+    添加KBase数据库的接口文件
+
+[33mcommit 399bede30af1756930d50db4bfcf53657f94229a[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Wed Nov 6 10:22:32 2019 +0800
+
+    init
+
+[33mcommit 2ba556886c3476ec124b9e761932a440c86469d9[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Wed Nov 6 10:12:34 2019 +0800
+
+    课程接口
+
+[33mcommit 666abea5e200a69b650178f1ada8b551ef0e7d24[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Nov 5 17:14:58 2019 +0800
+
+    init
+
+[33mcommit 06fc140e4efc8a87d6d19c86f79a3ac387fcad4b[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Nov 5 17:01:01 2019 +0800
+
+    init
+
+[33mcommit 0c31ef31a31bb575e21c54ad381c1ffa08208c2c[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Nov 5 16:34:03 2019 +0800
+
+    init
+
+[33mcommit 592588dff8d16620a574f2afd56197a64b8ed0aa[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Nov 5 16:32:55 2019 +0800
+
+    init
+
+[33mcommit ef232a491cc2a27975eb33e0433274e9b12f48cb[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Nov 5 16:31:37 2019 +0800
+
+    init
+
+[33mcommit 538a6174d008a5f97255949421d2bb2afb4fa0cd[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Nov 5 16:29:06 2019 +0800
+
+    init
+
+[33mcommit 4067473d30e0a58b2ca1ab88149efdc9b447f011[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Nov 5 16:24:43 2019 +0800
+
+    init
+
+[33mcommit 2d6f7cdaf164cb0b0dbc7b81f85fde0041a42a88[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Nov 4 17:18:16 2019 +0800
+
+    init
+
+[33mcommit baf0a4116ca5024476139716fcbc837bb361008c[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Nov 4 11:12:08 2019 +0800
+
+    init
+
+[33mcommit dfd9b4316492195b6617cb4f0e5c980ec1d876f3[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Nov 4 11:10:26 2019 +0800
+
+    init
+
+[33mcommit 671c2a1cc4334a9dafc9f94dad3336f0bc0c35a9[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Nov 4 10:38:18 2019 +0800
+
+    专题栏目接口
+
+[33mcommit bca7c32ec86ef0a59a36b9d671994b762f28a64e[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Thu Oct 31 11:14:41 2019 +0800
+
+    init
+
+[33mcommit b61955c65fb5e9c8decf27e8b5aeaef87ae9ce82[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Oct 28 21:42:16 2019 +0800
+
+    init
+
+[33mcommit 1be75d23ec5ecd6928b85a6aa94f935e401cd3ec[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Oct 28 14:21:21 2019 +0800
+
+    init
+
+[33mcommit a663aca942a53710a23ca95dba5c0f151425ec64[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Oct 28 11:58:10 2019 +0800
+
+    init
+
+[33mcommit f9a44dd91c0926b70cbc3e0cc01eb49819db4eb5[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Oct 28 11:47:48 2019 +0800
+
+    init
+
+[33mcommit 4a79da548c236b29bd748af0be45266c11e9692d[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Oct 28 11:37:42 2019 +0800
+
+    init
+
+[33mcommit c1a7b5175ff9cdd07c8958f6b92122224ddb9d59[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Fri Oct 25 17:07:39 2019 +0800
+
+    init
+
+[33mcommit 1eff49a23eecee74706389ad2ed97b4dde4fc29d[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Thu Oct 24 22:38:14 2019 +0800
+
+    init
+
+[33mcommit 729fd07498ba38b2b5e3a06bf7837b8c9b8f6efa[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Oct 22 19:03:25 2019 +0800
+
+    init
+
+[33mcommit 286f0cc05ffc80a9592152d611968eac2d96a1ca[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Oct 22 14:37:46 2019 +0800
+
+    init
+
+[33mcommit e79eab76f1bf37c27bee14cb5c998e2b5d56c646[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Oct 22 11:33:52 2019 +0800
+
+    init
+
+[33mcommit f493e5aaf4f8b4c97a8fe5f31812cceba6d15e0b[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Oct 22 11:23:09 2019 +0800
+
+    init
+
+[33mcommit 01e25562e416742d04a7c9e6ea524603af7213a7[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Tue Oct 22 11:20:08 2019 +0800
+
+    init
+
+[33mcommit 6a2a9e7f8453f618080f9853d500df425d4286d7[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Mon Oct 21 08:59:34 2019 +0800
+
+    init
+
+[33mcommit 41f6b8b33d900dde854d19e52deada820c751afc[m
+Author: xiangjg <1991887681@qq.com>
+Date:   Sun Oct 20 22:16:54 2019 +0800
+
+    init
