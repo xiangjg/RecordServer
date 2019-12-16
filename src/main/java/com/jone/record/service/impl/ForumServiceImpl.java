@@ -120,10 +120,12 @@ public class ForumServiceImpl implements ForumService {
     }
     @Override
     public CoursesEntity save(CoursesEntity coursesEntity) throws Exception {
-        CourseCategory category = courseCategoryDao.findById(coursesEntity.getCategory().getId()).orElse(null);
+        CourseCategory category = courseCategoryDao.findById(coursesEntity.getCatId()).orElse(null);
         if(category==null)
             throw new Exception("没有该课程分类，请先新增课程分类");
 
+        coursesEntity.setCreateDt(new Date());
+        coursesEntity.setPlayCnt(0);
         coursesEntity.setState(Definition.TYPE_STATE_VALID);
         coursesEntity = coursesEntityDao.save(coursesEntity);
         List<EpisodesEntity> entityList = coursesEntity.getEpisodesList();
@@ -161,6 +163,7 @@ public class ForumServiceImpl implements ForumService {
     @Override
     public EpisodesEntity save(EpisodesEntity episodesEntity) throws Exception {
         episodesEntity.setUpdateDt(new Date());
+        episodesEntity.setPlayCnt(0);
         episodesEntity.setState(Definition.TYPE_STATE_VALID);
         return episodesEntityDao.save(episodesEntity);
     }
@@ -177,6 +180,7 @@ public class ForumServiceImpl implements ForumService {
     @Override
     public void updatePlayCount(Integer id, Integer courseId) throws Exception {
         episodesEntityDao.updatePlay(id, courseId);
+        coursesEntityDao.updatePlay(id);
     }
 
     @Override

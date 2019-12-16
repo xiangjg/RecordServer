@@ -14,11 +14,11 @@ import java.util.Objects;
 public class CoursesEntity implements Serializable {
     private Integer id;
     private String name;
-    private CourseCategory category;
+//    private CourseCategory category;
+    private Integer catId;
     private String synopsis;
     private String keyword;
     private String copyright;
-    private String cover;
     private Integer playCnt;
     private Date createDt;
     private Date updateDt;
@@ -46,16 +46,24 @@ public class CoursesEntity implements Serializable {
     public void setName(String name) {
         this.name = name;
     }
-
-    @ManyToOne
-    @JoinColumn(name = "cat_id")
-    public CourseCategory getCategory() {
-        return category;
+    @Basic
+    @Column(name = "cat_id")
+    public Integer getCatId() {
+        return catId;
     }
 
-    public void setCategory(CourseCategory category) {
-        this.category = category;
+    public void setCatId(Integer catId) {
+        this.catId = catId;
     }
+//    @ManyToOne
+//    @JoinColumn(name = "cat_id")
+//    public CourseCategory getCategory() {
+//        return category;
+//    }
+//
+//    public void setCategory(CourseCategory category) {
+//        this.category = category;
+//    }
 
     @Basic
     @Column(name = "abstract")
@@ -88,22 +96,12 @@ public class CoursesEntity implements Serializable {
     }
 
     @Basic
-    @Column(name = "cover")
-    public String getCover() {
-        return cover;
-    }
-
-    public void setCover(String cover) {
-        this.cover = cover;
-    }
-
-    @Basic
     @Column(name = "play_cnt")
-    public int getPlayCnt() {
+    public Integer getPlayCnt() {
         return playCnt;
     }
 
-    public void setPlayCnt(int playCnt) {
+    public void setPlayCnt(Integer playCnt) {
         this.playCnt = playCnt;
     }
 
@@ -165,13 +163,12 @@ public class CoursesEntity implements Serializable {
                 Objects.equals(synopsis, that.synopsis) &&
                 Objects.equals(keyword, that.keyword) &&
                 Objects.equals(copyright, that.copyright) &&
-                Objects.equals(cover, that.cover) &&
                 Objects.equals(createDt, that.createDt) &&
                 Objects.equals(updateDt, that.updateDt);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, name,  synopsis, keyword, copyright, cover, playCnt, createDt, updateDt, state);
+        return Objects.hash(id, name,  synopsis, keyword, copyright, playCnt, createDt, updateDt, state);
     }
 }
