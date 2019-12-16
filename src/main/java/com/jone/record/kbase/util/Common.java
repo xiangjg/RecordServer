@@ -7,7 +7,9 @@ package com.jone.record.kbase.util;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jone.record.kbase.KBaseCon;
 import com.jone.record.kbase.entity.Catalog;
+import com.jone.record.kbase.entity.JournalCatalog;
 import com.jone.record.kbase.entity.KBaseConfig;
 import com.jone.record.kbase.tool.EJournalType;
 import org.apache.commons.collections.map.LinkedMap;
@@ -15,16 +17,46 @@ import org.json.XML;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
+import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 public class Common {
 
     private static final Logger loger = LoggerFactory.getLogger(Common.class);
+
+    public static String GetIamgeFiles(String value) {
+        Connection _con = KBaseCon.GetInitConnect();
+        String[] strArr = value.split(";");
+        String strImagePath = strArr[0];
+        String urlId = strImagePath.substring(0, strImagePath.indexOf("."));
+        String strSQL = String.format("select url from BINARYDATA where urlid='%s'", urlId);
+        String strImageFile = "";
+        ResultSet rst = null;
+        PreparedStatement st = null;
+        try {
+            st = _con.prepareStatement(strSQL);
+            rst = st.executeQuery();
+            while (rst.next()) {
+                strImageFile = rst.getString("url");
+            }
+        } catch (SQLException e) {
+            loger.error("{}", e);
+        } finally {
+            try {
+                if (null != rst) {
+                    rst.close();
+                }
+                if (null != st) {
+                    st.close();
+                }
+            } catch (Exception e) {
+                loger.error("{}", e);
+            }
+        }
+        return strImageFile;
+    }
 
     public static JSONObject RSetToString(ResultSet rst) {
         JSONObject jsonObject = new JSONObject(new LinkedMap());
@@ -32,7 +64,7 @@ public class Common {
         try {
             String strValue = "";
             while (rst.next()) {
-                strValue = rst.getString("COUNT");
+                strValue = rst.getString("total");
                 jsonObject.put("count", strValue);
             }
         } catch (Exception e) {
@@ -123,6 +155,12 @@ public class Common {
                     } else if (strKey.equals("TYPE")) {
                         String cnName = EJournalType.GetNameByCode(strValue);
                         jsonObject.put("cnType", cnName);
+                    }
+                    if (strKey.equals("ACCESSORIES")) {
+                        strKey = "COVERPATH";
+                        if (!strValue.isEmpty()) {
+                            strValue = GetIamgeFiles(strValue);
+                        }
                     }
                     jsonObject.put(strKey, strValue);
                 }
@@ -278,7 +316,6 @@ public class Common {
         return list;
     }
 
-
     public static JSONObject AnalysisJournalFullText(ResultSet rst) {
         JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
         try {
@@ -306,4 +343,49 @@ public class Common {
         }
         return jsonObject;
     }
+
+    public static List<JournalCatalog> ResultSetToList(ResultSet rst) {
+        List<JournalCatalog> list = new LinkedList<JournalCatalog>();
+        try {
+            ResultSetMetaData rstMetaData = rst.getMetaData();
+            int column = rstMetaData.getColumnCount();
+            String key = "", value = "";
+            while (rst.next()) {
+                JournalCatalog jCatalog = new JournalCatalog();
+                for (int i = 1; i <= column; i++) {
+                    key = rstMetaData.getColumnName(i);
+                    value = rst.getString(key);
+                    if (key.equals("PARENTDOI")) {
+                        jCatalog.setParentGuid(value);
+                    } else if (key.equals("TITLE")) {
+                        jCatalog.setTitle(value);
+                    } else if (key.equals("SYS_FLD_DOI")) {
+                        jCatalog.setCurrentGuid(value);
+                    } else if (key.equals("SYS_FLD_ORDERNUM")) {
+                        jCatalog.setOrderId(value);
+                    }
+                }
+                list.add(jCatalog);
+            }
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return list;
+    }
+
+    public static List<Object> MapToJSONObjectList(Map<String, List<JournalCatalog>> map){
+        List<Object> jsonObjectList = new LinkedList<Object>();
+        Iterator<Map.Entry<String, List<JournalCatalog>>> entries = map.entrySet().iterator();
+        while (entries.hasNext()) {
+            JSONObject jsonObj = new JSONObject(new LinkedHashMap<>());
+            Map.Entry<String, List<JournalCatalog>> entry = entries.next();
+            String key = entry.getKey();
+            Object value = entry.getValue();
+            jsonObj.put("BookId",key);
+            jsonObj.put("Catalog", value);
+            jsonObjectList.add(jsonObj);
+        }
+        return jsonObjectList;
+    }
+
 }

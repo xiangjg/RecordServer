@@ -3,6 +3,7 @@ package com.jone.record.service;
 import com.jone.record.entity.forum.CourseCategory;
 import com.jone.record.entity.forum.CoursesEntity;
 import com.jone.record.entity.forum.EpisodesEntity;
+import com.jone.record.entity.vo.PageVo;
 
 import java.util.List;
 
@@ -13,7 +14,7 @@ public interface ForumService {
 
     void deleteCourseCategory(Integer id) throws Exception;
 
-    List<CoursesEntity> listCourse(Integer state) throws Exception;
+    PageVo<CoursesEntity> listCourse(Integer state, Integer page, Integer size) throws Exception;
 
     CoursesEntity save(CoursesEntity coursesEntity) throws Exception;
 

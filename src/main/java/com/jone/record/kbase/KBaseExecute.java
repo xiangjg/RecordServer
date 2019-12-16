@@ -6,6 +6,7 @@ package com.jone.record.kbase;
 
 import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
+import com.jone.record.kbase.entity.JournalCatalog;
 import com.jone.record.kbase.util.Common;
 import com.jone.record.kbase.util.DealFiles;
 import com.jone.record.kbase.util.SQLBuilder;
@@ -16,9 +17,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.*;
-import java.util.LinkedHashMap;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class KBaseExecute {
 
@@ -44,7 +44,7 @@ public class KBaseExecute {
                     if (columnName.equals("ACCESSORIES")) {
                         columnName = "COVERPATH";
                         if (!value.isEmpty()) {
-                            value = GetIamgeFiles(value);
+                            value = Common.GetIamgeFiles(value);
                         }
                     }
                     jsonObj.put(columnName, value);
@@ -57,38 +57,6 @@ public class KBaseExecute {
         return jsonArr;
     }
 
-    private String GetIamgeFiles(String value) {
-        Connection _con = KBaseCon.GetInitConnect();
-        String[] strArr = value.split(";");
-        String strImagePath = strArr[0];
-        String urlId = strImagePath.substring(0, strImagePath.indexOf("."));
-        String strSQL = String.format("select url from BINARYDATA where urlid='%s'", urlId);
-        String strImageFile = "";
-        ResultSet rst = null;
-        PreparedStatement st = null;
-        try {
-            st = _con.prepareStatement(strSQL);
-            rst = st.executeQuery();
-            while (rst.next()) {
-                strImageFile = rst.getString("url");
-            }
-        } catch (SQLException e) {
-            loger.error("{}", e);
-        } finally {
-            try {
-                if (null != rst) {
-                    rst.close();
-                }
-                if (null != st) {
-                    st.close();
-                }
-            } catch (Exception e) {
-                loger.error("{}", e);
-            }
-        }
-        return strImageFile;
-    }
-
     private JSONObject GetPagedQueryObjectInfo(String strSQL, int pageSize) {
         Connection _con = KBaseCon.GetInitConnect();
         JSONObject titleObject = new JSONObject(new LinkedMap());
@@ -97,10 +65,10 @@ public class KBaseExecute {
         try {
             state = _con.createStatement();
             rst = state.executeQuery(strSQL);
-            String key = "count";
+            String key = "total";
             int value = 0;
             while (rst.next()) {
-                value = rst.getInt("count(*)");
+                value = rst.getInt("total");
             }
             if (0 == value) {
                 return null;
@@ -151,6 +119,19 @@ public class KBaseExecute {
         return jsonObj;
     }
 
+    public JSONObject GetBooksInfo(JSONObject params) {
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        if (params.containsKey("type")) {
+            String type = params.getString("type");
+            if (type.equals("3")) {
+                jsonObject = GetJournalInfo(params);
+            } else {
+                jsonObject = GetHistoryBook(params);
+            }
+        }
+        return jsonObject;
+    }
+
     public JSONObject GetHistoryBook(JSONObject params) {
         Connection _con = KBaseCon.GetInitConnect();
         String strSQL = SQLBuilder.GenerateHistoryNumsQuerySQL(params);
@@ -163,7 +144,7 @@ public class KBaseExecute {
             ResultSet rst = state.executeQuery(strSQL);
             int count = 0;
             while (rst.next()) {
-                count = rst.getInt("count");
+                count = rst.getInt("total");
             }
             jsonObject.put("count", count);
         } catch (Exception e) {
@@ -186,19 +167,28 @@ public class KBaseExecute {
         return jsonObject;
     }
 
-    public JSONObject GetTitleInfo(JSONObject jsonObject) {
+    public JSONObject GetTitleInfo(JSONObject params) {
         JSONArray jsonArray = new JSONArray(new LinkedList<>());
         JSONObject titleObject = new JSONObject(new LinkedMap());
 
         // 获取数据库记录数SQL
-        String strSQL = SQLBuilder.GeneratePagedQuerySQL(jsonObject);
+        String strSQL = SQLBuilder.GeneratePagedQuerySQL(params);
         if (strSQL.isEmpty()) {
             return null;
         }
-        titleObject = GetPagedQueryObjectInfo(strSQL, jsonObject.getInteger("pageSize"));
+
+        int pageSize = 0;
+        if (params.containsKey("pageSize")) {
+            pageSize = params.getInteger("pageSize");
+        } else {
+            pageSize = 10;
+        }
+
+        titleObject = GetPagedQueryObjectInfo(strSQL, pageSize);
+        int total = titleObject.getInteger("total");
 
         // 获取分页查询信息SQL
-        strSQL = SQLBuilder.GenerateTopicRecordInfoQuerySQL(jsonObject, titleObject.getInteger("count"));
+        strSQL = SQLBuilder.GenerateTopicRecordInfoQuerySQL(params, total);
         if (strSQL.isEmpty()) {
             return null;
         }
@@ -215,6 +205,19 @@ public class KBaseExecute {
             loger.error("{}", e);
         }
         return titleObject;
+    }
+
+    public JSONObject GetFullTextInfo(JSONObject params) {
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        if (params.containsKey("type")) {
+            String type = params.getString("type");
+            if (type.equals("3")) {
+                jsonObject = GetJournalFullText(params);
+            } else {
+                jsonObject = GetTopicContent(params);
+            }
+        }
+        return jsonObject;
     }
 
     public JSONObject GetTopicContent(JSONObject params) {
@@ -249,6 +252,19 @@ public class KBaseExecute {
     }
 
     public JSONObject GetBookCatalog(JSONObject params) {
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
+        if (params.containsKey("type")) {
+            String type = params.getString("type");
+            if (type.equals("3")) {
+                jsonObject = GetJournalBaseCatalog(params);
+            } else {
+                jsonObject = GetBooksCatalog(params);
+            }
+        }
+        return jsonObject;
+    }
+
+    public JSONObject GetBooksCatalog(JSONObject params) {
         String strSQL = SQLBuilder.GenerateBookCatalogQuerySQL(params);
         if (strSQL.isEmpty()) {
             return null;
@@ -271,22 +287,52 @@ public class KBaseExecute {
         return catalogObject;
     }
 
-    public JSONObject GetReadCatalog(JSONObject jsonObject) {
-        String strSQL = SQLBuilder.GenerateReadCatalogQuerySQL(jsonObject);
+    public JSONObject GetReadCatalog(JSONObject params) {
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
+        if (params.containsKey("type")) {
+            String type = params.getString("type");
+            if (type.equals("3")) {
+                JSONArray jsonArray = new JSONArray(new LinkedList<>());
+                jsonArray = GetJournalReadCatalog(params);
+                jsonObject.put("catalog", jsonArray);
+            } else {
+                jsonObject = GetReadCatalogs(params);
+            }
+        }
+        return jsonObject;
+    }
+
+    public JSONObject GetReadCatalogs(JSONObject params) {
+        String strSQL = SQLBuilder.GenerateReadCatalogQuerySQL(params);
         if (strSQL.isEmpty()) {
             return null;
         }
-        JSONObject jsonObj = new JSONObject(new LinkedMap());
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
         Connection _con = KBaseCon.GetInitConnect();
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
-            jsonObj = Common.AnalysisCatalog(rst);
+            jsonObject = Common.AnalysisCatalog(rst);
         } catch (Exception e) {
             loger.error("{}", e);
         }
-        return jsonObj;
+        return jsonObject;
     }
+
+    public JSONObject GetBookList(JSONObject params) {
+        JSONObject jsonObject = new JSONObject(new LinkedMap());
+        String type = "";
+        if (params.containsKey("type")) {
+            type = params.getString("type");
+            if (type.equals("3")) {
+                jsonObject = GetJournalInfo(params);
+            } else {
+                jsonObject = GetBookListByCls(params);
+            }
+        }
+        return jsonObject;
+    }
+
 
     public JSONObject GetBookListByCls(JSONObject params) {
         JSONObject jsonObject = new JSONObject(new LinkedMap());
@@ -299,7 +345,7 @@ public class KBaseExecute {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             while (rst.next()) {
-                count = rst.getInt("num");
+                count = rst.getInt("total");
             }
             jsonObject.put("count", count);
         } catch (Exception e) {
@@ -367,6 +413,23 @@ public class KBaseExecute {
             loger.error("满足查询条件的记录不存在！");
             return null;
         }
+        jsonObject.put("count", total);
+
+        strSQL = SQLBuilder.GenerateGetDynamicListQuerySQL(params, total);
+        if (strSQL.isEmpty()) {
+            loger.error("SQL查询语句构建失败！");
+            return null;
+        }
+
+        JSONArray jsonArray = new JSONArray(new LinkedList<>());
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            jsonArray = Common.ResultSetToJSONArray(rst);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        jsonObject.put("content", jsonArray);
         return jsonObject;
     }
 
@@ -479,7 +542,7 @@ public class KBaseExecute {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             while (rst.next()) {
-                count = rst.getInt("count");
+                count = rst.getInt("total");
             }
             jsonObject.put("count", count);
         } catch (Exception e) {
@@ -513,7 +576,7 @@ public class KBaseExecute {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             while (rst.next()) {
-                count = rst.getInt("count");
+                count = rst.getInt("total");
             }
             jsonObject.put("count", count);
         } catch (Exception e) {
@@ -651,7 +714,62 @@ public class KBaseExecute {
     public JSONObject GetBookChapterInfo(JSONObject params) {
         Connection _con = KBaseCon.GetInitConnect();
         JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
-        String strSQL =  SQLBuilder.GenerateBookChapterInfoGroupNumsQuerySQL(params);
+        String strSQL = SQLBuilder.GenerateBookChapterInfoGroupQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            loger.error("构建询书籍章节目录信息SQL语句失败！");
+            return null;
+        }
+
+        // 查询满足条件的目录列表
+        List<JournalCatalog> list = new LinkedList<JournalCatalog>();
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            list = Common.ResultSetToList(rst);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+
+        // 将满足条件的目录列表进行分组
+        Map<String, List<JournalCatalog>> map = new LinkedHashMap<>();
+        map = list.stream().collect(Collectors.groupingBy(JournalCatalog::getParentGuid));
+        // 添加书籍的本书，分页总记录数
+        int mapSize = map.size();
+        jsonObject.put("count", mapSize);
+
+        // 将Map转换成List
+        List<Object> ObjectList = Common.MapToJSONObjectList(map);
+
+        // 计算分页详情
+        int start = 0, end = 0;
+        int pageSize = 0, page = 0;
+        if (params.containsKey("pageSize")) {
+            pageSize = params.getInteger("pageSize");
+        } else {
+            pageSize = 10;
+        }
+        if (params.containsKey("page")) {
+            page = params.getInteger("page");
+        } else {
+            page = 1;
+        }
+        start = (page - 1) * pageSize;
+        if (mapSize <= pageSize) {
+            end = mapSize;
+        } else {
+            end = page * pageSize;
+            if (end > mapSize)
+                end = mapSize;
+        }
+        List<Object> jsonObjectList = ObjectList.subList(start, end);
+        jsonObject.put("content", jsonObjectList);
+        return jsonObject;
+    }
+
+    public JSONObject GetBookListCatalog(JSONObject params) {
+        Connection _con = KBaseCon.GetInitConnect();
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        String strSQL = SQLBuilder.GenerateBookListCatalogNumsQuerySQL(params);
         if (strSQL.isEmpty()) {
             loger.error("构建询书籍章节目录信息SQL语句失败！");
             return null;
@@ -661,27 +779,64 @@ public class KBaseExecute {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
             while (rst.next()) {
-                count = rst.getInt("count");
+                count = rst.getInt("total");
             }
             jsonObject.put("count", count);
         } catch (Exception e) {
             loger.error("{}", e);
         }
 
-        strSQL = SQLBuilder.GenerateBookChapterInfoGroupQuerySQL(params);
+        strSQL = SQLBuilder.GenerateBookListCatalogQuerySQL(params, count);
         if (strSQL.isEmpty()) {
             loger.error("构建询书籍章节目录信息SQL语句失败！");
             return null;
         }
+        JSONArray jsonArray = new JSONArray(new LinkedList<>());
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            jsonArray = Common.ResultSetToJSONArray(rst);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        jsonObject.put("content", jsonArray);
+        return jsonObject;
+    }
 
-
-
-        strSQL = SQLBuilder.GenerateBookChapterInfoQuerySQL(params);
+    public JSONObject GetChronicleEvents(JSONObject params) {
+        Connection _con = KBaseCon.GetInitConnect();
+        String strSQL = SQLBuilder.GenerateChronicleEventsNumsQuerySQL(params);
         if (strSQL.isEmpty()) {
-            loger.error("构建询书籍章节目录信息SQL语句失败！");
+            loger.error("构建查询大事记列表信息数量SQL语句失败！");
             return null;
         }
-
+        int count = 0;
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            while (rst.next()) {
+                count = rst.getInt("total");
+            }
+            jsonObject.put("count", count);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        // 构建分页查询
+        strSQL = SQLBuilder.GenerateChronicleEventsQuerySQL(params, count);
+        if (strSQL.isEmpty()) {
+            loger.error("构建查询大事记列表信息SQL语句失败！");
+            return null;
+        }
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            JSONArray jsonArray = new JSONArray(new LinkedList<>());
+            jsonArray = Common.ResultSetToJSONArray(rst);
+            jsonObject.put("content", jsonArray);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
         return jsonObject;
     }
 

@@ -1,5 +1,7 @@
 server:
   port: 8088
+  tomcat:
+    uri-encoding: utf-8
 spring:
   datasource:
     url: jdbc:postgresql://127.0.0.1:5432/fangzydb
@@ -30,6 +32,12 @@ spring:
     aop:
       proxy-target-class: true
       auto: true
+  http:
+    encoding:
+      charset: UTF-8
+      enabled: true
+      force-response: true
+
 kbase:
   driverclass: com.kbase.jdbc.Driver
   url: jdbc:kbase://10.140.128.128:4567
