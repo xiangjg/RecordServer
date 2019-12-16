@@ -266,6 +266,12 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
     public NodeContent save(NodeContent nodeContent) throws Exception {
         return nodeContentDao.save(nodeContent);
     }
+
+    @Override
+    public List<NodeContent> saveAllNodeContent(List<NodeContent> nodeContent) throws Exception {
+        return nodeContentDao.saveAll(nodeContent);
+    }
+
     @Transactional
     @Override
     public void deleteNodeContent(Integer id) throws Exception {

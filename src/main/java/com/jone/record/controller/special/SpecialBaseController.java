@@ -133,12 +133,7 @@ public class SpecialBaseController extends BaseController {
     @SystemControllerLog(description = "保存栏目内容列表")
     public void saveNodeContent(@RequestBody List<NodeContent> nodeContent, HttpServletResponse response) {
         try {
-            List<NodeContent> data = new ArrayList<>();
-            for (NodeContent node:nodeContent
-                 ) {
-                data.add(specialBaseService.save(node));
-            }
-            printJson(ResultUtil.success(data), response);
+            printJson(ResultUtil.success(specialBaseService.saveAllNodeContent(nodeContent)), response);
         } catch (Exception e) {
             logger.error("{}", e);
             printJson(ResultUtil.error(-1, e.getMessage()), response);
