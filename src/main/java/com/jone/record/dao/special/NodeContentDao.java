@@ -14,6 +14,7 @@ public interface NodeContentDao extends JpaRepository<NodeContent, Integer> {
 
     List<NodeContent> findByStateAndNid(Integer state, Integer nid);
     List<NodeContent> findByStateAndNidIn(Integer state, Collection<Integer> nid);
+    List<NodeContent> findByNidIn(Collection<Integer> nid);
     List<NodeContent> findByNid(Integer nid);
     @Transactional
     @Modifying
