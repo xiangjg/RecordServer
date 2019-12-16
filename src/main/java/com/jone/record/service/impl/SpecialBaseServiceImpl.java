@@ -102,6 +102,18 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
                         node.setFiles(fileNodeList);
 
                     List<NodeContent> contentList = getContentListByNid(node.getId(), contentAllList);
+                    nids = new ArrayList<>();
+                    for (NodeContent nc:contentList
+                         ) {
+                        nids.add(nc.getId());
+                    }
+                    List<FileEntity> fileNodeContentAllList = fileDao.findByRefIdInAndFileType(nids, Definition.TYPE_FILE_IMAGE);
+                    for (NodeContent nc:contentList
+                    ) {
+                        List<FileEntity> fileNodeContentList = getFileListByNid(nc.getId(), fileNodeContentAllList);
+                        if (fileNodeContentList != null && fileNodeContentList.size() > 0)
+                            nc.setFiles(fileNodeContentList);
+                    }
                     node.setListContent(contentList);
                 }
                 s.setListNode(nodeList);
@@ -191,6 +203,18 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
                 node.setFiles(fileNodeList);
 
             List<NodeContent> contentList = getContentListByNid(node.getId(), contentAllList);
+            nids = new ArrayList<>();
+            for (NodeContent nc:contentList
+            ) {
+                nids.add(nc.getId());
+            }
+            List<FileEntity> fileNodeContentAllList = fileDao.findByRefIdInAndFileType(nids, Definition.TYPE_FILE_IMAGE);
+            for (NodeContent nc:contentList
+            ) {
+                List<FileEntity> fileNodeContentList = getFileListByNid(nc.getId(), fileNodeContentAllList);
+                if (fileNodeContentList != null && fileNodeContentList.size() > 0)
+                    nc.setFiles(fileNodeContentList);
+            }
             node.setListContent(contentList);
         }
         return list;
@@ -218,10 +242,24 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
 
     @Override
     public List<NodeContent> listByStateAndNid(Integer state, Integer nid) throws Exception {
+        List<NodeContent> list = new ArrayList<>();
         if (state >= 0)
-            return nodeContentDao.findByStateAndNid(state, nid);
+            list = nodeContentDao.findByStateAndNid(state, nid);
         else
-            return nodeContentDao.findByNid(nid);
+            list = nodeContentDao.findByNid(nid);
+        List<Integer> nids = new ArrayList<>();
+        for (NodeContent nc:list
+        ) {
+            nids.add(nc.getId());
+        }
+        List<FileEntity> fileNodeContentAllList = fileDao.findByRefIdInAndFileType(nids, Definition.TYPE_FILE_IMAGE);
+        for (NodeContent nc:list
+        ) {
+            List<FileEntity> fileNodeContentList = getFileListByNid(nc.getId(), fileNodeContentAllList);
+            if (fileNodeContentList != null && fileNodeContentList.size() > 0)
+                nc.setFiles(fileNodeContentList);
+        }
+        return list;
     }
     @Transactional
     @Override

@@ -5,9 +5,11 @@ import com.jone.record.config.Definition;
 import com.jone.record.dao.forum.CourseCategoryDao;
 import com.jone.record.dao.forum.CoursesEntityDao;
 import com.jone.record.dao.forum.EpisodesEntityDao;
+import com.jone.record.dao.forum.FocusEntityDao;
 import com.jone.record.entity.forum.CourseCategory;
 import com.jone.record.entity.forum.CoursesEntity;
 import com.jone.record.entity.forum.EpisodesEntity;
+import com.jone.record.entity.forum.FocusEntity;
 import com.jone.record.entity.vo.PageVo;
 import com.jone.record.service.ForumService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,6 +26,7 @@ import javax.persistence.criteria.Root;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service(value = "forumService")
 public class ForumServiceImpl implements ForumService {
@@ -34,6 +37,8 @@ public class ForumServiceImpl implements ForumService {
     private CoursesEntityDao coursesEntityDao;
     @Autowired
     private EpisodesEntityDao episodesEntityDao;
+    @Autowired
+    private FocusEntityDao focusEntityDao;
 
     @Override
     public List<CourseCategory> listCourseCategory() throws Exception {
@@ -149,5 +154,40 @@ public class ForumServiceImpl implements ForumService {
     @Override
     public void updatePlayCount(Integer id, Integer courseId) throws Exception {
         episodesEntityDao.updatePlay(id, courseId);
+    }
+
+    @Override
+    public PageVo<FocusEntity> listFocus(Map<String, Object> paramm) throws Exception {
+        PageVo pageData = new PageVo();
+        Integer page = 1;
+        Integer size = 10;
+        if(paramm.get("page")!=null)
+            page = Integer.parseInt(paramm.get("page").toString());
+        if(paramm.get("size")!=null)
+            size = Integer.parseInt(paramm.get("size").toString());
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, "startDt"));
+        PageRequest pageRequest = PageRequest.of(page - 1, size, sort);
+        Page<FocusEntity> pageList = null;
+        if (paramm.get("tm")!=null){
+            Date tm = (Date)paramm.get("tm");
+            pageList = focusEntityDao.findByEndDtGreaterThanEqualAndStartDtLessThanEqual(tm, tm, pageRequest);
+        }else
+            pageList = focusEntityDao.findAll(pageRequest);
+        pageData.setPage(page);
+        pageData.setSize(size);
+        pageData.setTotal(pageList.getTotalElements());
+        pageData.setTotalPages(pageList.getTotalPages());
+        pageData.setData(pageList.getContent());
+        return pageData;
+    }
+
+    @Override
+    public FocusEntity save(FocusEntity focus) throws Exception {
+        return focusEntityDao.save(focus);
+    }
+
+    @Override
+    public void deleteFocus(Integer id) throws Exception {
+        focusEntityDao.deleteById(id);
     }
 }
