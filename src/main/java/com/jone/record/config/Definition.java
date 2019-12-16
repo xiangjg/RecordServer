@@ -14,6 +14,11 @@ public class Definition {
      */
     public static final int TYPE_FILE_IMAGE = 3;
     /**
+     * 课堂-课程封面
+     */
+    public static final int TYPE_FILE_COURSE = 4;
+
+    /**
      * 个人中心消息类型定义：未读
      */
     public static final int TYPE_MSG_NO_READ = 0;

@@ -26,6 +26,7 @@ public interface SpecialBaseService {
     List<NodeContent> listByStateAndNid(Integer state, Integer nid) throws Exception;
 
     NodeContent save(NodeContent nodeContent) throws Exception;
+    List<NodeContent> saveAllNodeContent(List<NodeContent> nodeContent) throws Exception;
 
     void deleteNodeContent(Integer id) throws Exception;
 }

@@ -1,5 +1,7 @@
 package com.jone.record.entity.forum;
 
+import com.jone.record.entity.file.FileEntity;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.sql.Timestamp;
@@ -22,6 +24,7 @@ public class CoursesEntity implements Serializable {
     private Date updateDt;
     private Integer state;
     private List<EpisodesEntity> episodesList;
+    private List<FileEntity> files;
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Id
@@ -140,6 +143,14 @@ public class CoursesEntity implements Serializable {
 
     public void setEpisodesList(List<EpisodesEntity> episodesList) {
         this.episodesList = episodesList;
+    }
+    @Transient
+    public List<FileEntity> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileEntity> files) {
+        this.files = files;
     }
 
     @Override
