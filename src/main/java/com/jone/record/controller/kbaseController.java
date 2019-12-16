@@ -231,7 +231,6 @@ public class kbaseController extends BaseController {
         }
     }
 
-
     /**
      * 查询方志动态的标题信息
      *
@@ -277,16 +276,20 @@ public class kbaseController extends BaseController {
      * 查询年鉴列表
      *
      * @return 返回JSON格式字符串
-     * @params 输入JSONObject对象，如：{"year":"2008","page":"1","pageSize":"10"}
+     * @params 输入JSONObject对象，如：
+     * {"type":"2","code":"","year":"2008","page":"1","pageSize":"10"}      // 年鉴
+     * {"type":"3","code":"zdfz","year":"","page":"1","pageSize":"10"}      // 期刊
+     * @typ 资源类型   年鉴 2；期刊 3。
+     * @code 资源代码，期刊必填，如："zdfz"，年鉴为空值
      * @year 输入查询年限
      * @page 查询页索引，默认查询第 1 页
      * @pageSize 每页显示数据条数，默认显示 1 条
      */
     @RequestMapping(value = "GetYearBookList", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "查询年鉴列表信息", notes = "输入JSONObject对象，查询年份-year，查询页索引-page，每页显示数据条数-pageSize")
+    @ApiOperation(value = "查询年鉴列表信息", notes = "输入JSONObject对象，资源类型-type，期刊代码-code（年鉴为空），查询年份-year，查询页索引-page，每页显示数据条数-pageSize")
     public void GetYearBookList(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
-            JSONObject jsonObject = kbaseTools.GetYearBookList(params);
+            JSONObject jsonObject = kbaseTools.GetYearListInfo(params);
             printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
             loger.error("{}", e);

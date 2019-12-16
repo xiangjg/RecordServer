@@ -452,6 +452,19 @@ public class KBaseExecute {
         return jsonObject;
     }
 
+    public JSONObject GetYearListInfo(JSONObject params) {
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        if (params.containsKey("type")) {
+            String type = params.getString("type");
+            if (type.equals("3")) {
+                jsonObject = GetJournalYearInfo(params);
+            } else if (type.equals("2")) {
+                jsonObject = GetYearBookList(params);
+            }
+        }
+        return jsonObject;
+    }
+
     public JSONObject GetYearBookList(JSONObject params) {
         String strSQL = SQLBuilder.GenerateGetYearBookListNumsQuerySQL(params);
         if (strSQL.isEmpty()) {
@@ -471,6 +484,7 @@ public class KBaseExecute {
         }
 
         // 查询年份范围
+        Map<String, String> strMap = new LinkedHashMap<String, String>();
         List<String> strYearList = new LinkedList<String>();
         if (params.containsKey("year")) {
             String strYear = params.getString("year");
@@ -483,7 +497,7 @@ public class KBaseExecute {
                 try {
                     Statement state = _con.createStatement();
                     ResultSet rst = state.executeQuery(strSQL);
-                    strYearList = Common.AnalysisYearAround(rst);
+                    strMap = Common.AnalysisYearAroundMap(rst);
                 } catch (Exception e) {
                     loger.error("{}", e);
                 }
@@ -505,7 +519,7 @@ public class KBaseExecute {
             loger.error("{}", e);
         }
         jsonObject.put("count", count);
-        jsonObject.put("timeAround", strYearList);
+        jsonObject.put("timeAround", strMap.values());
         return jsonObject;
     }
 

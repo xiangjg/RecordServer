@@ -189,10 +189,11 @@ public class Common {
                     if (strKey.equals("SYS_FLD_FILEPATH") || strKey.equals("SYS_FLD_COVERPATH")) {
                         strValue = strValue.replace('\\', '/');
                         strValue = Common.GetFilePath() + strValue;
-                    } else if (strKey.equals("ISBN")) {
+                    } else if (strKey.equals("NAME")) {
                         String strYear = strValue.substring(strValue.length() - 4, strValue.length());
-                        strKey = "YEAR";
-                        strValue = strYear;
+                        object.put("year", strYear);
+//                        strKey = "YEAR";
+//                        strValue = strYear;
                     }
                     object.put(strKey, strValue);
                 }
@@ -292,7 +293,7 @@ public class Common {
         return strDay;
     }
 
-    public static List<String> AnalysisYearAround(ResultSet rst) {
+    public static List<String> AnalysisYearAroundList(ResultSet rst) {
         List<String> list = new LinkedList<String>();
         try {
             ResultSetMetaData rsMetaData = rst.getMetaData();
@@ -314,6 +315,31 @@ public class Common {
             loger.error("{}", e);
         }
         return list;
+    }
+
+    public static Map<String, String> AnalysisYearAroundMap(ResultSet rst) {
+        Map<String, String> map = new LinkedHashMap<String, String>();
+        try {
+            ResultSetMetaData rsMetaData = rst.getMetaData();
+            int column = rsMetaData.getColumnCount();
+            String strKey = "";
+            String strValue = "";
+            while (rst.next()) {
+                for (int i = 1; i <= column; i++) {
+                    strKey = rsMetaData.getColumnName(i);
+                    strValue = rst.getString(strKey);
+                    if (strKey.equals("NAME")) {
+                        int len = strValue.length();
+                        String strYear = strValue.substring(len - 4, len);
+                        map.put(strYear, strYear);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        Map<String, String> sortMap = MapSortUtil.sortByValue(map);
+        return sortMap;
     }
 
     public static JSONObject AnalysisJournalFullText(ResultSet rst) {
@@ -373,7 +399,7 @@ public class Common {
         return list;
     }
 
-    public static List<Object> MapToJSONObjectList(Map<String, List<JournalCatalog>> map){
+    public static List<Object> MapToJSONObjectList(Map<String, List<JournalCatalog>> map) {
         List<Object> jsonObjectList = new LinkedList<Object>();
         Iterator<Map.Entry<String, List<JournalCatalog>>> entries = map.entrySet().iterator();
         while (entries.hasNext()) {
@@ -381,7 +407,7 @@ public class Common {
             Map.Entry<String, List<JournalCatalog>> entry = entries.next();
             String key = entry.getKey();
             Object value = entry.getValue();
-            jsonObj.put("BookId",key);
+            jsonObj.put("BookId", key);
             jsonObj.put("Catalog", value);
             jsonObjectList.add(jsonObj);
         }
