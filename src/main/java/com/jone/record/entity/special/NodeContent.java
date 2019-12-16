@@ -1,7 +1,10 @@
 package com.jone.record.entity.special;
 
+import com.jone.record.entity.file.FileEntity;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -15,6 +18,7 @@ public class NodeContent implements Serializable {
     private String detail;
     private String content;
     private Integer  order;
+    private List<FileEntity> files;
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Basic
@@ -96,6 +100,14 @@ public class NodeContent implements Serializable {
 
     public void setOrder(Integer  order) {
         this.order = order;
+    }
+    @Transient
+    public List<FileEntity> getFiles() {
+        return files;
+    }
+
+    public void setFiles(List<FileEntity> files) {
+        this.files = files;
     }
 
     @Override

@@ -4,20 +4,21 @@ import com.jone.record.controller.BaseController;
 import com.jone.record.entity.forum.CourseCategory;
 import com.jone.record.entity.forum.CoursesEntity;
 import com.jone.record.entity.forum.EpisodesEntity;
+import com.jone.record.entity.forum.FocusEntity;
 import com.jone.record.entity.map.ShareEntity;
 import com.jone.record.entity.vo.PageVo;
 import com.jone.record.service.ForumService;
 import com.jone.record.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections.map.HashedMap;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/fzjt")
@@ -41,7 +42,7 @@ public class ForumController extends BaseController {
 
     @RequestMapping(value = "/saveCategory", method = RequestMethod.POST)
     @ApiOperation(value = "保存课程分类", notes = "")
-    public void saveCategory(@RequestParam CourseCategory courseCategories, HttpServletResponse response) {
+    public void saveCategory(@RequestBody CourseCategory courseCategories, HttpServletResponse response) {
         try {
             courseCategories = forumService.save(courseCategories);
             printJson(ResultUtil.success(courseCategories), response);
@@ -77,7 +78,7 @@ public class ForumController extends BaseController {
 
     @RequestMapping(value = "/saveCourse", method = RequestMethod.POST)
     @ApiOperation(value = "保存课程信息", notes = "")
-    public void saveCourse(@RequestParam CoursesEntity coursesEntity, HttpServletResponse response) {
+    public void saveCourse(@RequestBody CoursesEntity coursesEntity, HttpServletResponse response) {
         try {
             coursesEntity = forumService.save(coursesEntity);
             printJson(ResultUtil.success(coursesEntity), response);
@@ -113,7 +114,7 @@ public class ForumController extends BaseController {
 
     @RequestMapping(value = "/saveEpisodes", method = RequestMethod.POST)
     @ApiOperation(value = "保存课程章节", notes = "")
-    public void saveEpisodes(@RequestParam EpisodesEntity episodesEntity, HttpServletResponse response) {
+    public void saveEpisodes(@RequestBody EpisodesEntity episodesEntity, HttpServletResponse response) {
         try {
             episodesEntity = forumService.save(episodesEntity);
             printJson(ResultUtil.success(episodesEntity), response);
@@ -140,6 +141,61 @@ public class ForumController extends BaseController {
     public void updatePlayCount(@RequestParam Integer id,@RequestParam Integer courseId, HttpServletResponse response) {
         try {
             forumService.updatePlayCount(id, courseId);
+            printJson(ResultUtil.success(), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    @RequestMapping(value = "/listFocus", method = RequestMethod.POST)
+    @ApiOperation(value = "课程焦点列表", notes = "输入state")
+    public void listFocus(@RequestParam Integer page,@RequestParam Integer size, HttpServletResponse response) {
+        try {
+            Map<String, Object> map = new HashedMap();
+            map.put("page", page);
+            map.put("size", size);
+            PageVo<FocusEntity> listFocus = forumService.listFocus(map);
+            printJson(ResultUtil.success(listFocus), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    @RequestMapping(value = "/listFocusToDay", method = RequestMethod.POST)
+    @ApiOperation(value = "今日课程焦点列表", notes = "输入state")
+    public void listFocusToDay(@RequestParam Integer page,@RequestParam Integer size, HttpServletResponse response) {
+        try {
+            Map<String, Object> map = new HashedMap();
+            map.put("page", page);
+            map.put("size", size);
+            map.put("tm", new Date());
+            PageVo<FocusEntity> listFocus = forumService.listFocus(map);
+            printJson(ResultUtil.success(listFocus), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    @RequestMapping(value = "/saveFocus", method = RequestMethod.POST)
+    @ApiOperation(value = "保存课程焦点", notes = "")
+    public void saveFocus(@RequestBody FocusEntity focusEntity, HttpServletResponse response) {
+        try {
+            focusEntity = forumService.save(focusEntity);
+            printJson(ResultUtil.success(focusEntity), response);
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
+
+    @RequestMapping(value = "/deleteFocus", method = RequestMethod.POST)
+    @ApiOperation(value = "删除课程焦点", notes = "")
+    public void deleteFocus(@RequestParam Integer id, HttpServletResponse response) {
+        try {
+            forumService.deleteFocus(id);
             printJson(ResultUtil.success(), response);
         } catch (Exception e) {
             logger.error("{}", e);
