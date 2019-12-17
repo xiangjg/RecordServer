@@ -60,7 +60,7 @@ public class SpecialBaseServiceImpl implements SpecialBaseService {
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
-        Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, "num"));
+        Sort sort = Sort.by(new Sort.Order(Sort.Direction.ASC, "order"));
         PageRequest pageRequest = PageRequest.of(page - 1, size, sort);
         Page<TQztSubjectsEntity> pageList = null;
         if (state >= 0)
