@@ -97,7 +97,9 @@ public class Common {
                         while (matcher.find()) { //此处find（）每次被调用后，会偏移到下一个匹配
                             String strText = matcher.group();
                             String img = GetIamgeFiles(strText);
-                            strValue = strValue.replace(strText, img);
+                            strText = String.format("{%s}", strText);
+                            String strImg = String.format("<img src=\"%s\">", img);
+                            strValue = strValue.replace(strText, strImg);
                         }
                     }
                     jsonObject.put(strKey, strValue);
