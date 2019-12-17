@@ -625,9 +625,19 @@ public class SQLBuilder {
         return strBuilder.toString().toUpperCase();
     }
 
+    public static String GenerateJournalReadCatalogNumsQuerySQL(JSONObject params){
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select count(*) as total from DPM_JOURNALARTICLE where BASEID=");
+        strBuilder.append(params.getString("code"));
+        strBuilder.append("' and PARENTDOI='");
+        strBuilder.append(params.getString("id"));
+        strBuilder.append("'");
+        return  strBuilder.toString().toUpperCase();
+    }
+
     public static String GenerateJournalReadCatalogQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
-        String strFields = "NAME,SYS_FLD_DOI,BASEID,PARENTDOI";
+        String strFields = "NAME,SYS_FLD_DOI,BASEID,PARENTDOI,SYS_SYSID";
         strBuilder.append("select ");
         strBuilder.append(strFields);
         strBuilder.append(" from DPM_JOURNALARTICLE where BASEID='");
