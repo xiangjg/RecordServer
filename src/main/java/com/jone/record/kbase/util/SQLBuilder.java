@@ -572,6 +572,8 @@ public class SQLBuilder {
                 strBuilder.append("'");
             }
         }
+        // 添加排序
+        strBuilder.append(" order by year desc ");
         // 添加分页
         if (params.containsKey("pageSize")) {
             int pageSize = params.getInteger("pageSize");
@@ -668,15 +670,28 @@ public class SQLBuilder {
         strBuilder.append(strFields);
         strBuilder.append(" from ");
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
+        // 添加关键词条件
+        String keyword = "";
         if (params.containsKey("keyword")) {
-            String keyword = params.getString("keyword");
+            keyword = params.getString("keyword");
             if (!keyword.isEmpty()) {
                 strBuilder.append(" where title % '");
                 strBuilder.append(keyword);
                 strBuilder.append("'");
             }
         }
-
+        String strType = params.getString("type");
+        if (strType.equals("4") || strType.equals("1")) {
+            if (keyword.isEmpty()) {
+                strBuilder.append(" where BOOKCODE='");
+                strBuilder.append(strType);
+                strBuilder.append("'");
+            } else {
+                strBuilder.append(" and BOOKCODE='");
+                strBuilder.append(strType);
+                strBuilder.append("'");
+            }
+        }
         strBuilder.append(" order by PARENTDOI");
         return strBuilder.toString().toUpperCase();
     }
@@ -798,7 +813,7 @@ public class SQLBuilder {
         strBuilder.append(params.getString("startTime"));
         strBuilder.append("' and eventDate<'");
         strBuilder.append(params.getString("endTime"));
-        strBuilder.append("' order by eventDate desc");
+        strBuilder.append("' order by eventDate");
         if (params.containsKey("pageSize")) {
             int pageSize = params.getInteger("pageSize");
             if (count <= pageSize) {
