@@ -18,7 +18,7 @@ public class RecordApplication {
         SpringApplication app = new SpringApplication(RecordApplication.class);
         app.setBannerMode(Banner.Mode.OFF);
         app.run(args);
-        //TODO 如果kbase数据库链接需要启动后就进行初始化的话可以在这里进行初始化，这样可以获取到配置文件中的配置信息
+        // TODO 如果kbase数据库链接需要启动后就进行初始化的话可以在这里进行初始化，这样可以获取到配置文件中的配置信息
         KBaseCon.GetInitConnect();
     }
 }
