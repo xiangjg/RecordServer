@@ -12,7 +12,6 @@ import java.util.List;
 
 public interface TQztSubjectsDao extends JpaSpecificationExecutor<TQztSubjectsEntity>,JpaRepository<TQztSubjectsEntity, Integer> {
 
-    List<TQztSubjectsEntity> findByStateOrderByNumAsc(Integer state);
     @Transactional
     @Modifying
     @Query("update TQztSubjectsEntity r set r.state = :state where r.id = :id ")
