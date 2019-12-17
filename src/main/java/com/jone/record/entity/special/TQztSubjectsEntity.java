@@ -17,7 +17,7 @@ public class TQztSubjectsEntity implements Serializable {
     private String desc;
     private String creator;
     private Integer state;
-    private Short num;
+    private Short order;
     private Date createDate;
     private List<FileEntity> files;
     private List<SubjectsNodes> listNode;
@@ -83,16 +83,16 @@ public class TQztSubjectsEntity implements Serializable {
         this.state = state;
     }
 
-
     @Basic
     @Column(name = "_order")
-    public Short getNum() {
-        return num;
+    public Short getOrder() {
+        return order;
     }
 
-    public void setNum(Short order) {
-        this.num = num;
+    public void setOrder(Short order) {
+        this.order = order;
     }
+
     @Transient
     public List<FileEntity> getFiles() {
         return files;
@@ -120,12 +120,12 @@ public class TQztSubjectsEntity implements Serializable {
                 Objects.equals(name, that.name) &&
                 Objects.equals(desc, that.desc) &&
                 Objects.equals(creator, that.creator) &&
-                Objects.equals(num, that.num);
+                Objects.equals(order, that.order);
     }
 
     @Override
     public int hashCode() {
-        int result = Objects.hash(id, name, desc, creator, state, num);
+        int result = Objects.hash(id, name, desc, creator, state, order);
         return result;
     }
 }
