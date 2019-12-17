@@ -798,8 +798,7 @@ public class SQLBuilder {
         strBuilder.append(params.getString("startTime"));
         strBuilder.append("' and eventDate<'");
         strBuilder.append(params.getString("endTime"));
-        strBuilder.append("'");
-
+        strBuilder.append("' order by eventDate desc");
         if (params.containsKey("pageSize")) {
             int pageSize = params.getInteger("pageSize");
             if (count <= pageSize) {
