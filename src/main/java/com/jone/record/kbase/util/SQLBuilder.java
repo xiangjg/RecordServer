@@ -783,9 +783,9 @@ public class SQLBuilder {
 
     public static String GenerateChronicleEventsNumsQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select count(*) as total from DPM_CHRONICLEVENTS where eventTime>'");
+        strBuilder.append("select count(*) as total from DPM_CHRONICLEVENTS where eventDate>'");
         strBuilder.append(params.getString("startTime"));
-        strBuilder.append("' and eventTime<'");
+        strBuilder.append("' and eventDate<'");
         strBuilder.append(params.getString("endTime"));
         strBuilder.append("'");
         return strBuilder.toString().toUpperCase();
@@ -793,9 +793,10 @@ public class SQLBuilder {
 
     public static String GenerateChronicleEventsQuerySQL(JSONObject params, int count) {
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("select ID,TITLE,EventDATE,EVENT from DPM_CHRONICLEVENTS where eventTime>'");
+        // ID,TITLE,EVENTDATE,EVENT
+        strBuilder.append("select ID,TITLE,EVENTDATE,EVENT from DPM_CHRONICLEVENTS where eventDate>'");
         strBuilder.append(params.getString("startTime"));
-        strBuilder.append("' and eventTime<'");
+        strBuilder.append("' and eventDate<'");
         strBuilder.append(params.getString("endTime"));
         strBuilder.append("'");
 
@@ -822,7 +823,7 @@ public class SQLBuilder {
         } else {
             strBuilder.append(" limit 0,10");
         }
-        return strBuilder.toString().toUpperCase();
+        return strBuilder.toString();
     }
 
 

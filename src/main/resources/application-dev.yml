@@ -35,9 +35,9 @@ spring:
 kbase:
   coverPath: 124.193.98.166:8386      # 书籍相关附件IP
   driverclass: com.kbase.jdbc.Driver
-  # url: jdbc:kbase://124.193.98.166:8382    # 10.140.128.128:4567
+  url: jdbc:kbase://124.193.98.166:8382    # 10.140.128.128:4567
   # url: jdbc:kbase://10.140.128.128:4567
-  url: jdbc:kbase://127.0.0.1:4567
+  # url: jdbc:kbase://127.0.0.1:4567
   username: dbown
   password:
 #  file
