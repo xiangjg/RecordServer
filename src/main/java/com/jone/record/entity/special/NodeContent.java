@@ -18,6 +18,7 @@ public class NodeContent implements Serializable {
     private String detail;
     private String content;
     private Integer  order;
+    private String ident;
     private List<FileEntity> files;
 
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
@@ -108,6 +109,14 @@ public class NodeContent implements Serializable {
 
     public void setFiles(List<FileEntity> files) {
         this.files = files;
+    }
+    @Transient
+    public String getIdent() {
+        return ident;
+    }
+
+    public void setIdent(String ident) {
+        this.ident = ident;
     }
 
     @Override
