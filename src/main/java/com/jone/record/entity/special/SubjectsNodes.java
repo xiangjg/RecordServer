@@ -18,6 +18,7 @@ public class SubjectsNodes implements Serializable, Comparable<SubjectsNodes> {
     private String name;
     private Integer order;
     private String img;
+    private String ident;
     private List<NodeContent> listContent;
     private List<FileEntity> files;
 
@@ -117,6 +118,14 @@ public class SubjectsNodes implements Serializable, Comparable<SubjectsNodes> {
 
     public void setFiles(List<FileEntity> files) {
         this.files = files;
+    }
+    @Transient
+    public String getIdent() {
+        return ident;
+    }
+
+    public void setIdent(String ident) {
+        this.ident = ident;
     }
 
     @Override
