@@ -21,6 +21,8 @@ import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Common {
 
@@ -88,6 +90,17 @@ public class Common {
                     if (strKey.equals("SYS_FLD_FILEPATH") || strKey.equals("SYS_FLD_COVERPATH")) {
                         strValue = strValue.replace('\\', '/');
                         strValue = Common.GetFilePath() + strValue;
+                    } else if (strKey.equals("CONTENT")) {
+                        String reg = "[0-9a-z]{32}\\.[a-zA-z]{3}";
+                        Pattern patten = Pattern.compile(reg);//编译正则表达式
+                        Matcher matcher = patten.matcher(strValue);// 指定要匹配的字符串
+                        while (matcher.find()) { //此处find（）每次被调用后，会偏移到下一个匹配
+                            String strText = matcher.group();
+                            String img = GetIamgeFiles(strText);
+                            strText = String.format("{%s}", strText);
+                            String strImg = String.format("<img src=\"%s\">", img);
+                            strValue = strValue.replace(strText, strImg);
+                        }
                     }
                     jsonObject.put(strKey, strValue);
                 }
@@ -449,5 +462,111 @@ public class Common {
         return jsonArray;
     }
 
+    public static JSONArray JournalResetToJSONArray(ResultSet rst) {
+        JSONArray jsonArray = new JSONArray(new LinkedList<>());
+        try {
+            ResultSetMetaData rsMetaData = rst.getMetaData();
+            int column = rsMetaData.getColumnCount();
+            String strKey = "";
+            String strValue = "";
+            while (rst.next()) {
+                JSONObject jsonObject = new JSONObject(new LinkedHashMap());
+                for (int i = 1; i <= column; i++) {
+                    strKey = rsMetaData.getColumnName(i);
+                    strValue = rst.getString(strKey);
+                    if (strKey.equals("NAME")) {
+                        jsonObject.put("title", strValue);
+                    } else if (strKey.equals("SYS_FLD_DOI")) {
+                        jsonObject.put("guid", strValue);
+                    } else if (strKey.equals("BASEID")) {
+                        jsonObject.put("code", strValue);
+                    } else if (strKey.equals("PARENTDOI")) {
+                        jsonObject.put("parentGuid", strValue);
+                    } else if (strKey.equals("SYS_SYSID")) {
+                        jsonObject.put("id", strValue);
+                    }
+                }
+                jsonArray.add(jsonObject);
+            }
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonArray;
+    }
 
+    public static JSONArray GetResultSetToJsonObject(ResultSet rst) {
+        String strContent = "";
+        ResultSetMetaData metaData = null;
+        int columnCount = 0;    // 获取列数
+        JSONArray jsonArr = new JSONArray(new LinkedList<>());
+        try {
+            metaData = rst.getMetaData();
+            columnCount = metaData.getColumnCount();
+            while (rst.next()) {
+                JSONObject jsonObj = new JSONObject(new LinkedHashMap());
+                for (int i = 1; i <= columnCount; i++) {   // 遍历每一列
+                    String columnName = metaData.getColumnName(i);
+                    String value = rst.getString(columnName);
+                    if (columnName.equals("ACCESSORIES")) {
+                        columnName = "COVERPATH";
+                        if (!value.isEmpty()) {
+                            value = Common.GetIamgeFiles(value);
+                        }
+                    }
+                    jsonObj.put(columnName, value);
+                }
+                jsonArr.add(jsonObj);
+            }
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonArr;
+    }
+
+    public static JSONObject GetPagedQueryObjectInfo(String strSQL, int pageSize) {
+        Connection _con = KBaseCon.GetInitConnect();
+        JSONObject titleObject = new JSONObject(new LinkedMap());
+        Statement state = null;
+        ResultSet rst = null;
+        try {
+            state = _con.createStatement();
+            rst = state.executeQuery(strSQL);
+            String key = "total";
+            int value = 0;
+            while (rst.next()) {
+                value = rst.getInt("total");
+            }
+            if (0 == value) {
+                return null;
+            }
+            titleObject.put(key, value);
+
+            int page = 0;
+            if (value <= pageSize) {
+                page = 1;
+            } else {
+                if (value % pageSize > 0)
+                    page = (value / pageSize) + 1;
+                else
+                    page = value / pageSize;
+            }
+            titleObject.put("pages", page);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        } finally {
+            try {
+                if (null != rst) {
+                    rst.close();
+                    rst = null;
+                }
+                if (null != state) {
+                    state.close();
+                    state = null;
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        return titleObject;
+    }
 }

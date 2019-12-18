@@ -28,82 +28,6 @@ public class KBaseExecute {
         super();
     }
 
-    private JSONArray GetResultSetToJsonObject(ResultSet rst) {
-        String strContent = "";
-        ResultSetMetaData metaData = null;
-        int columnCount = 0;    // 获取列数
-        JSONArray jsonArr = new JSONArray(new LinkedList<>());
-        try {
-            metaData = rst.getMetaData();
-            columnCount = metaData.getColumnCount();
-            while (rst.next()) {
-                JSONObject jsonObj = new JSONObject(new LinkedHashMap());
-                for (int i = 1; i <= columnCount; i++) {   // 遍历每一列
-                    String columnName = metaData.getColumnName(i);
-                    String value = rst.getString(columnName);
-                    if (columnName.equals("ACCESSORIES")) {
-                        columnName = "COVERPATH";
-                        if (!value.isEmpty()) {
-                            value = Common.GetIamgeFiles(value);
-                        }
-                    }
-                    jsonObj.put(columnName, value);
-                }
-                jsonArr.add(jsonObj);
-            }
-        } catch (Exception e) {
-            loger.error("{}", e);
-        }
-        return jsonArr;
-    }
-
-    private JSONObject GetPagedQueryObjectInfo(String strSQL, int pageSize) {
-        Connection _con = KBaseCon.GetInitConnect();
-        JSONObject titleObject = new JSONObject(new LinkedMap());
-        Statement state = null;
-        ResultSet rst = null;
-        try {
-            state = _con.createStatement();
-            rst = state.executeQuery(strSQL);
-            String key = "total";
-            int value = 0;
-            while (rst.next()) {
-                value = rst.getInt("total");
-            }
-            if (0 == value) {
-                return null;
-            }
-            titleObject.put(key, value);
-
-            int page = 0;
-            if (value <= pageSize) {
-                page = 1;
-            } else {
-                if (value % pageSize > 0)
-                    page = (value / pageSize) + 1;
-                else
-                    page = value / pageSize;
-            }
-            titleObject.put("pages", page);
-        } catch (Exception e) {
-            loger.error("{}", e);
-        } finally {
-            try {
-                if (null != rst) {
-                    rst.close();
-                    rst = null;
-                }
-                if (null != state) {
-                    state.close();
-                    state = null;
-                }
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return titleObject;
-    }
-
     /**************************************************************/
     public JSONObject GetBooksNums(JSONObject jsonObject) {
         Connection _con = KBaseCon.GetInitConnect();
@@ -184,7 +108,7 @@ public class KBaseExecute {
             pageSize = 10;
         }
 
-        titleObject = GetPagedQueryObjectInfo(strSQL, pageSize);
+        titleObject = Common.GetPagedQueryObjectInfo(strSQL, pageSize);
         int total = titleObject.getInteger("total");
 
         // 获取分页查询信息SQL
@@ -294,9 +218,7 @@ public class KBaseExecute {
         if (params.containsKey("type")) {
             String type = params.getString("type");
             if (type.equals("3")) {
-                JSONArray jsonArray = new JSONArray(new LinkedList<>());
-                jsonArray = GetJournalReadCatalog(params);
-                jsonObject.put("catalog", jsonArray);
+                jsonObject = GetJournalReadCatalog(params);
             } else {
                 jsonObject = GetReadCatalogs(params);
             }
@@ -384,7 +306,7 @@ public class KBaseExecute {
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
-            jsonArray = GetResultSetToJsonObject(rst);
+            jsonArray = Common.GetResultSetToJsonObject(rst);
         } catch (Exception e) {
             loger.error("{}", e);
         }
@@ -685,22 +607,40 @@ public class KBaseExecute {
     }
 
 
-    public JSONArray GetJournalReadCatalog(JSONObject params) {
-        String strSQL = SQLBuilder.GenerateJournalReadCatalogQuerySQL(params);
+    public JSONObject GetJournalReadCatalog(JSONObject params) {
+        JSONObject jsonObject = new JSONObject(new LinkedHashMap<>());
+        Connection _con = KBaseCon.GetInitConnect();
+        String strSQL = SQLBuilder.GenerateJournalReadCatalogNumsQuerySQL(params);
         if (strSQL.isEmpty()) {
             loger.error("构建查询单期期刊阅读目录信息SQL语句失败！");
             return null;
         }
-        JSONArray jsonArray = new JSONArray(new LinkedList<>());
-        Connection _con = KBaseCon.GetInitConnect();
+        int count = 0;
         try {
             Statement state = _con.createStatement();
             ResultSet rst = state.executeQuery(strSQL);
-            jsonArray = Common.ResultSetToJSONArray(rst);
+            while (rst.next()) {
+                count = rst.getInt("total");
+            }
+            jsonObject.put("max", count);
         } catch (Exception e) {
             loger.error("{}", e);
         }
-        return jsonArray;
+
+        strSQL = SQLBuilder.GenerateJournalReadCatalogQuerySQL(params);
+        if (strSQL.isEmpty()) {
+            loger.error("构建查询单期期刊阅读目录信息SQL语句失败！");
+            return null;
+        }
+        try {
+            Statement state = _con.createStatement();
+            ResultSet rst = state.executeQuery(strSQL);
+            JSONArray jsonArray = Common.JournalResetToJSONArray(rst);
+            jsonObject.put("catalog", jsonArray);
+        } catch (Exception e) {
+            loger.error("{}", e);
+        }
+        return jsonObject;
     }
 
     /**

@@ -27,7 +27,7 @@ public class SQLBuilder {
         if (params.containsKey("keyword")) {
             strKeyword = params.getString("keyword");
             if (!strKeyword.isEmpty()) {
-                strBuilder.append(" where title % '");
+                strBuilder.append(" where title = '");
                 strBuilder.append(strKeyword);
                 strBuilder.append("'");
             }
@@ -63,7 +63,7 @@ public class SQLBuilder {
         // 添加查询条件
         if (params.containsKey("keyword")) {
             if (!params.getString("keyword").isEmpty()) {
-                strBuilder.append(" where title % '");
+                strBuilder.append(" where title = '");
                 strBuilder.append(params.getString("keyword"));
                 strBuilder.append("'");
             }
@@ -395,7 +395,7 @@ public class SQLBuilder {
         if (params.containsKey("year")) {
             String year = params.getString("year");
             if (!year.isEmpty()) {
-                strBuilder.append("where name % '");
+                strBuilder.append("where name = '");
                 strBuilder.append(year);
                 strBuilder.append("'");
             }
@@ -417,7 +417,7 @@ public class SQLBuilder {
         if (params.containsKey("year")) {
             String year = params.getString("year");
             if (!year.isEmpty()) {
-                strBuilder.append("where name % '");
+                strBuilder.append("where name = '");
                 strBuilder.append(year);
                 strBuilder.append("'");
             }
@@ -460,7 +460,7 @@ public class SQLBuilder {
         if (params.containsKey("keyword")) {
             String keyword = params.getString("keyword");
             if (!keyword.isEmpty()) {
-                strBuilder.append(" where CNAME % '");
+                strBuilder.append(" where CNAME = '");
                 strBuilder.append(keyword);
                 strBuilder.append("'");
             }
@@ -478,7 +478,7 @@ public class SQLBuilder {
         if (params.containsKey("keyword")) {
             String strKeyword = params.getString("keyword");
             if (!strKeyword.isEmpty()) {
-                strBuilder.append(" where CNAME % '");
+                strBuilder.append(" where CNAME = '");
                 strBuilder.append(strKeyword);
                 strBuilder.append("'");
             }
@@ -572,6 +572,8 @@ public class SQLBuilder {
                 strBuilder.append("'");
             }
         }
+        // 添加排序
+        strBuilder.append(" order by year desc ");
         // 添加分页
         if (params.containsKey("pageSize")) {
             int pageSize = params.getInteger("pageSize");
@@ -623,9 +625,19 @@ public class SQLBuilder {
         return strBuilder.toString().toUpperCase();
     }
 
+    public static String GenerateJournalReadCatalogNumsQuerySQL(JSONObject params){
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("select count(*) as total from DPM_JOURNALARTICLE where BASEID=");
+        strBuilder.append(params.getString("code"));
+        strBuilder.append("' and PARENTDOI='");
+        strBuilder.append(params.getString("id"));
+        strBuilder.append("'");
+        return  strBuilder.toString().toUpperCase();
+    }
+
     public static String GenerateJournalReadCatalogQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
-        String strFields = "NAME,SYS_FLD_DOI,BASEID,PARENTDOI";
+        String strFields = "NAME,SYS_FLD_DOI,BASEID,PARENTDOI,SYS_SYSID";
         strBuilder.append("select ");
         strBuilder.append(strFields);
         strBuilder.append(" from DPM_JOURNALARTICLE where BASEID='");
@@ -654,7 +666,7 @@ public class SQLBuilder {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("select count(*) as count from ");
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
-        strBuilder.append(" where title % '");
+        strBuilder.append(" where title = '");
         strBuilder.append(params.getString("keyword"));
         strBuilder.append("' GROUP by PARENTDOI");
         return strBuilder.toString().toUpperCase();
@@ -668,15 +680,28 @@ public class SQLBuilder {
         strBuilder.append(strFields);
         strBuilder.append(" from ");
         strBuilder.append(ECatalogTableInfo.GetTableNameByCode(params.getString("type")));
+        // 添加关键词条件
+        String keyword = "";
         if (params.containsKey("keyword")) {
-            String keyword = params.getString("keyword");
+            keyword = params.getString("keyword");
             if (!keyword.isEmpty()) {
-                strBuilder.append(" where title % '");
+                strBuilder.append(" where title = '");
                 strBuilder.append(keyword);
                 strBuilder.append("'");
             }
         }
-
+        String strType = params.getString("type");
+        if (strType.equals("4") || strType.equals("1")) {
+            if (keyword.isEmpty()) {
+                strBuilder.append(" where BOOKCODE='");
+                strBuilder.append(strType);
+                strBuilder.append("'");
+            } else {
+                strBuilder.append(" and BOOKCODE='");
+                strBuilder.append(strType);
+                strBuilder.append("'");
+            }
+        }
         strBuilder.append(" order by PARENTDOI");
         return strBuilder.toString().toUpperCase();
     }
@@ -688,7 +713,7 @@ public class SQLBuilder {
         strBuilder.append(strFields);
         strBuilder.append(" from ");
         strBuilder.append(params.getString("type"));
-        strBuilder.append(" where title % '");
+        strBuilder.append(" where title = '");
         strBuilder.append(params.getString("keyword"));
         strBuilder.append("'");
         return strBuilder.toString().toUpperCase();
@@ -704,7 +729,7 @@ public class SQLBuilder {
             if (!strKeyword.isEmpty()) {
                 strBuilder.append(" where ");
                 strBuilder.append(EFullTextField.GetFieldByCode(params.getString("type")));
-                strBuilder.append(" % '");
+                strBuilder.append(" = '");
                 strBuilder.append(strKeyword);
                 strBuilder.append("'");
             }
@@ -740,7 +765,7 @@ public class SQLBuilder {
             if (!strKeyword.isEmpty()) {
                 strBuilder.append(" where ");
                 strBuilder.append(EFullTextField.GetFieldByCode(params.getString("type")));
-                strBuilder.append(" % '");
+                strBuilder.append(" = '");
                 strBuilder.append(strKeyword);
                 strBuilder.append("'");
             }
@@ -798,7 +823,7 @@ public class SQLBuilder {
         strBuilder.append(params.getString("startTime"));
         strBuilder.append("' and eventDate<'");
         strBuilder.append(params.getString("endTime"));
-        strBuilder.append("' order by eventDate desc");
+        strBuilder.append("' order by eventDate");
         if (params.containsKey("pageSize")) {
             int pageSize = params.getInteger("pageSize");
             if (count <= pageSize) {
@@ -838,7 +863,7 @@ public class SQLBuilder {
             if (!strKeyword.isEmpty()) {
                 strBuilder.append(" and ");
                 strBuilder.append(EFullTextField.GetFieldByCode(params.getString("type")));
-                strBuilder.append(" % '");
+                strBuilder.append(" = '");
                 strBuilder.append(strKeyword);
                 strBuilder.append("'");
             }
@@ -861,7 +886,7 @@ public class SQLBuilder {
             if (!strKeyword.isEmpty()) {
                 strBuilder.append(" and ");
                 strBuilder.append(EFullTextField.GetFieldByCode(params.getString("type")));
-                strBuilder.append(" % '");
+                strBuilder.append(" = '");
                 strBuilder.append(strKeyword);
                 strBuilder.append("'");
             }

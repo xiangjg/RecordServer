@@ -412,8 +412,8 @@ public class kbaseController extends BaseController {
     @ApiOperation(value = "查询单期期刊的阅读目录信息", notes = "输入JSONObject对象，期刊号-code，期刊的GUID-id")
     public void GetJournalReadCatalog(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
-            JSONArray jsonArray = kbaseTools.GetJournalReadCatalog(params);
-            printJson(ResultUtil.success(jsonArray), response);
+            JSONObject jsonObject = kbaseTools.GetJournalReadCatalog(params);
+            printJson(ResultUtil.success(jsonObject), response);
         } catch (Exception e) {
             loger.error("{}", e);
             printJson(ResultUtil.error(-1, e.getMessage()), response);
