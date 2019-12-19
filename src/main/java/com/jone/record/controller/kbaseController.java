@@ -79,7 +79,7 @@ public class kbaseController extends BaseController {
      * 检索标题，title：根据书名进行检索。
      */
     @RequestMapping(value = "/GetBooksInfo", method = RequestMethod.POST, produces = "application/json; charset=utf-8")
-    @ApiOperation(value = "根据标题获取书籍列表信息", notes = "输入JSONObject参数：资源类型type，上下架state，显示页码page，每页显示数量pageSize,检索标题title")
+    @ApiOperation(value = "根据标题获取书籍列表信息", notes = "输入JSONObject参数：资源类型-type,上下架-state,检索标题-keyword,显示页码-page,每页显示数量-pageSize")
     public void GetBooksInfo(@RequestBody JSONObject params, HttpServletResponse response) {
         try {
             JSONObject jsonObject = kbaseTools.GetBooksInfo(params);

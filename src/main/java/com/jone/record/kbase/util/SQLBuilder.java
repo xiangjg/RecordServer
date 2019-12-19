@@ -213,29 +213,33 @@ public class SQLBuilder {
         }
         // 分页查询显示 默认 第1页，每页10条
         strBuilder.append(" limit ");
-        if (params.getString("page").isEmpty()) {
-            if (params.getString("pageSize").isEmpty()) {
-                strBuilder.append("0,10");
+        if (params.containsKey("page")) {
+            if (params.getString("page").isEmpty()) {
+                if (params.getString("pageSize").isEmpty()) {
+                    strBuilder.append("0,10");
+                } else {
+                    strBuilder.append("0,");
+                    strBuilder.append(params.getString("pageSize"));
+                }
             } else {
-                strBuilder.append("0,");
-                strBuilder.append(params.getString("pageSize"));
+                int page = Integer.parseInt(params.getString("page"));
+                int pageSize = Integer.parseInt(params.getString("pageSize"));
+                if (pageSize == 0) {
+                    strBuilder.append("0,10");
+                    strBuilder.append(",10");
+                } else {
+                    String strPage = "";
+                    if (page > 0) strPage = String.format("%d", (page - 1) * pageSize);
+                    else {
+                        strPage = "0";
+                    }
+                    strBuilder.append(strPage);
+                    strBuilder.append(",");
+                    strBuilder.append(pageSize);
+                }
             }
         } else {
-            int page = Integer.parseInt(params.getString("page"));
-            int pageSize = Integer.parseInt(params.getString("pageSize"));
-            if (pageSize == 0) {
-                strBuilder.append("0,10");
-                strBuilder.append(",10");
-            } else {
-                String strPage = "";
-                if (page > 0) strPage = String.format("%d", (page - 1) * pageSize);
-                else {
-                    strPage = "0";
-                }
-                strBuilder.append(strPage);
-                strBuilder.append(",");
-                strBuilder.append(pageSize);
-            }
+            strBuilder.append("0,10");
         }
         return strBuilder.toString().toUpperCase();
     }
@@ -271,7 +275,6 @@ public class SQLBuilder {
             int pageSize = Integer.parseInt(params.getString("pageSize"));
             if (pageSize == 0) {
                 strBuilder.append("0,10");
-                strBuilder.append(",10");
             } else {
                 String strPage = "";
                 if (page > 0) strPage = String.format("%d", (page - 1) * pageSize);
@@ -625,14 +628,14 @@ public class SQLBuilder {
         return strBuilder.toString().toUpperCase();
     }
 
-    public static String GenerateJournalReadCatalogNumsQuerySQL(JSONObject params){
+    public static String GenerateJournalReadCatalogNumsQuerySQL(JSONObject params) {
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("select count(*) as total from DPM_JOURNALARTICLE where BASEID=");
         strBuilder.append(params.getString("code"));
         strBuilder.append("' and PARENTDOI='");
         strBuilder.append(params.getString("id"));
         strBuilder.append("'");
-        return  strBuilder.toString().toUpperCase();
+        return strBuilder.toString().toUpperCase();
     }
 
     public static String GenerateJournalReadCatalogQuerySQL(JSONObject params) {
