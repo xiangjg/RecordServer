@@ -76,7 +76,7 @@ public class UserCenterServiceImpl implements UserCenterService {
         CenterMsg centerMsg = centerMsgDao.findById(msgId).orElse(null);
         if(centerMsg==null)
             throw new Exception("不存在此消息ID");
-        if(!userInfo.getUserId().equals(centerMsg.getToId()))
+        if(!userInfo.getUserId().toString().equals(centerMsg.getToId()))
             throw new Exception("不能阅读给别人的信息");
         centerMsg.setReadDt(new Date());
         centerMsg.setState(Definition.TYPE_MSG_READ);
