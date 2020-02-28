@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface CenterMsgDao extends JpaSpecificationExecutor<CenterMsg>,JpaRepository<CenterMsg, Integer> {
 
-    List<CenterMsg> findByToId(Integer userId);
+    List<CenterMsg> findByToId(String userId);
+    List<CenterMsg> findByToIdAndStateNot(String userId, Integer state);
 }

@@ -43,6 +43,8 @@ public interface UserCenterService {
      */
     void deleteCenterMsg(Integer msgId, UserInfo userInfo)throws Exception;
 
+    List<CenterMsg> listNotDel(String userId) throws Exception;
+
     PageVo<CenterFavorite> listByState(Integer state, int page, int size, UserInfo userInfo) throws Exception;
 
     CenterFavorite saveCenterFavorite(CenterFavorite centerFavorite, UserInfo userInfo) throws Exception;

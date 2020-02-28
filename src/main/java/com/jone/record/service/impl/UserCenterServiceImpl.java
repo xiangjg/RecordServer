@@ -95,6 +95,11 @@ public class UserCenterServiceImpl implements UserCenterService {
     }
 
     @Override
+    public List<CenterMsg> listNotDel(String userId) throws Exception {
+        return centerMsgDao.findByToIdAndStateNot(userId, Definition.TYPE_MSG_DELETE);
+    }
+
+    @Override
     public PageVo<CenterFavorite> listByState(Integer state, int page, int size, UserInfo userInfo) throws Exception {
         Specification specification = new Specification<CenterFavorite>() {
             @Override
