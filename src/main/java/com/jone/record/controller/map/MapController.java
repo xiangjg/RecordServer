@@ -96,6 +96,8 @@ public class MapController extends BaseController {
                 shareEntities.setCreator(userInfo.getUserId().toString());
                 shareEntities.setInsertDt(new Date());
                 shareEntities.setState(0);
+                shareEntities.setAuditId(null);
+                shareEntities.setAuditDt(null);
                 shareEntities = mapService.save(shareEntities);
                 printJson(ResultUtil.success(shareEntities), response);
             }

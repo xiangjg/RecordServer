@@ -87,6 +87,10 @@ public class MapServiceImpl implements MapService {
 
     @Override
     public void deleteShareEntity(Integer id) throws Exception {
-        shareEntityDao.deleteById(id);
+        ShareEntity shareEntity = shareEntityDao.findById(id).orElse(null);
+        if(shareEntity == null)
+            throw new Exception("不存在该记录ID");
+        shareEntity.setState(-1);
+        shareEntityDao.save(shareEntity);
     }
 }
