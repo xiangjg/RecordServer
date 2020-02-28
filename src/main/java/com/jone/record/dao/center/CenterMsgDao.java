@@ -10,4 +10,5 @@ public interface CenterMsgDao extends JpaSpecificationExecutor<CenterMsg>,JpaRep
 
     List<CenterMsg> findByToId(String userId);
     List<CenterMsg> findByToIdAndStateNot(String userId, Integer state);
+    List<CenterMsg> findByToIdAndState(String userId, Integer state);
 }

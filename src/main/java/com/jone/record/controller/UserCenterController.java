@@ -63,6 +63,23 @@ public class UserCenterController extends BaseController {
             printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
+    @RequestMapping(value = "/msg/listNotRead", method = RequestMethod.POST)
+    @ApiOperation(value = "获取我的消息列表(未读)", notes = "")
+    @SystemControllerLog(description = "获取消息列表(未读)")
+    public void listNotRead(HttpServletRequest request, HttpServletResponse response) {
+        try {
+            UserInfo userInfo = getRedisUser(request, redisDao);
+            if (null == userInfo) {
+                printJson(ResultUtil.error(-2, "用户登录没有登录,或session过期"), response);
+            } else {
+                List<CenterMsg> centerMsgList = userCenterService.listNotRead(userInfo.getUserId().toString());
+                printJson(ResultUtil.success(centerMsgList), response);
+            }
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
     @RequestMapping(value = "/msg/save", method = RequestMethod.POST)
     @ApiOperation(value = "保存消息", notes = "输入toId,type,title,body")
     @SystemControllerLog(description = "保存消息")

@@ -110,6 +110,11 @@ public class UserCenterServiceImpl implements UserCenterService {
     }
 
     @Override
+    public List<CenterMsg> listNotRead(String userId) throws Exception {
+        return centerMsgDao.findByToIdAndState(userId, Definition.TYPE_MSG_NO_READ);
+    }
+
+    @Override
     public PageVo<CenterFavorite> listByState(Integer state, int page, int size, UserInfo userInfo) throws Exception {
         Specification specification = new Specification<CenterFavorite>() {
             @Override
