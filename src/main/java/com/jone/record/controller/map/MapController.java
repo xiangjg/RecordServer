@@ -11,15 +11,13 @@ import com.jone.record.util.ResultUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -46,7 +44,7 @@ public class MapController extends BaseController {
 
     @RequestMapping(value = "/savePois", method = RequestMethod.POST)
     @ApiOperation(value = "保存兴趣点", notes = "")
-    public void savePois(@RequestParam PoisEntity poisEntities, HttpServletRequest request, HttpServletResponse response) {
+    public void savePois(@RequestBody PoisEntity poisEntities, HttpServletRequest request, HttpServletResponse response) {
         try {
             UserInfo userInfo = getRedisUser(request, redisDao);
             if (null == userInfo) {
@@ -89,16 +87,39 @@ public class MapController extends BaseController {
 
     @RequestMapping(value = "/saveShare", method = RequestMethod.POST)
     @ApiOperation(value = "保存共享", notes = "")
-    public void saveShare(@RequestParam ShareEntity shareEntities, HttpServletResponse response) {
+    public void saveShare(@RequestBody ShareEntity shareEntities, HttpServletRequest request, HttpServletResponse response) {
         try {
-            shareEntities = mapService.save(shareEntities);
-            printJson(ResultUtil.success(shareEntities), response);
+            UserInfo userInfo = getRedisUser(request, redisDao);
+            if (null == userInfo) {
+                printJson(ResultUtil.error(-2, "用户登录没有登录,或session过期"), response);
+            } else {
+                shareEntities.setCreator(userInfo.getUserId().toString());
+                shareEntities.setInsertDt(new Date());
+                shareEntities.setState(0);
+                shareEntities = mapService.save(shareEntities);
+                printJson(ResultUtil.success(shareEntities), response);
+            }
         } catch (Exception e) {
             logger.error("{}", e);
             printJson(ResultUtil.error(-1, e.getMessage()), response);
         }
     }
-
+    @RequestMapping(value = "/auditShare", method = RequestMethod.POST)
+    @ApiOperation(value = "审核共享信息", notes = "")
+    public void auditShare(@RequestParam Integer shareId, @RequestParam Integer state, HttpServletRequest request, HttpServletResponse response) {
+        try {
+            UserInfo userInfo = getRedisUser(request, redisDao);
+            if (null == userInfo) {
+                printJson(ResultUtil.error(-2, "用户登录没有登录,或session过期"), response);
+            } else {
+                ShareEntity shareEntities = mapService.auditShare(shareId, state, userInfo);
+                printJson(ResultUtil.success(shareEntities), response);
+            }
+        } catch (Exception e) {
+            logger.error("{}", e);
+            printJson(ResultUtil.error(-1, e.getMessage()), response);
+        }
+    }
     @RequestMapping(value = "/deleteShare", method = RequestMethod.POST)
     @ApiOperation(value = "删除共享", notes = "")
     public void deleteShare(@RequestParam Integer id, HttpServletResponse response) {

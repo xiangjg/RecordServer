@@ -52,7 +52,7 @@ public class ShareEntity implements Serializable {
     }
 
     @Basic
-    @Column(name = "desc")
+    @Column(name = "_desc")
     public String getDesc() {
         return desc;
     }

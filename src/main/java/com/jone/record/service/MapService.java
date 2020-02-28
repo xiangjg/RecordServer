@@ -3,6 +3,7 @@ package com.jone.record.service;
 import com.jone.record.entity.map.PoisEntity;
 import com.jone.record.entity.map.ShareEntity;
 import com.jone.record.entity.special.NodeContent;
+import com.jone.record.entity.vo.UserInfo;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
@@ -18,6 +19,8 @@ public interface MapService {
     List<ShareEntity> listShareByState(Integer state) throws Exception;
 
     ShareEntity save(ShareEntity shareEntity) throws Exception;
+
+    ShareEntity auditShare(Integer shareId, Integer state, UserInfo user) throws Exception;
 
     void deleteShareEntity(Integer id) throws Exception;
 }
