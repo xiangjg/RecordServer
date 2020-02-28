@@ -33,7 +33,7 @@ public interface UserCenterService {
      * @param userInfo 登录用户信息
      * @throws Exception
      */
-    void readMsg(Integer msgId, UserInfo userInfo)throws Exception;
+    void readMsg(Integer[] msgId, UserInfo userInfo)throws Exception;
 
     /**
      * 删除消息
@@ -41,7 +41,7 @@ public interface UserCenterService {
      * @param userInfo 登录用户信息
      * @throws Exception
      */
-    void deleteCenterMsg(Integer msgId, UserInfo userInfo)throws Exception;
+    void deleteCenterMsg(Integer[] msgId, UserInfo userInfo)throws Exception;
 
     List<CenterMsg> listNotDel(String userId) throws Exception;
 

@@ -72,26 +72,36 @@ public class UserCenterServiceImpl implements UserCenterService {
     }
     @Transactional
     @Override
-    public void readMsg(Integer msgId, UserInfo userInfo) throws Exception {
-        CenterMsg centerMsg = centerMsgDao.findById(msgId).orElse(null);
-        if(centerMsg==null)
-            throw new Exception("不存在此消息ID");
-        if(!userInfo.getUserId().toString().equals(centerMsg.getToId()))
-            throw new Exception("不能阅读给别人的信息");
-        centerMsg.setReadDt(new Date());
-        centerMsg.setState(Definition.TYPE_MSG_READ);
-        centerMsgDao.save(centerMsg);
+    public void readMsg(Integer[] msgId, UserInfo userInfo) throws Exception {
+        List<CenterMsg> list = new ArrayList<>();
+        for (Integer Id:msgId
+             ) {
+            CenterMsg centerMsg = centerMsgDao.findById(Id).orElse(null);
+            if(centerMsg==null)
+                throw new Exception("不存在此消息ID");
+            if(!userInfo.getUserId().toString().equals(centerMsg.getToId()))
+                throw new Exception("不能阅读给别人的信息");
+            centerMsg.setReadDt(new Date());
+            centerMsg.setState(Definition.TYPE_MSG_READ);
+            list.add(centerMsg);
+        }
+        centerMsgDao.saveAll(list);
     }
     @Transactional
     @Override
-    public void deleteCenterMsg(Integer msgId, UserInfo userInfo) throws Exception {
-        CenterMsg centerMsg = centerMsgDao.findById(msgId).orElse(null);
-        if(centerMsg==null)
-            throw new Exception("不存在此消息ID");
-        if(!userInfo.getUserId().toString().equals(centerMsg.getToId()))
-            throw new Exception("不能删除给别人的信息");
-        centerMsg.setState(Definition.TYPE_MSG_DELETE);
-        centerMsgDao.save(centerMsg);
+    public void deleteCenterMsg(Integer[] msgId, UserInfo userInfo) throws Exception {
+        List<CenterMsg> list = new ArrayList<>();
+        for (Integer id:msgId
+             ) {
+            CenterMsg centerMsg = centerMsgDao.findById(id).orElse(null);
+            if(centerMsg==null)
+                throw new Exception("不存在此消息ID");
+            if(!userInfo.getUserId().toString().equals(centerMsg.getToId()))
+                throw new Exception("不能删除给别人的信息");
+            centerMsg.setState(Definition.TYPE_MSG_DELETE);
+            list.add(centerMsg);
+        }
+        centerMsgDao.saveAll(list);
     }
 
     @Override

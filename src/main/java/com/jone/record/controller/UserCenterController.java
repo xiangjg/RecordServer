@@ -85,7 +85,7 @@ public class UserCenterController extends BaseController {
     @RequestMapping(value = "/msg/read", method = RequestMethod.POST)
     @ApiOperation(value = "阅读消息", notes = "输入msgId")
     @SystemControllerLog(description = "阅读消息")
-    public void readMsg(@RequestParam Integer msgId, HttpServletRequest request, HttpServletResponse response) {
+    public void readMsg(@RequestParam Integer[] msgId, HttpServletRequest request, HttpServletResponse response) {
         try {
             UserInfo userInfo = getRedisUser(request, redisDao);
             if (null == userInfo) {
@@ -103,7 +103,7 @@ public class UserCenterController extends BaseController {
     @RequestMapping(value = "/msg/del", method = RequestMethod.POST)
     @ApiOperation(value = "删除消息", notes = "输入msgId")
     @SystemControllerLog(description = "删除消息")
-    public void delete(@RequestParam Integer msgId, HttpServletRequest request, HttpServletResponse response) {
+    public void delete(@RequestParam Integer[] msgId, HttpServletRequest request, HttpServletResponse response) {
         try {
             UserInfo userInfo = getRedisUser(request, redisDao);
             if (null == userInfo) {
