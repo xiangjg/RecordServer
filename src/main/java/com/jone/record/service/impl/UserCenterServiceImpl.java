@@ -43,7 +43,7 @@ public class UserCenterServiceImpl implements UserCenterService {
             public Predicate toPredicate(Root<CenterMsg> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
                 if (userId != null)
-                    predicates.add(criteriaBuilder.equal(root.get("toId"), userId));
+                    predicates.add(criteriaBuilder.equal(root.get("toId"), userId.toString()));
                 if (state != null)
                     predicates.add(criteriaBuilder.equal(root.get("state"), state));
                 if (type != null)
@@ -120,7 +120,7 @@ public class UserCenterServiceImpl implements UserCenterService {
             @Override
             public Predicate toPredicate(Root<CenterFavorite> root, CriteriaQuery<?> criteriaQuery, CriteriaBuilder criteriaBuilder) {
                 List<Predicate> predicates = new ArrayList<>();
-                predicates.add(criteriaBuilder.equal(root.get("uid"), userInfo.getUserId()));
+                predicates.add(criteriaBuilder.equal(root.get("uid"), userInfo.getUserId().toString()));
                 if (state != null)
                     predicates.add(criteriaBuilder.equal(root.get("state"), state));
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
