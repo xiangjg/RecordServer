@@ -44,8 +44,13 @@ public class UserCenterServiceImpl implements UserCenterService {
                 List<Predicate> predicates = new ArrayList<>();
                 if (userId != null)
                     predicates.add(criteriaBuilder.equal(root.get("toId"), userId.toString()));
-                if (state != null)
-                    predicates.add(criteriaBuilder.equal(root.get("state"), state));
+                if (state != null){
+                    if(state == 2){
+                        predicates.add(criteriaBuilder.notEqual(root.get("state"), -1));
+                    }else {
+                        predicates.add(criteriaBuilder.equal(root.get("state"), state));
+                    }
+                }
                 if (type != null)
                     predicates.add(criteriaBuilder.equal(root.get("type"), type));
                 return criteriaBuilder.and(predicates.toArray(new Predicate[predicates.size()]));
@@ -72,7 +77,7 @@ public class UserCenterServiceImpl implements UserCenterService {
     }
     @Transactional
     @Override
-    public void readMsg(Integer[] msgId, UserInfo userInfo) throws Exception {
+    public void readMsg(List<Integer> msgId, UserInfo userInfo) throws Exception {
         List<CenterMsg> list = new ArrayList<>();
         for (Integer Id:msgId
              ) {
@@ -89,7 +94,7 @@ public class UserCenterServiceImpl implements UserCenterService {
     }
     @Transactional
     @Override
-    public void deleteCenterMsg(Integer[] msgId, UserInfo userInfo) throws Exception {
+    public void deleteCenterMsg(List<Integer> msgId, UserInfo userInfo) throws Exception {
         List<CenterMsg> list = new ArrayList<>();
         for (Integer id:msgId
              ) {
